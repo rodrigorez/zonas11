@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>à espera; waiting; la espera - Zonas 11</title>
+    
+    <style>
+        body { 
+            margin: 0; 
+            font-family: Arial, sans-serif;
+            background: url('https://rodrigorez.github.io/zonas11/assets/img/fundo_mundo01.jpg') center/cover;
+            background-attachment: fixed;
+            overflow-y: auto; /* Habilita rolagem conforme solicitado */
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.95);
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 { 
+            color: #2C3E50; 
+            margin-bottom: 15px; 
+            font-size: 2.5em;
+            text-align: center;
+        }
+        
+        .autor { 
+            color: #7F8C8D; 
+            font-size: 20px; 
+            margin-bottom: 30px; 
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .sinopse { 
+            line-height: 1.8; 
+            margin-bottom: 40px; 
+            font-size: 16px;
+            text-align: justify;
+            color: #34495E;
+        }
+        
+        .video-container { 
+            margin: 30px 0; 
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .video-container iframe {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        
+        /* Navegação */
+        .navegacao-obras {
+            margin-top: 50px;
+            text-align: center;
+            padding: 30px 0;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .btn-navegacao {
+            margin: 10px;
+            padding: 15px 30px;
+            background: #3498DB;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-navegacao:hover {
+            background: #2980B9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-voltar {
+            background: #e74c3c;
+        }
+        
+        .btn-voltar:hover {
+            background: #c0392b;
+        }
+        
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .btn-navegacao {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>à espera; waiting; la espera</h1>
+        <div class="autor">Bea Denoni</div>
+        
+        <div class="sinopse">
+            Uma peça audiovisual, criada como projeto em 2024. A ilustração foi realizada em 2023, e a partir dela trabalhei na proposta de criar uma produção sonora que se encaixasse com a imagem, que enfatizasse a temática da ilustração. 
+            <br><br>
+            Para as partes de voz, me inspirei na trilha sonora de uma série de videogames chamada "NieR". As letras das canções do jogo são escritas embaralhando os fonemas de línguas já existentes, criando uma linguagem própria que evoca emoções universais através do som puro, desvinculado de significados específicos.
+            <br><br>
+            Esta obra explora a universalidade da espera como experiência humana, transcendendo barreiras linguísticas e culturais através de uma narrativa audiovisual que fala diretamente às emoções.
+        </div>
+        
+        <!-- Container de vídeo -->
+        <div class="video-container">
+            <h3 style="margin-bottom: 20px; color: #2c3e50;">🎬 Vídeo da Obra</h3>
+            <iframe width="640" height="360" 
+                    src="https://www.youtube.com/embed/aGdRa2MbfeA" 
+                    frameborder="0" 
+                    allowfullscreen
+                    title="à espera; waiting; la espera - Bea Denoni">
+            </iframe>
+        </div>
+        
+        <!-- Navegação -->
+        <div class="navegacao-obras">
+            <h3 style="margin-bottom: 30px; color: #2c3e50;">🧭 Navegação</h3>
+            
+            <a href="https://rodrigorez.github.io/zonas11/obras/obra2.html" class="btn-navegacao">
+                → Próxima Obra: Aleph
+            </a>
+            
+            <a href="https://rodrigorez.github.io/zonas11/mundos/mundo1.html" class="btn-navegacao btn-voltar">
+                🌍 Voltar ao Mundo
+            </a>
+            
+            <a href="https://rodrigorez.github.io/zonas11/index.html" class="btn-navegacao" style="background: #9b59b6;">
+                🎯 Galeria Principal
+            </a>
+        </div>
+        
+        <!-- Informações técnicas -->
+        <div style="margin-top: 40px; padding: 20px; background: #ecf0f1; border-radius: 8px; font-size: 14px; color: #7f8c8d;">
+            <h4 style="margin-bottom: 15px; color: #2c3e50;">ℹ️ Informações Técnicas</h4>
+            <p><strong>Ano:</strong> 2024</p>
+            <p><strong>Técnica:</strong> Peça audiovisual digital</p>
+            <p><strong>Mundo:</strong> Digital 1</p>
+            <p><strong>ID:</strong> 001</p>
+        </div>
+    </div>
+
+    <script>
+        // 🚀 INICIALIZAÇÃO DA OBRA
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('📖 Carregando obra: à espera; waiting; la espera');
+            console.log('👨‍🎨 Artista: Bea Denoni');
+            
+            // Controles de teclado para navegação
+            document.addEventListener('keydown', (e) => {
+                const baseURL = 'https://rodrigorez.github.io/zonas11/';
+                
+                switch(e.key) {
+                    case 'Escape':
+                        // Volta ao mundo
+                        window.location.href = `${baseURL}mundos/mundo1.html`;
+                        break;
+                    case 'ArrowLeft':
+                        // Obra anterior (não tem)
+                        console.log('🔙 Primeira obra da série');
+                        break;
+                    case 'ArrowRight':
+                        // Próxima obra
+                        window.location.href = `${baseURL}obras/obra2.html`;
+                        break;
+                    case 'Home':
+                        // Galeria principal
+                        window.location.href = `${baseURL}index.html`;
+                        break;
+                }
+            });
+            
+            // Analisa o vídeo quando carregado
+            const iframe = document.querySelector('iframe');
+            if (iframe) {
+                iframe.addEventListener('load', () => {
+                    console.log('🎬 Vídeo YouTube carregado');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

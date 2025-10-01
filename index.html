@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria Principal - Zonas 11</title>
+    
+    <!-- A-Frame e AR.js -->
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+    
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: Arial, sans-serif; 
+            background: #000;
+        }
+        
+        /* Interface oculta por padrão (preferência do usuário) */
+        .dev-controls { display: none !important; }
+        
+        .loading-indicator { 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9); 
+            color: #fff; 
+            padding: 30px;
+            border-radius: 12px; 
+            text-align: center; 
+            font-size: 18px;
+            z-index: 1000;
+            border: 2px solid #FF5722;
+        }
+        
+        .loading-indicator.hidden { 
+            display: none; 
+        }
+        
+        .loading-spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #FF5722;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Performance otimizada */
+        a-scene { 
+            background: transparent;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        
+        /* Oculta elementos de debug do AR.js */
+        .a-enter-vr-button,
+        .a-orientation-modal,
+        .arjs-video { 
+            display: none !important; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicador de carregamento -->
+    <div id="loading-indicator" class="loading-indicator">
+        <div class="loading-spinner"></div>
+        <div style="font-weight: bold; margin-bottom: 10px;">🎯 Galeria AR - Zonas 11</div>
+        <div class="loading-details" style="font-size: 14px; opacity: 0.8;">
+            Iniciando experiência imersiva...
+        </div>
+    </div>
+
+    <!-- Cena AR -->
+    <a-scene 
+        embedded 
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;">
+        
+        <!-- Assets (pré-carregamento para performance) -->
+        <a-assets>
+            <a-asset-item id="modelo1" src="https://rodrigorez.github.io/zonas11/assets/3d/01.glb"></a-asset-item>
+            <a-asset-item id="modelo2" src="https://rodrigorez.github.io/zonas11/assets/3d/02.glb"></a-asset-item>
+            <a-asset-item id="modelo3" src="https://rodrigorez.github.io/zonas11/assets/3d/03.glb"></a-asset-item>
+            <a-asset-item id="modelo4" src="https://rodrigorez.github.io/zonas11/assets/3d/04.glb"></a-asset-item>
+            <a-asset-item id="modelo5" src="https://rodrigorez.github.io/zonas11/assets/3d/05.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- Container dos marcadores -->
+        <a-entity id="markers-container"></a-entity>
+        
+        <!-- Câmera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- Módulo JavaScript -->
+    <script src="js/galeria.js"></script>
+    
+    <script>
+        // 📊 DADOS DOS MARCADORES (CAMINHOS ABSOLUTOS)
+        const MARCADORES_GALERIA = [
+            {
+                idGaleria: "1",
+                idMarcador: "1",
+                tipoMarcador: "hiro",
+                nomeMarcador: "Mundo Digital 1",
+                modelo3D: "assets/3d/01.glb",
+                escalaModelo: "1.0",
+                animacaoRotacao: "true",
+                velocidadeRotacao: "1.0",
+                corTema: "#FF3030",
+                urlMundo: "mundos/mundo1.html"
+            },
+            {
+                idGaleria: "1",
+                idMarcador: "2",
+                tipoMarcador: "kanji",
+                nomeMarcador: "Mundo Digital 2",
+                modelo3D: "assets/3d/02.glb",
+                escalaModelo: "0.8",
+                animacaoRotacao: "true",
+                velocidadeRotacao: "0.5",
+                corTema: "#00FF00",
+                urlMundo: "mundos/mundo2.html"
+            },
+            {
+                idGaleria: "1",
+                idMarcador: "3",
+                tipoMarcador: "barcode-5",
+                nomeMarcador: "Mundo Digital 3",
+                modelo3D: "assets/3d/03.glb",
+                escalaModelo: "1.2",
+                animacaoRotacao: "false",
+                velocidadeRotacao: "0",
+                corTema: "#0080FF",
+                urlMundo: "mundos/mundo3.html"
+            },
+            {
+                idGaleria: "1",
+                idMarcador: "4",
+                tipoMarcador: "barcode-7",
+                nomeMarcador: "Mundo Digital 4",
+                modelo3D: "assets/3d/04.glb",
+                escalaModelo: "1.1",
+                animacaoRotacao: "true",
+                velocidadeRotacao: "1.5",
+                corTema: "#FF8000",
+                urlMundo: "mundos/mundo4.html"
+            },
+            {
+                idGaleria: "1",
+                idMarcador: "5",
+                tipoMarcador: "barcode-9",
+                nomeMarcador: "Mundo Digital 5",
+                modelo3D: "assets/3d/05.glb",
+                escalaModelo: "0.9",
+                animacaoRotacao: "true",
+                velocidadeRotacao: "0.8",
+                corTema: "#FF00FF",
+                urlMundo: "mundos/mundo5.html"
+            }
+        ];
+        
+        // 🚀 INICIALIZAÇÃO AUTOMÁTICA
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🎯 Iniciando Galeria AR - Zonas 11');
+            console.log('📁 Servidor: docs/ (URLs absolutas)');
+            console.log('🎨 Marcadores:', MARCADORES_GALERIA.length);
+            
+            // Atualiza status de carregamento
+            const loadingDetails = document.querySelector('.loading-details');
+            if (loadingDetails) {
+                loadingDetails.textContent = 'Carregando recursos AR...';
+            }
+            
+            // Aguarda recursos carregarem (performance otimizada)
+            setTimeout(async () => {
+                if (loadingDetails) {
+                    loadingDetails.textContent = 'Inicializando marcadores...';
+                }
+                
+                if (window.GaleriaAR && window.GaleriaAR.inicializar) {
+                    try {
+                        await window.GaleriaAR.inicializar(MARCADORES_GALERIA);
+                        console.log('✅ Galeria AR inicializada com sucesso!');
+                        
+                        // Remove indicador de carregamento
+                        setTimeout(() => {
+                            const loadingIndicator = document.getElementById('loading-indicator');
+                            if (loadingIndicator) {
+                                loadingIndicator.classList.add('hidden');
+                            }
+                        }, 1000);
+                        
+                    } catch (error) {
+                        console.error('❌ Erro na inicialização:', error);
+                        if (loadingDetails) {
+                            loadingDetails.textContent = 'Erro no carregamento - Recarregue a página';
+                        }
+                    }
+                } else {
+                    console.error('❌ Módulo GaleriaAR não carregado');
+                    if (loadingDetails) {
+                        loadingDetails.textContent = 'Erro: Módulo não encontrado';
+                    }
+                }
+            }, 2000);
+        });
+        
+        // 🎯 FEEDBACK VISUAL PARA DEBUG (OCULTO)
+        if (window.location.search.includes('debug=true')) {
+            console.log('🔧 Modo debug ativado');
+            document.body.addEventListener('keydown', (e) => {
+                if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                    console.log('🔄 Recarregando galeria...');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo Digital 1 - Zonas 11</title>
+    
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    
+    <style>
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: Arial, sans-serif;
+            background: url('https://rodrigorez.github.io/zonas11/assets/img/fundo_mundo01.jpg') center/cover;
+        }
+        
+        /* Performance otimizada */
+        a-scene { 
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        
+        /* Interface limpa - controles ocultos */
+        .a-enter-vr-button { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Cena VR -->
+    <a-scene background="color: #87CEEB" fog="type: linear; color: #7EC0EE; near: 5; far: 30">
+        
+        <!-- Assets das obras do Mundo 1 -->
+        <a-assets>
+            <a-asset-item id="obra1-model" src="https://rodrigorez.github.io/zonas11/assets/3d/01.glb"></a-asset-item>
+            <a-asset-item id="obra2-model" src="https://rodrigorez.github.io/zonas11/assets/3d/02.glb"></a-asset-item>
+            <a-asset-item id="obra3-model" src="https://rodrigorez.github.io/zonas11/assets/3d/03.glb"></a-asset-item>
+            <a-asset-item id="obra4-model" src="https://rodrigorez.github.io/zonas11/assets/3d/04.glb"></a-asset-item>
+            <a-asset-item id="obra5-model" src="https://rodrigorez.github.io/zonas11/assets/3d/05.glb"></a-asset-item>
+            <a-asset-item id="obra6-model" src="https://rodrigorez.github.io/zonas11/assets/3d/01.glb"></a-asset-item>
+            <a-asset-item id="obra7-model" src="https://rodrigorez.github.io/zonas11/assets/3d/02.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- Iluminação otimizada -->
+        <a-light type="ambient" color="#404040" intensity="0.4"></a-light>
+        <a-light type="directional" position="5 10 5" color="#ffffff" intensity="1.0" cast-shadow="true"></a-light>
+        
+        <!-- Chão -->
+        <a-plane position="0 0 0" rotation="-90 0 0" width="30" height="30" color="#2F4F4F" 
+                 material="roughness: 0.8; metalness: 0.1" shadow="receive: true"></a-plane>
+        
+        <!-- Céu -->
+        <a-sky color="#87CEEB"></a-sky>
+        
+        <!-- Obras do Mundo 1 (Primeiras 7 obras) -->
+        
+        <!-- Obra 1: à espera -->
+        <a-entity position="-6 1.5 -6">
+            <a-entity gltf-model="#obra1-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
+                     class="obra-clickable" data-obra="1"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="1"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 2: Aleph -->
+        <a-entity position="-2 1.5 -6">
+            <a-entity gltf-model="#obra2-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 15000"
+                     class="obra-clickable" data-obra="2"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="2"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 3: ANFIBIAS I -->
+        <a-entity position="2 1.5 -6">
+            <a-entity gltf-model="#obra3-model" scale="1 1 1" 
+                     class="obra-clickable" data-obra="3"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="3"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 4: Arvore parideira -->
+        <a-entity position="6 1.5 -6">
+            <a-entity gltf-model="#obra4-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 20000"
+                     class="obra-clickable" data-obra="4"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="4"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 5: BEABÁ DE PAZ -->
+        <a-entity position="-3 1.5 0">
+            <a-entity gltf-model="#obra5-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
+                     class="obra-clickable" data-obra="5"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="5"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 6: ChaKal BiomeKânico -->
+        <a-entity position="0 1.5 0">
+            <a-entity gltf-model="#obra6-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"
+                     class="obra-clickable" data-obra="6"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="6"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Obra 7: Coreografia selvagem -->
+        <a-entity position="3 1.5 0">
+            <a-entity gltf-model="#obra7-model" scale="1 1 1" 
+                     animation="property: rotation; to: 0 360 0; loop: true; dur: 18000"
+                     class="obra-clickable" data-obra="7"></a-entity>
+            <a-box width="2" height="3" depth="2" material="opacity: 0; transparent: true" 
+                   class="click-area" data-obra="7"></a-box>
+            <a-light type="point" position="0 3 0" color="#ffffff" intensity="0.6" distance="8"></a-light>
+        </a-entity>
+        
+        <!-- Câmera com controles -->
+        <a-camera position="0 2 8" 
+                  wasd-controls="enabled: true" 
+                  look-controls="enabled: true"
+                  cursor="rayOrigin: mouse">
+        </a-camera>
+    </a-scene>
+
+    <script>
+        // 🎯 NAVEGAÇÃO PARA OBRAS (URLs ABSOLUTAS)
+        const baseURL = 'https://rodrigorez.github.io/zonas11/';
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🌍 Mundo Digital 1 - Zonas 11 carregado');
+            
+            // Configura cliques nas obras
+            const clickAreas = document.querySelectorAll('.click-area');
+            clickAreas.forEach(area => {
+                area.addEventListener('click', () => {
+                    const obraId = area.getAttribute('data-obra');
+                    const urlObra = `${baseURL}obras/obra${obraId}.html`;
+                    
+                    console.log(`🎨 Navegando para obra ${obraId}: ${urlObra}`);
+                    window.location.href = urlObra;
+                });
+                
+                // Hover effect
+                area.addEventListener('mouseenter', () => {
+                    const obraModel = area.parentElement.querySelector('.obra-clickable');
+                    if (obraModel) {
+                        obraModel.setAttribute('scale', '1.1 1.1 1.1');
+                    }
+                });
+                
+                area.addEventListener('mouseleave', () => {
+                    const obraModel = area.parentElement.querySelector('.obra-clickable');
+                    if (obraModel) {
+                        obraModel.setAttribute('scale', '1 1 1');
+                    }
+                });
+            });
+            
+            // Botão voltar para galeria (tecla ESC)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const urlGaleria = `${baseURL}index.html`;
+                    console.log('🔙 Voltando para galeria:', urlGaleria);
+                    window.location.href = urlGaleria;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
