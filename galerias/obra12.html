@@ -1,138 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obra 12 - Dissidentes | Zonas 11</title>
+    <title>Ficha Técnica - Dissidentes</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+      :root {
+        --min-font: 14px;
+        --max-font: 20px;
+        --min-width: 320px;
+        --max-width: 800px;
+        --padding: 4vw;
+        --border-radius: 12px;
+      }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-align: center;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background: #000;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
 
-        .artists {
-            font-size: 1.2rem;
-            text-align: center;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            font-style: italic;
-        }
+      .container {
+        width: clamp(var(--min-width), 90vw, var(--max-width));
+        display: flex;
+        flex-direction: column;
+        gap: 2vw;
+        padding: 4vw 2vw;
+      }
 
-        .description {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            text-align: justify;
-            margin-bottom: 30px;
-        }
+      /* Estilo base para todas as linhas */
+      .linha {
+        padding: var(--padding);
+        background: #1a1a1a;
+        border-radius: var(--border-radius);
+        text-align: center;
+      }
 
-        .buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+      /* 1ª linha: Nome da exposição */
+      .exposicao {
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+        font-weight: bold;
+      }
 
-        .btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
+      /* 2ª e 7ª linhas: Botão voltar — PADRONIZADO */
+      .botao-voltar {
+        background: #FF5722;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: bold;
+        color: white;
+        width: 100%;
+        padding: 1.5em 1em;
+        box-shadow: 0 4px 15px rgba(255,87,34,0.4);
+      }
+      .botao-voltar:hover {
+        background: #E64A19;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255,87,34,0.6);
+      }
 
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+      /* 3ª linha: Obra Presencial */
+      .obra-presencial {
+        background: #666;
+        color: white;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        font-weight: bold;
+        padding: 2em 1em;
+        border-radius: var(--border-radius);
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-        }
+      /* 4ª linha: Título da obra */
+      .titulo {
+        font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+        font-weight: bold;
+      }
 
-        .btn-secondary {
-            background: linear-gradient(45deg, #4834d4, #686de0);
-        }
+      /* 5ª linha: Autor da obra */
+      .autor {
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        font-weight: 500;
+      }
 
-        .btn-disabled {
-            background: rgba(128, 128, 128, 0.3);
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+      /* 6ª linha: Sinopse */
+      .sinopse {
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        text-align: justify;
+        hyphens: auto;
+        line-height: 1.7;
+        text-indent: 2em;
+      }
 
-        .btn-disabled:hover {
-            background: rgba(128, 128, 128, 0.3);
-            transform: none;
-            box-shadow: none;
+      /* Melhorias para leitura em mobile */
+      @media (max-width: 480px) {
+        .sinopse {
+          font-size: 0.9rem;
+          line-height: 1.8;
         }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 200px;
-                text-align: center;
-            }
+        .botao-voltar {
+          padding: 1.8em 1.2em;
+          font-size: 1.1rem;
         }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Dissidentes</h1>
-        <div class="artists">Mariana Cascarelli</div>
-        
-        <div class="description">
-            Dissidentes apresenta esculturas em gesso e argila, feitas a partir do corpo da artista e fragmentos orgânicos e inorgânicos encontrados em suas caminhadas. Corpos como territórios em transformação, que resistem e se reinventam em simbiose com a natureza. Inspirada nas cosmovisões indígenas, a obra convoca presenças híbridas que desafiam normas e imaginam outras formas de existir.
-        </div>
-        
-        <div class="buttons">
-            <span class="btn btn-disabled">Obra Presencial</span>
-            <a href="https://rodrigorez.github.io/zonas11/galerias/index3.html" class="btn btn-secondary">Voltar</a>
-        </div>
+      <!-- 1ª linha: Nome da exposição -->
+      <div class="linha exposicao">Zonas 11</div>
+
+      <!-- 2ª linha: Botão voltar -->
+      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index3.html'">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+
+      <!-- 3ª linha: Obra Presencial -->
+      <div class="linha obra-presencial">
+        🏢 Obra Presencial - Visível no Local da Exposição
+      </div>
+
+      <!-- 4ª linha: Título da obra -->
+      <div class="linha titulo">Dissidentes</div>
+
+      <!-- 5ª linha: Autor da obra -->
+      <div class="linha autor">Mariana Cascarelli</div>
+
+      <!-- 6ª linha: Sinopse -->
+      <div class="linha sinopse">
+        Dissidentes apresenta esculturas em gesso e argila, feitas a partir do corpo da artista e fragmentos orgânicos e inorgânicos encontrados em suas caminhadas. Corpos como territórios em transformação, que resistem e se reinventam em simbiose com a natureza. Inspirada nas cosmovisões indígenas, a obra convoca presenças híbridas que desafiam normas e imaginam outras formas de existir.
+      </div>
+
+      <!-- 7ª linha: Botão voltar -->
+      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index3.html'">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
     </div>
-</body>
+  </body>
 </html>
