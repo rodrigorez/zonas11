@@ -77,15 +77,12 @@
         box-shadow: 0 6px 20px rgba(255,87,34,0.6);
       }
 
-      /* 3ª linha: Obra Presencial */
-      .obra-presencial {
-        background: #666;
-        color: white;
-        font-size: clamp(1rem, 3vw, 1.2rem);
-        font-weight: bold;
-        padding: 2em 1em;
+      /* 3ª linha: Vídeo do YouTube */
+      .video iframe {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border: none;
         border-radius: var(--border-radius);
-        text-align: center;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       }
 
@@ -133,9 +130,14 @@
         ↩️ Voltar para a Realidade Virtual
       </button>
 
-      <!-- 3ª linha: Obra Presencial -->
-      <div class="linha obra-presencial">
-        🏢 Obra Presencial - Visível no Local da Exposição
+      <!-- 3ª linha: Vídeo do YouTube -->
+      <div class="linha video">
+        <iframe
+          src="https://www.youtube.com/embed/gwWBsIHpcJU?controls=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          title="Dissidentes">
+        </iframe>
       </div>
 
       <!-- 4ª linha: Título da obra -->
