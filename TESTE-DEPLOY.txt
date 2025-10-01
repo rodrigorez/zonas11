@@ -1,0 +1,31 @@
+✅ TESTE DE DEPLOY - Sistema Zonas 11
+
+Timestamp: 2025-09-28T15:20:00Z
+Versão: URLs Absolutas + Debug Logs
+
+📋 Arquivos Incluídos:
+- galeria1.html (com debug logs)
+- mundo1_galeria1.html
+- mundo2_galeria1.html  
+- mundo3_galeria1.html
+- obra1_mundo1.html
+- obra2_mundo1.html
+- obra3_mundo2.html
+- obra4_mundo3.html
+- models/01.glb
+- models/02.glb
+- models/03.glb
+
+🔧 Correções Aplicadas:
+- Syntax Error na linha 67 corrigido
+- URLs dos modelos 3D: absolutas
+- Sistema de debug implementado
+- Função navegarParaMundo corrigida
+
+🧪 Para Testar:
+1. Abra Console (F12)
+2. Acesse galeria1.html
+3. Verifique logs de debug
+4. Teste detecção de marcadores
+
+Se este arquivo está visível, o deploy foi bem-sucedido!
