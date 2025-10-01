@@ -14,10 +14,10 @@
 
 // ✅ CONFIGURAÇÃO INICIAL PADRÃO
 let currentConfig = {
-  // Caixas de colisão
-  boxWidth: 1.0,
-  boxHeight: 1.0,
-  boxDepth: 1.0,
+  // Caixas de colisão (precisão 5 casas decimais)
+  boxWidth: 2.50000,
+  boxHeight: 3.00000,
+  boxDepth: 2.50000,
   // Configurações AR
   detectionDistance: 2.0,
   globalScale: 1.0,
@@ -41,19 +41,21 @@ function gerarURLAbsoluta(caminhoRelativo) {
     return caminhoRelativo;
   }
   
-  // Garante que os assets estejam em assets/ (dentro de docs/)
-  if (caminhoLimpo.includes('assets/3d/') || caminhoLimpo.includes('assets/img/')) {
-    // Já está no formato correto
-  } else if (caminhoLimpo.startsWith('models/')) {
-    caminhoLimpo = caminhoLimpo.replace('models/', 'assets/3d/');
-  } else if (caminhoLimpo.includes('.glb')) {
-    caminhoLimpo = 'assets/3d/' + caminhoLimpo;
-  }
+  // DETECTA AMBIENTE: Local vs Deploy
+  const isLocal = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' ||
+                  window.location.protocol === 'file:';
   
-  // Combina com base URL (docs/ é a raiz do servidor)
-  const urlFinal = currentConfig.baseURL + caminhoLimpo;
-  console.log(`🔗 URL absoluta gerada: ${caminhoRelativo} → ${urlFinal}`);
-  return urlFinal;
+  if (isLocal) {
+    // Ambiente local: usa caminhos relativos
+    console.log(`🔗 URL local gerada: ${caminhoRelativo} → ${caminhoLimpo}`);
+    return caminhoLimpo;
+  } else {
+    // Ambiente deploy: usa URLs absolutas
+    const urlFinal = currentConfig.baseURL + caminhoLimpo;
+    console.log(`🔗 URL absoluta gerada: ${caminhoRelativo} → ${urlFinal}`);
+    return urlFinal;
+  }
 }
 
 // ✅ GERAÇÃO DE CORES SÓLIDAS ALEATÓRIAS DETERMINÍSTICAS
@@ -205,17 +207,34 @@ function criarMarcadoresAR(marcadores, container) {
       modelEl.setAttribute('animation', `property: rotation; to: 0 360 0; loop: true; dur: ${duracao}; easing: linear`);
     }
     
-    // ✅ EVENTO DE CLIQUE LIMPO
+    // ✅ EVENTO DE CLIQUE COM FEEDBACK VISUAL
     clickAreaEl.addEventListener('click', () => {
       console.log(`🔥 CLIQUE DETECTADO! Marcador ${index + 1}: ${m.nomeMarcador}`);
       console.log(`📍 Tipo: ${m.tipoMarcador} | Modelo: ${urlModelo}`);
       
-      // Navegação direta após breve delay com URL absoluta
+      // FEEDBACK VISUAL IMEDIATO
+      modelEl.setAttribute('animation__click', 'property: scale; to: 1.3 1.3 1.3; dur: 200; easing: easeOutQuad');
+      
+      // Efeito de pulso
+      setTimeout(() => {
+        modelEl.setAttribute('animation__reset', `property: scale; to: ${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}; dur: 200; easing: easeInQuad`);
+      }, 200);
+      
+      // Navegação após feedback visual
       setTimeout(() => {
         const urlMundo = gerarURLAbsoluta(m.urlMundo);
         console.log(`🚀 Navegando para: ${urlMundo}`);
         navegarParaMundo(urlMundo);
-      }, 300);
+      }, 500);
+    });
+    
+    // Hover effect para feedback visual
+    clickAreaEl.addEventListener('mouseenter', () => {
+      modelEl.setAttribute('animation__hover', `property: scale; to: ${parseFloat(m.escalaModelo) * 1.1} ${parseFloat(m.escalaModelo) * 1.1} ${parseFloat(m.escalaModelo) * 1.1}; dur: 150`);
+    });
+    
+    clickAreaEl.addEventListener('mouseleave', () => {
+      modelEl.setAttribute('animation__unhover', `property: scale; to: ${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}; dur: 150`);
     });
     
     // ✅ MONTAGEM DA ESTRUTURA

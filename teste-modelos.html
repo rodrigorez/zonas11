@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Modelos 3D - Zonas 11</title>
+    
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        .info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h3>🔧 Teste de Modelos 3D</h3>
+        <p>Verificando carregamento dos assets...</p>
+        <div id="status"></div>
+    </div>
+
+    <a-scene background="color: #87CEEB">
+        <!-- Assets -->
+        <a-assets>
+            <a-asset-item id="modelo1" src="assets/3d/01.glb"></a-asset-item>
+            <a-asset-item id="modelo2" src="assets/3d/02.glb"></a-asset-item>
+            <a-asset-item id="modelo3" src="assets/3d/03.glb"></a-asset-item>
+            <a-asset-item id="modelo4" src="assets/3d/04.glb"></a-asset-item>
+            <a-asset-item id="modelo5" src="assets/3d/05.glb"></a-asset-item>
+        </a-assets>
+        
+        <!-- Iluminação -->
+        <a-light type="ambient" color="#404040" intensity="0.4"></a-light>
+        <a-light type="directional" position="5 10 5" intensity="1.0"></a-light>
+        
+        <!-- Modelos em linha -->
+        <a-entity gltf-model="#modelo1" position="-8 0 -5" scale="1 1 1" 
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 5000"></a-entity>
+        
+        <a-entity gltf-model="#modelo2" position="-4 0 -5" scale="1 1 1" 
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 6000"></a-entity>
+        
+        <a-entity gltf-model="#modelo3" position="0 0 -5" scale="1 1 1" 
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 7000"></a-entity>
+        
+        <a-entity gltf-model="#modelo4" position="4 0 -5" scale="1 1 1" 
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"></a-entity>
+        
+        <a-entity gltf-model="#modelo5" position="8 0 -5" scale="1 1 1" 
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 9000"></a-entity>
+        
+        <!-- Chão -->
+        <a-plane position="0 -1 0" rotation="-90 0 0" width="30" height="30" color="#2F4F4F"></a-plane>
+        
+        <!-- Câmera -->
+        <a-camera position="0 2 3" wasd-controls look-controls></a-camera>
+    </a-scene>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusDiv = document.getElementById('status');
+            let modelosCarregados = 0;
+            const totalModelos = 5;
+            
+            // Monitora carregamento dos modelos
+            const modelos = document.querySelectorAll('a-entity[gltf-model]');
+            
+            modelos.forEach((modelo, index) => {
+                modelo.addEventListener('model-loaded', () => {
+                    modelosCarregados++;
+                    console.log(`✅ Modelo ${index + 1} carregado`);
+                    statusDiv.innerHTML = `✅ ${modelosCarregados}/${totalModelos} modelos carregados`;
+                    
+                    if (modelosCarregados === totalModelos) {
+                        statusDiv.innerHTML += '<br>🎉 Todos os modelos OK!';
+                    }
+                });
+                
+                modelo.addEventListener('model-error', (e) => {
+                    console.error(`❌ Erro no modelo ${index + 1}:`, e);
+                    statusDiv.innerHTML += `<br>❌ Erro no modelo ${index + 1}`;
+                });
+            });
+            
+            // Timeout para modelos não carregados
+            setTimeout(() => {
+                if (modelosCarregados < totalModelos) {
+                    statusDiv.innerHTML += `<br>⚠️ ${totalModelos - modelosCarregados} modelos falharam`;
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

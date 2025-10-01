@@ -7,7 +7,8 @@
     
     <!-- A-Frame e AR.js -->
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js@3.4.5/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.5/three.js/build/ar-threex-location-only.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.5/aframe/build/aframe-ar.js"></script>
     
     <style>
         body { 
@@ -82,15 +83,16 @@
     <!-- Cena AR -->
     <a-scene 
         embedded 
-        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;">
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; trackingMethod: best;"
+        vr-mode-ui="enabled: false">
         
-        <!-- Assets (pré-carregamento para performance) -->
+        <!-- Assets (URLs locais para desenvolvimento) -->
         <a-assets>
-            <a-asset-item id="modelo1" src="https://rodrigorez.github.io/zonas11/assets/3d/01.glb"></a-asset-item>
-            <a-asset-item id="modelo2" src="https://rodrigorez.github.io/zonas11/assets/3d/02.glb"></a-asset-item>
-            <a-asset-item id="modelo3" src="https://rodrigorez.github.io/zonas11/assets/3d/03.glb"></a-asset-item>
-            <a-asset-item id="modelo4" src="https://rodrigorez.github.io/zonas11/assets/3d/04.glb"></a-asset-item>
-            <a-asset-item id="modelo5" src="https://rodrigorez.github.io/zonas11/assets/3d/05.glb"></a-asset-item>
+            <a-asset-item id="modelo1" src="assets/3d/01.glb"></a-asset-item>
+            <a-asset-item id="modelo2" src="assets/3d/02.glb"></a-asset-item>
+            <a-asset-item id="modelo3" src="assets/3d/03.glb"></a-asset-item>
+            <a-asset-item id="modelo4" src="assets/3d/04.glb"></a-asset-item>
+            <a-asset-item id="modelo5" src="assets/3d/05.glb"></a-asset-item>
         </a-assets>
         
         <!-- Container dos marcadores -->
@@ -112,7 +114,7 @@
                 tipoMarcador: "hiro",
                 nomeMarcador: "Mundo Digital 1",
                 modelo3D: "assets/3d/01.glb",
-                escalaModelo: "1.0",
+                escalaModelo: "1.5",
                 animacaoRotacao: "true",
                 velocidadeRotacao: "1.0",
                 corTema: "#FF3030",
@@ -124,7 +126,7 @@
                 tipoMarcador: "kanji",
                 nomeMarcador: "Mundo Digital 2",
                 modelo3D: "assets/3d/02.glb",
-                escalaModelo: "0.8",
+                escalaModelo: "1.2",
                 animacaoRotacao: "true",
                 velocidadeRotacao: "0.5",
                 corTema: "#00FF00",
@@ -136,7 +138,7 @@
                 tipoMarcador: "barcode-5",
                 nomeMarcador: "Mundo Digital 3",
                 modelo3D: "assets/3d/03.glb",
-                escalaModelo: "1.2",
+                escalaModelo: "1.8",
                 animacaoRotacao: "false",
                 velocidadeRotacao: "0",
                 corTema: "#0080FF",
@@ -148,7 +150,7 @@
                 tipoMarcador: "barcode-7",
                 nomeMarcador: "Mundo Digital 4",
                 modelo3D: "assets/3d/04.glb",
-                escalaModelo: "1.1",
+                escalaModelo: "1.3",
                 animacaoRotacao: "true",
                 velocidadeRotacao: "1.5",
                 corTema: "#FF8000",
@@ -160,7 +162,7 @@
                 tipoMarcador: "barcode-9",
                 nomeMarcador: "Mundo Digital 5",
                 modelo3D: "assets/3d/05.glb",
-                escalaModelo: "0.9",
+                escalaModelo: "1.1",
                 animacaoRotacao: "true",
                 velocidadeRotacao: "0.8",
                 corTema: "#FF00FF",
