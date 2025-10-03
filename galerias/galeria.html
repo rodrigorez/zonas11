@@ -88,17 +88,22 @@
           if (marker && obj) {
             // Aplicar cor ao modelo 3D quando carregado
             obj.addEventListener('model-loaded', () => {
-              console.log(`Modelo 3D ${config.objId} carregado, aplicando cor`);
+              console.log(`Modelo 3D ${config.objId} carregado, aplicando cor VERMELHA`);
               const mesh = obj.getObject3D('mesh');
               if (mesh) {
                 mesh.traverse((child) => {
                   if (child.isMesh && child.material) {
+                    // Forçar cor vermelha nos materiais
                     if (Array.isArray(child.material)) {
                       child.material.forEach(mat => {
-                        mat.color.setHex(config.color);
+                        mat.color.setHex(0xFF0000);
+                        mat.emissive.setHex(0x220000); // Adicionar emissão vermelha
+                        mat.needsUpdate = true;
                       });
                     } else {
-                      child.material.color.setHex(config.color);
+                      child.material.color.setHex(0xFF0000);
+                      child.material.emissive.setHex(0x220000); // Adicionar emissão vermelha
+                      child.material.needsUpdate = true;
                     }
                   }
                 });
