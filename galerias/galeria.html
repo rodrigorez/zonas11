@@ -8,12 +8,12 @@
       body { margin: 0; overflow: hidden; }
     </style>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar.js"></script>
   </head>
   <body>
     <a-scene
       embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
       vr-mode-ui="enabled: false"
       cursor="rayOrigin: mouse"
       raycaster="objects: .can-click; far: 10000; interval: 100"
@@ -74,8 +74,12 @@
           'barcode-3-marker': { objId: 'interactive-barcode-3', indicatorId: 'click-indicator-barcode-3', collisionId: 'collision-box-barcode-3', url: 'https://rodrigorez.github.io/zonas11/galerias/index5.html', color: 0xFF9800 }
         };
 
-        // Configurar todos os marcadores dinamicamente
-        Object.entries(worldsConfig).forEach(([markerId, config]) => {
+        // Aguardar inicialização do AR.js
+        setTimeout(() => {
+          console.log('🚀 Iniciando configuração dos marcadores barcode...');
+          
+          // Configurar todos os marcadores dinamicamente
+          Object.entries(worldsConfig).forEach(([markerId, config]) => {
           const marker = document.getElementById(markerId);
           const obj = document.getElementById(config.objId);
           const indicator = document.getElementById(config.indicatorId);
@@ -103,7 +107,7 @@
 
             // Configurar eventos de marcador
             marker.addEventListener('markerFound', () => {
-              console.log(`Marcador ${markerId} encontrado`);
+              console.log(`✅ BARCODE ${markerId.split('-')[1]} DETECTADO!`);
               obj.classList.add('can-click');
               obj.setAttribute('simple-redirect', { url: config.url });
               
@@ -118,7 +122,7 @@
             });
 
             marker.addEventListener('markerLost', () => {
-              console.log(`Marcador ${markerId} perdido`);
+              console.log(`❌ BARCODE ${markerId.split('-')[1]} perdido`);
               obj.classList.remove('can-click');
               obj.removeAttribute('simple-redirect');
               
@@ -133,6 +137,7 @@
             });
           }
         });
+        }, 1500); // Delay para garantir inicialização completa
       });
     </script>
   </body>
