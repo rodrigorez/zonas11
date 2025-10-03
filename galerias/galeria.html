@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Zonas 11 - AR (V2.7)</title>
+    <style>
+      body { margin: 0; overflow: hidden; }
+    </style>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
+  </head>
+  <body>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      cursor="rayOrigin: mouse"
+      raycaster="objects: .can-click; far: 10000; interval: 100"
+    >
+      <!-- MARCADORES BARCODE 0-3: 4 MUNDOS VR -->
+      <a-marker type="barcode" value="0" id="barcode-0-marker">
+        <a-entity id="interactive-barcode-0" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/01.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 4200; easing: easeInOutSine">
+          <a-box id="collision-box-barcode-0" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
+          <a-ring id="click-indicator-barcode-0" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#F44336" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1200; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+        </a-entity>
+      </a-marker>
+
+      <a-marker type="barcode" value="1" id="barcode-1-marker">
+        <a-entity id="interactive-barcode-1" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/02.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 3800; easing: easeInOutSine">
+          <a-box id="collision-box-barcode-1" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
+          <a-ring id="click-indicator-barcode-1" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#2196F3" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1100; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+        </a-entity>
+      </a-marker>
+
+      <a-marker type="barcode" value="2" id="barcode-2-marker">
+        <a-entity id="interactive-barcode-2" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/03.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 4600; easing: easeInOutSine">
+          <a-box id="collision-box-barcode-2" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
+          <a-ring id="click-indicator-barcode-2" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#4CAF50" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1300; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+        </a-entity>
+      </a-marker>
+
+      <a-marker type="barcode" value="3" id="barcode-3-marker">
+        <a-entity id="interactive-barcode-3" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/04.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 3600; easing: easeInOutSine">
+          <a-box id="collision-box-barcode-3" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
+          <a-ring id="click-indicator-barcode-3" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF9800" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1150; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+        </a-entity>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      // Componente simplificado para redirecionamento
+      AFRAME.registerComponent('simple-redirect', {
+        schema: { url: { type: 'string', default: '#' } },
+        init: function () {
+          const el = this.el;
+          const url = this.data.url;
+
+          el.addEventListener('click', () => {
+            console.log('Clique detectado! Redirecionando para:', url);
+            window.location.href = url;
+          });
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Configuração simplificada: apenas marcadores barcode 0-3 (28 obras em 4 mundos)
+        const worldsConfig = {
+          'barcode-0-marker': { objId: 'interactive-barcode-0', indicatorId: 'click-indicator-barcode-0', collisionId: 'collision-box-barcode-0', url: 'https://rodrigorez.github.io/zonas11/galerias/index2.html', color: 0xF44336 },
+          'barcode-1-marker': { objId: 'interactive-barcode-1', indicatorId: 'click-indicator-barcode-1', collisionId: 'collision-box-barcode-1', url: 'https://rodrigorez.github.io/zonas11/galerias/index3.html', color: 0x2196F3 },
+          'barcode-2-marker': { objId: 'interactive-barcode-2', indicatorId: 'click-indicator-barcode-2', collisionId: 'collision-box-barcode-2', url: 'https://rodrigorez.github.io/zonas11/galerias/index4.html', color: 0x4CAF50 },
+          'barcode-3-marker': { objId: 'interactive-barcode-3', indicatorId: 'click-indicator-barcode-3', collisionId: 'collision-box-barcode-3', url: 'https://rodrigorez.github.io/zonas11/galerias/index5.html', color: 0xFF9800 }
+        };
+
+        // Configurar todos os marcadores dinamicamente
+        Object.entries(worldsConfig).forEach(([markerId, config]) => {
+          const marker = document.getElementById(markerId);
+          const obj = document.getElementById(config.objId);
+          const indicator = document.getElementById(config.indicatorId);
+          const collision = document.getElementById(config.collisionId);
+
+          if (marker && obj) {
+            // Aplicar cor ao modelo 3D quando carregado
+            obj.addEventListener('model-loaded', () => {
+              console.log(`Modelo 3D ${config.objId} carregado, aplicando cor`);
+              const mesh = obj.getObject3D('mesh');
+              if (mesh) {
+                mesh.traverse((child) => {
+                  if (child.isMesh && child.material) {
+                    if (Array.isArray(child.material)) {
+                      child.material.forEach(mat => {
+                        mat.color.setHex(config.color);
+                      });
+                    } else {
+                      child.material.color.setHex(config.color);
+                    }
+                  }
+                });
+              }
+            });
+
+            // Configurar eventos de marcador
+            marker.addEventListener('markerFound', () => {
+              console.log(`Marcador ${markerId} encontrado`);
+              obj.classList.add('can-click');
+              obj.setAttribute('simple-redirect', { url: config.url });
+              
+              if (collision) {
+                collision.classList.add('can-click');
+                collision.setAttribute('simple-redirect', { url: config.url });
+              }
+              
+              if (indicator) {
+                indicator.setAttribute('visible', 'true');
+              }
+            });
+
+            marker.addEventListener('markerLost', () => {
+              console.log(`Marcador ${markerId} perdido`);
+              obj.classList.remove('can-click');
+              obj.removeAttribute('simple-redirect');
+              
+              if (collision) {
+                collision.classList.remove('can-click');
+                collision.removeAttribute('simple-redirect');
+              }
+              
+              if (indicator) {
+                indicator.setAttribute('visible', 'false');
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
