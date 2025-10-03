@@ -80,10 +80,17 @@
           
           // Configurar todos os marcadores dinamicamente
           Object.entries(worldsConfig).forEach(([markerId, config]) => {
+          console.log(`🔧 Configurando marcador: ${markerId}`);
           const marker = document.getElementById(markerId);
           const obj = document.getElementById(config.objId);
           const indicator = document.getElementById(config.indicatorId);
           const collision = document.getElementById(config.collisionId);
+
+          console.log(`📋 Estado dos elementos:`);
+          console.log(`  - Marcador: ${marker ? '✅' : '❌'}`);
+          console.log(`  - Objeto 3D: ${obj ? '✅' : '❌'}`);
+          console.log(`  - Indicador: ${indicator ? '✅' : '❌'}`);
+          console.log(`  - Colisão: ${collision ? '✅' : '❌'}`);
 
           if (marker && obj) {
             // Aplicar cor vermelha após carregamento do modelo
@@ -93,26 +100,36 @@
               // Aguardar um frame para garantir que o modelo esteja totalmente carregado
               setTimeout(() => {
                 const mesh = obj.getObject3D('mesh');
+                console.log(`🧩 Procurando mesh no objeto ${config.objId}:`, mesh ? 'ENCONTRADA' : 'NÃO ENCONTRADA');
+                
                 if (mesh) {
+                  let materialsCount = 0;
                   mesh.traverse((child) => {
                     if (child.isMesh && child.material) {
+                      materialsCount++;
+                      console.log(`🎨 Aplicando cor ao material ${materialsCount} de ${config.objId}`);
+                      
                       // Aplicar cor vermelha diretamente
                       if (Array.isArray(child.material)) {
-                        child.material.forEach(mat => {
+                        child.material.forEach((mat, index) => {
+                          console.log(`  📦 Material array [${index}]: aplicando vermelho`);
                           mat.color.setHex(0xFF0000);
                           mat.emissive.setHex(0x220000);
                           mat.needsUpdate = true;
                         });
                       } else {
+                        console.log(`  📦 Material único: aplicando vermelho`);
                         child.material.color.setHex(0xFF0000);
                         child.material.emissive.setHex(0x220000);
                         child.material.needsUpdate = true;
                       }
                     }
                   });
-                  console.log(`✅ Cor vermelha aplicada com sucesso em ${config.objId}`);
+                  console.log(`✅ Cor vermelha aplicada em ${materialsCount} materiais de ${config.objId}`);
                 } else {
-                  console.log(`⚠️ Mesh não encontrada em ${config.objId}`);
+                  console.log(`⚠️ Mesh não encontrada em ${config.objId} - tentando abordagem alternativa`);
+                  // Tentar aplicar cor diretamente no objeto
+                  obj.setAttribute('material', 'color: #FF0000');
                 }
               }, 100);
             });
