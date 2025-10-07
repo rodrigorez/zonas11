@@ -9,6 +9,36 @@
     </style>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar.js"></script>
+    <!--
+    =====================================================
+    ZONAS 11 - GALERIA PRINCIPAL AR (V2.7)
+    =====================================================
+    
+    DESCRIÇÃO:
+    - Galeria de Realidade Aumentada principal
+    - 4 marcadores barcode (0-3) que ativam 4 mundos VR
+    - 28 obras de arte distribuídas em 4 mundos (7 cada)
+    - Objetos 3D clicáveis com redirecionamento
+    
+    ESTRUTURA DOS MUNDOS:
+    - Barcode 0 → Mundo 0: Obras 1-7  (index2.html)
+    - Barcode 1 → Mundo 1: Obras 8-14 (index3.html)
+    - Barcode 2 → Mundo 2: Obras 15-21(index4.html)
+    - Barcode 3 → Mundo 3: Obras 22-28(index5.html)
+    
+    FUNCIONALIDADES:
+    - Detecção de marcadores: AR.js barcode
+    - Modelos 3D: .glb com animações rotacionais
+    - Indicadores visuais: Anéis vermelhos padronizados
+    - Collisão: Caixas invisíveis para melhor detecção
+    - Cores: Material vermelho aplicado dinamicamente
+    
+    INTERAÇÃO:
+    - Detecção de marcador: Ativa objeto 3D clicável
+    - Clique no objeto: Redireciona para mundo VR
+    - Perda de marcador: Desativa interatividade
+    ====================================================
+    -->
   </head>
   <body>
     <a-scene
@@ -22,28 +52,28 @@
       <a-marker type="barcode" value="0" id="barcode-0-marker">
         <a-entity id="interactive-barcode-0" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/01.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 4200; easing: easeInOutSine">
           <a-box id="collision-box-barcode-0" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
-          <a-ring id="click-indicator-barcode-0" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#F44336" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1200; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+          <a-ring id="click-indicator-barcode-0" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF0000" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1200; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
         </a-entity>
       </a-marker>
 
       <a-marker type="barcode" value="1" id="barcode-1-marker">
         <a-entity id="interactive-barcode-1" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/02.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 3800; easing: easeInOutSine">
           <a-box id="collision-box-barcode-1" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
-          <a-ring id="click-indicator-barcode-1" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#2196F3" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1100; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+          <a-ring id="click-indicator-barcode-1" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF0000" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1100; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
         </a-entity>
       </a-marker>
 
       <a-marker type="barcode" value="2" id="barcode-2-marker">
         <a-entity id="interactive-barcode-2" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/03.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 4600; easing: easeInOutSine">
           <a-box id="collision-box-barcode-2" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
-          <a-ring id="click-indicator-barcode-2" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#4CAF50" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1300; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+          <a-ring id="click-indicator-barcode-2" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF0000" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1300; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
         </a-entity>
       </a-marker>
 
       <a-marker type="barcode" value="3" id="barcode-3-marker">
         <a-entity id="interactive-barcode-3" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/04.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 3600; easing: easeInOutSine">
           <a-box id="collision-box-barcode-3" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
-          <a-ring id="click-indicator-barcode-3" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF9800" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1150; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+          <a-ring id="click-indicator-barcode-3" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF0000" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1150; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
         </a-entity>
       </a-marker>
 
@@ -66,7 +96,9 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Configuração simplificada: apenas marcadores barcode 0-3 (28 obras em 4 mundos)
+        // Configuração: 4 marcadores barcode (0-3) → 4 mundos VR com 7 obras cada (total: 28 obras)
+        // Mundo 0 (barcode-0): obras 1-7   | Mundo 1 (barcode-1): obras 8-14
+        // Mundo 2 (barcode-2): obras 15-21 | Mundo 3 (barcode-3): obras 22-28
         const worldsConfig = {
           'barcode-0-marker': { objId: 'interactive-barcode-0', indicatorId: 'click-indicator-barcode-0', collisionId: 'collision-box-barcode-0', url: 'https://rodrigorez.github.io/zonas11/galerias/index2.html', color: 0xFF0000 },
           'barcode-1-marker': { objId: 'interactive-barcode-1', indicatorId: 'click-indicator-barcode-1', collisionId: 'collision-box-barcode-1', url: 'https://rodrigorez.github.io/zonas11/galerias/index3.html', color: 0xFF0000 },

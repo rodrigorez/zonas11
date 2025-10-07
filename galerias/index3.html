@@ -8,13 +8,36 @@
     <style>
       body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
     </style>
+    <!--
+    =====================================================
+    ZONAS 11 - MUNDO VR 1 (OBRAS 8-14)
+    =====================================================
+    
+    DESCRIÇÃO:
+    - Segundo mundo VR acessível via marcador barcode-1
+    - Contém 7 obras de arte dispostas em galeria circular
+    - Navegação: Clique para acessar obras individuais
+    - Botão voltar: Retorna para galeria AR principal
+    
+    ESTRUTURA:
+    - Fundo 360°: Ambiente imersivo mundo 2
+    - 7 Obras: Obras 8-14 dispostas em círculo
+    - Esfera voltar: Posição central com cor padrão
+    - Animações: Variações orgânicas de movimento
+    
+    INTERAÇÃO:
+    - Clique em obras 8-14: Redireciona para obra{i}.html
+    - Clique na esfera: Volta para galeria.html
+    - Navegação VR: Controles padrão A-Frame
+    ====================================================
+    -->
   </head>
   <body>
     <a-scene
       cursor="rayOrigin: mouse"
       vr-mode-ui="enabled: true"
     >
-      <!-- 🖼️ FUNDO 360° MUNDO 2 -->
+      <!-- 🖼️ FUNDO 360° MUNDO 1 -->
       <a-sky src="https://rodrigorez.github.io/zonas11/galerias/assets/img/fundo_mundo02.jpg"></a-sky>
 
       <!-- 🔴 ESFERA VOLTAR - Posição 1 (0°) -->
@@ -33,7 +56,7 @@
         ></a-entity>
       </a-sphere>
 
-      <!-- 🖼️ GALERIA CIRCULAR MUNDO 2 - 7 OBRAS (8-14) + 1 ESFERA -->
+      <!-- 🖼️ GALERIA CIRCULAR MUNDO 1 - 7 OBRAS (8-14) + 1 ESFERA -->
       <!-- Obra 8 - 45° -->
       <a-plane
         class="clickable-image obra8"
