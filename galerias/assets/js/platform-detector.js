@@ -113,6 +113,8 @@ class PlatformDetector {
         src = match ? config.embed(match[1]) : url;
         break;
       case 'p5js':
+        src = config.embed(url); // p5.js usa URL completa, não apenas ID
+        break;
       case 'vimeo':
       case 'openprocessing':
       case 'shadertoy':
