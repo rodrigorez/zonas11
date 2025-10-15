@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - VR Mundo 2 (V2.8)</title>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <!-- Enhanced Controls: Componente modular extensível -->
+    <script src="assets/js/enhanced-controls.js"></script>
     <style>
       body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
     </style>
@@ -141,8 +143,14 @@
         animation__swing="property: rotation; to: 0 335 5; dur: 4800; easing: easeInOutSine; loop: true; dir: alternate"
       ></a-plane>
 
-      <!-- 👁️ Câmera -->
-      <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
+      <!-- 👁️ Câmera com Enhanced Controls -->
+      <a-entity 
+        camera 
+        look-controls 
+        wasd-controls 
+        enhanced-controls="rotationSpeed: 45; enableRotation: true"
+        position="0 1.6 0"
+      ></a-entity>
     </a-scene>
 
     <script>
