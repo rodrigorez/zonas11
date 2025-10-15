@@ -21,6 +21,21 @@
  *    - Velocidade configurável
  *    - Suporte maiúscula/minúscula
  * 
+ * ✅ MOVIMENTO (WASD):
+ *    - Movimento relativo à câmera (camera-relative)
+ *    - W/S: Frente/Trás
+ *    - A/D: Esquerda/Direita
+ * 
+ * ✅ CONTROLES DE MOUSE (DESKTOP):
+ *    - Botão ESQUERDO (drag horizontal): Rotação Y (yaw)
+ *    - Botão ESQUERDO (drag vertical): Pitch (look-controls)
+ *    - Botão DIREITO (drag vertical): Movimento frente/trás
+ * 
+ * ✅ CONTROLES DE TOQUE (MOBILE):
+ *    - 1 DEDO (horizontal): Rotação Y (yaw)
+ *    - 2 DEDOS (vertical): Movimento frente/trás
+ *    - Look-controls (giroscópio): Pitch automático
+ * 
  * 🔮 PREPARADO PARA FUTURO:
  *    - Correr (Shift + WASD)
  *    - Pular (Espaço)
@@ -64,6 +79,59 @@
  * 
  * =====================================================
  */
+
+// =====================================================
+// CONSTANTES DE CONFIGURAÇÃO (NÚMEROS MÁGICOS)
+// =====================================================
+// Centralize aqui valores fixos para fácil manutenção futura.
+// Evita "números mágicos" espalhados pelo código.
+//
+// 🛠️ COMO USAR:
+// - Para ajustar sensibilidade de rotação do mouse, modifique MOUSE_ROTATION_SENSITIVITY
+// - Para desativar logs de debug, altere ENABLE_*_DEBUG_LOGS para false
+// - Valores recomendados estão documentados em comentários abaixo de cada constante
+//
+// ⚠️ ATENÇÃO:
+// - Não altere ROTATION_FULL_CIRCLE e ROTATION_MIN (matemática de normalização)
+// - Mudanças em MOVEMENT_THRESHOLD podem afetar responsividade
+
+const ENHANCED_CONTROLS_CONFIG = {
+  // ===== SENSIBILIDADES DE MOUSE =====
+  MOUSE_ROTATION_SENSITIVITY: 0.3,    // Sensibilidade rotação horizontal (botão esquerdo)
+  // Valores menores = rotação mais suave
+  // Valores maiores = rotação mais responsiva
+  // Recomendado: 0.1 a 0.5
+  // Padrão: 0.3 (balanço entre precisão e velocidade)
+  
+  // ===== SENSIBILIDADES DE TOQUE (MOBILE) =====
+  TOUCH_ROTATION_SENSITIVITY: 0.2,    // Sensibilidade rotação horizontal (1 dedo)
+  // Valores menores = rotação mais suave no mobile
+  // Valores maiores = rotação mais responsiva
+  // Recomendado: 0.1 a 0.3 (mobile precisa ser mais suave que mouse)
+  // Padrão: 0.2
+  
+  TOUCH_MOVEMENT_SENSITIVITY: 0.015,  // Sensibilidade movimento (2 dedos)
+  // Similar ao mouseDragSpeed, mas para toque
+  // Padrão: 0.015 (50% mais sensível que mouse)
+  
+  // ===== NORMALIZAÇÃO DE ROTAÇÃO =====
+  ROTATION_FULL_CIRCLE: 360,          // Graus em círculo completo (NÃO ALTERAR)
+  ROTATION_MIN: 0,                    // Rotação mínima para normalização (NÃO ALTERAR)
+  
+  // ===== LIMITES DE MOVIMENTO =====
+  MOVEMENT_THRESHOLD: 0,              // Delta mínimo para processar movimento (pixels)
+  // Valores maiores = menos sensível a micro-movimentos do mouse
+  // 0 = processa qualquer movimento detectado
+  // Recomendado: 0 para máxima responsividade, 1-2 para evitar jitter
+  
+  // ===== DEBUG E LOGGING =====
+  ENABLE_MOUSE_DEBUG_LOGS: true,      // Mostrar logs de eventos do mouse (mousedown/move/up)
+  ENABLE_TOUCH_DEBUG_LOGS: true,      // Mostrar logs de eventos de toque (touchstart/move/end)
+  ENABLE_ROTATION_DEBUG_LOGS: true,   // Mostrar logs de rotação Y em graus
+  ENABLE_MOVEMENT_DEBUG_LOGS: false   // Mostrar logs de movimento X/Z (verboso, pode afetar performance)
+};
+
+// =====================================================
 
 AFRAME.registerComponent('enhanced-controls', {
   /**
@@ -109,6 +177,23 @@ AFRAME.registerComponent('enhanced-controls', {
       type: 'number',
       default: 0.01,
       description: 'Sensibilidade do movimento com mouse (multiplicador)'
+    },
+    
+    // ===== CONTROLES DE TOQUE (MOBILE) - IMPLEMENTADO =====
+    enableTouchControls: {
+      type: 'boolean',
+      default: true,
+      description: 'Ativa/desativa controles de toque para dispositivos móveis'
+    },
+    touchRotationSpeed: {
+      type: 'number',
+      default: 0.2,
+      description: 'Sensibilidade de rotação com toque (1 dedo)'
+    },
+    touchMoveSpeed: {
+      type: 'number',
+      default: 0.015,
+      description: 'Sensibilidade de movimento com toque (2 dedos)'
     },
     
     // ===== CORRIDA (SHIFT) - PREPARADO PARA FUTURO =====
@@ -186,6 +271,14 @@ AFRAME.registerComponent('enhanced-controls', {
       lastMouseX: 0,            // Posição X anterior do mouse
       lastMouseY: 0,            // Posição Y anterior do mouse
       
+      // Controles de Toque (Mobile)
+      isTouching: false,        // Tela está sendo tocada?
+      touchCount: 0,            // Quantos dedos na tela?
+      lastTouchX: 0,            // Posição X do primeiro toque
+      lastTouchY: 0,            // Posição Y do primeiro toque
+      touch2X: 0,               // Posição X do segundo toque
+      touch2Y: 0,               // Posição Y do segundo toque
+      
       // Corrida (SHIFT) - FUTURO
       isRunning: false,         // Shift pressionado?
       
@@ -204,6 +297,9 @@ AFRAME.registerComponent('enhanced-controls', {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchEnd = this.onTouchEnd.bind(this);
     
     // Configurar módulos ativos
     if (this.data.enableRotation) {
@@ -216,6 +312,10 @@ AFRAME.registerComponent('enhanced-controls', {
     
     if (this.data.enableMouseDrag) {
       this.setupMouseDrag();
+    }
+    
+    if (this.data.enableTouchControls) {
+      this.setupTouchControls();
     }
     
     // Módulos futuros (comentados até implementação)
@@ -319,13 +419,54 @@ AFRAME.registerComponent('enhanced-controls', {
   
   /**
    * =====================================================
+   * SETUP TOUCH CONTROLS - CONFIGURAÇÃO DE CONTROLES DE TOQUE
+   * =====================================================
+   * 
+   * Configura event listeners para controles de toque em dispositivos móveis.
+   * - 1 DEDO: Rotação Y (yaw) - horizontal
+   * - 2 DEDOS: Movimento frente/trás - vertical
+   * 
+   * Funciona em paralelo com look-controls (giroscópio).
+   */
+  setupTouchControls: function () {
+    console.log('👆 Enhanced Controls: Configurando controles de toque (mobile)');
+    
+    // Obter referência ao canvas da cena
+    if (!this.canvas) {
+      this.canvas = this.el.sceneEl.canvas;
+    }
+    
+    if (!this.canvas) {
+      console.error('❌ Canvas não encontrado! Touch controls não funcionarão.');
+      return;
+    }
+    
+    console.log('✅ Canvas encontrado para touch:', this.canvas);
+    
+    // Adicionar event listeners de toque DIRETAMENTE no canvas
+    this.canvas.addEventListener('touchstart', this.onTouchStart, { capture: true, passive: false });
+    this.canvas.addEventListener('touchmove', this.onTouchMove, { capture: true, passive: false });
+    this.canvas.addEventListener('touchend', this.onTouchEnd, { capture: true, passive: false });
+    this.canvas.addEventListener('touchcancel', this.onTouchEnd, { capture: true, passive: false });
+    
+    console.log('✅ Controles de toque configurados:');
+    console.log('   - 1 DEDO (horizontal): Rotação Y (yaw)');
+    console.log('   - 2 DEDOS (vertical): Movimento frente/trás');
+    console.log('   - Look-controls (giroscópio): Pitch automático');
+    console.log('⚠️ Touch listeners com {capture: true, passive: false}');
+  },
+  
+  /**
+   * =====================================================
    * ON MOUSE DOWN - DETECÇÃO DE CLIQUE DO MOUSE
    * =====================================================
    * 
    * Inicia drag quando qualquer botão é pressionado.
    */
   onMouseDown: function (event) {
-    console.log(`🖘️ onMouseDown chamado! Botão: ${event.button}`);
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOUSE_DEBUG_LOGS) {
+      console.log(`🖘️ onMouseDown chamado! Botão: ${event.button}`);
+    }
     
     // Botão esquerdo (0) OU direito (2) = iniciar drag
     if (event.button === 0 || event.button === 2) {
@@ -340,9 +481,11 @@ AFRAME.registerComponent('enhanced-controls', {
         event.stopPropagation();
       }
       
-      const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
-      console.log(`✅ Drag INICIADO (${buttonName}) em:`, event.clientX, event.clientY);
-      console.log('🎯 Estado isDragging:', this.state.isDragging);
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOUSE_DEBUG_LOGS) {
+        const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
+        console.log(`✅ Drag INICIADO (${buttonName}) em:`, event.clientX, event.clientY);
+        console.log('🎯 Estado isDragging:', this.state.isDragging);
+      }
     }
   },
   
@@ -362,22 +505,23 @@ AFRAME.registerComponent('enhanced-controls', {
     const deltaX = event.clientX - this.state.lastMouseX;
     const deltaY = event.clientY - this.state.lastMouseY;
     
-    const buttonName = this.state.dragButton === 0 ? 'ESQUERDO' : 'DIREITO';
-    console.log(`🖘️ Mouse delta (${buttonName}): X=${deltaX}, Y=${deltaY}`);
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOUSE_DEBUG_LOGS) {
+      const buttonName = this.state.dragButton === 0 ? 'ESQUERDO' : 'DIREITO';
+      console.log(`🖘️ Mouse delta (${buttonName}): X=${deltaX}, Y=${deltaY}`);
+    }
     
     // ===== BOTÃO ESQUERDO (0): ROTAÇÃO Y + PITCH =====
     if (this.state.dragButton === 0) {
       // HORIZONTAL = Rotação Y (substituindo yaw do look-controls)
-      if (Math.abs(deltaX) > 0) {
-        const rotationSensitivity = 0.3;
-        const rotationDelta = -deltaX * rotationSensitivity;
+      if (Math.abs(deltaX) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
+        const rotationDelta = -deltaX * ENHANCED_CONTROLS_CONFIG.MOUSE_ROTATION_SENSITIVITY;
         
         this.state.currentRotation += rotationDelta;
         
         // Normalizar rotação (0-360)
-        this.state.currentRotation = this.state.currentRotation % 360;
-        if (this.state.currentRotation < 0) {
-          this.state.currentRotation += 360;
+        this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+        if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
+          this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
         }
         
         // Aplicar rotação Y (yaw)
@@ -388,7 +532,9 @@ AFRAME.registerComponent('enhanced-controls', {
           z: rotation.z
         });
         
-        console.log(`🔄 Rotação Y: ${this.state.currentRotation.toFixed(1)}°`);
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_ROTATION_DEBUG_LOGS) {
+          console.log(`🔄 Rotação Y: ${this.state.currentRotation.toFixed(1)}°`);
+        }
       }
       
       // VERTICAL: Deixar look-controls gerenciar pitch (não interferir)
@@ -402,7 +548,7 @@ AFRAME.registerComponent('enhanced-controls', {
       event.stopPropagation();
       
       // VERTICAL = Movimento frontal (W/S)
-      if (Math.abs(deltaY) > 0) {
+      if (Math.abs(deltaY) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
         const position = this.el.getAttribute('position');
         const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
         
@@ -419,7 +565,9 @@ AFRAME.registerComponent('enhanced-controls', {
           z: position.z + moveZ
         });
         
-        console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOVEMENT_DEBUG_LOGS) {
+          console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+        }
       }
     }
     
@@ -436,14 +584,201 @@ AFRAME.registerComponent('enhanced-controls', {
    * Finaliza drag quando qualquer botão é solto.
    */
   onMouseUp: function (event) {
-    console.log(`🖘️ onMouseUp chamado! Botão: ${event.button}`);
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOUSE_DEBUG_LOGS) {
+      console.log(`🖘️ onMouseUp chamado! Botão: ${event.button}`);
+    }
     
     // Qualquer botão (0 ou 2)
     if (event.button === 0 || event.button === 2) {
       this.state.isDragging = false;
-      const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
-      console.log(`✅ Drag FINALIZADO (${buttonName})`);
-      console.log('🎯 Estado isDragging:', this.state.isDragging);
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOUSE_DEBUG_LOGS) {
+        const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
+        console.log(`✅ Drag FINALIZADO (${buttonName})`);
+        console.log('🎯 Estado isDragging:', this.state.isDragging);
+      }
+    }
+  },
+  
+  /**
+   * =====================================================
+   * ON TOUCH START - DETECÇÃO DE INÍCIO DE TOQUE
+   * =====================================================
+   * 
+   * Captura toques na tela e armazena posições iniciais.
+   * - 1 dedo: Prepara para rotação
+   * - 2 dedos: Prepara para movimento
+   */
+  onTouchStart: function (event) {
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+      console.log(`👆 onTouchStart! Toques: ${event.touches.length}`);
+    }
+    
+    this.state.isTouching = true;
+    this.state.touchCount = event.touches.length;
+    
+    // Armazenar posição do primeiro toque
+    if (event.touches.length >= 1) {
+      this.state.lastTouchX = event.touches[0].clientX;
+      this.state.lastTouchY = event.touches[0].clientY;
+    }
+    
+    // Armazenar posição do segundo toque (para movimento com 2 dedos)
+    if (event.touches.length >= 2) {
+      this.state.touch2X = event.touches[1].clientX;
+      this.state.touch2Y = event.touches[1].clientY;
+      
+      // Prevenir zoom/scroll ao usar 2 dedos
+      event.preventDefault();
+    }
+    
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+      console.log(`✅ Touch INICIADO com ${this.state.touchCount} dedo(s)`);
+    }
+  },
+  
+  /**
+   * =====================================================
+   * ON TOUCH MOVE - MOVIMENTO DE TOQUE
+   * =====================================================
+   * 
+   * Aplica ações baseadas no número de dedos:
+   * - 1 DEDO (horizontal): Rotação Y (yaw)
+   * - 2 DEDOS (vertical): Movimento frente/trás
+   */
+  onTouchMove: function (event) {
+    if (!this.state.isTouching) return;
+    
+    // Atualizar contagem de toques
+    this.state.touchCount = event.touches.length;
+    
+    // ===== 1 DEDO: ROTAÇÃO Y (YAW) =====
+    if (event.touches.length === 1) {
+      const touch = event.touches[0];
+      const deltaX = touch.clientX - this.state.lastTouchX;
+      const deltaY = touch.clientY - this.state.lastTouchY;
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+        console.log(`👆 Touch delta (1 dedo): X=${deltaX}, Y=${deltaY}`);
+      }
+      
+      // HORIZONTAL = Rotação Y
+      if (Math.abs(deltaX) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
+        const rotationDelta = -deltaX * ENHANCED_CONTROLS_CONFIG.TOUCH_ROTATION_SENSITIVITY;
+        
+        this.state.currentRotation += rotationDelta;
+        
+        // Normalizar rotação (0-360)
+        this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+        if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
+          this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+        }
+        
+        // Aplicar rotação Y (yaw) - NÃO interferir com pitch do giroscópio
+        const rotation = this.el.getAttribute('rotation');
+        this.el.setAttribute('rotation', {
+          x: rotation.x,                    // Pitch (look-controls/giroscópio)
+          y: this.state.currentRotation,    // Yaw (enhanced-controls)
+          z: rotation.z
+        });
+        
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_ROTATION_DEBUG_LOGS) {
+          console.log(`🔄 Rotação Y (touch): ${this.state.currentRotation.toFixed(1)}°`);
+        }
+      }
+      
+      // Atualizar posição
+      this.state.lastTouchX = touch.clientX;
+      this.state.lastTouchY = touch.clientY;
+    }
+    
+    // ===== 2 DEDOS: MOVIMENTO FRENTE/TRÁS =====
+    else if (event.touches.length === 2) {
+      // Prevenir zoom/scroll
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Calcular ponto médio entre os dois dedos
+      const touch1 = event.touches[0];
+      const touch2 = event.touches[1];
+      
+      const midX = (touch1.clientX + touch2.clientX) / 2;
+      const midY = (touch1.clientY + touch2.clientY) / 2;
+      
+      // Calcular delta do ponto médio
+      const lastMidX = (this.state.lastTouchX + this.state.touch2X) / 2;
+      const lastMidY = (this.state.lastTouchY + this.state.touch2Y) / 2;
+      
+      const deltaX = midX - lastMidX;
+      const deltaY = midY - lastMidY;
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+        console.log(`👆 Touch delta (2 dedos): X=${deltaX}, Y=${deltaY}`);
+      }
+      
+      // VERTICAL = Movimento frente/trás
+      if (Math.abs(deltaY) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
+        const position = this.el.getAttribute('position');
+        const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
+        
+        const forwardX = Math.sin(rotationRad);
+        const forwardZ = Math.cos(rotationRad);
+        
+        const movementSensitivity = ENHANCED_CONTROLS_CONFIG.TOUCH_MOVEMENT_SENSITIVITY;
+        const moveX = -forwardX * deltaY * movementSensitivity;
+        const moveZ = -forwardZ * deltaY * movementSensitivity;
+        
+        this.el.setAttribute('position', {
+          x: position.x + moveX,
+          y: position.y,
+          z: position.z + moveZ
+        });
+        
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_MOVEMENT_DEBUG_LOGS) {
+          console.log(`➡️ Movimento (touch): X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+        }
+      }
+      
+      // Atualizar posições dos dois toques
+      this.state.lastTouchX = touch1.clientX;
+      this.state.lastTouchY = touch1.clientY;
+      this.state.touch2X = touch2.clientX;
+      this.state.touch2Y = touch2.clientY;
+    }
+  },
+  
+  /**
+   * =====================================================
+   * ON TOUCH END - FINALIZAÇÃO DE TOQUE
+   * =====================================================
+   * 
+   * Chamado quando dedos são retirados da tela.
+   */
+  onTouchEnd: function (event) {
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+      console.log(`👆 onTouchEnd! Toques restantes: ${event.touches.length}`);
+    }
+    
+    // Se ainda há toques, atualizar estado
+    if (event.touches.length > 0) {
+      this.state.touchCount = event.touches.length;
+      
+      // Atualizar posições dos toques restantes
+      this.state.lastTouchX = event.touches[0].clientX;
+      this.state.lastTouchY = event.touches[0].clientY;
+      
+      if (event.touches.length >= 2) {
+        this.state.touch2X = event.touches[1].clientX;
+        this.state.touch2Y = event.touches[1].clientY;
+      }
+    } else {
+      // Nenhum toque restante
+      this.state.isTouching = false;
+      this.state.touchCount = 0;
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_TOUCH_DEBUG_LOGS) {
+        console.log('✅ Touch FINALIZADO');
+      }
     }
   },
 
@@ -712,6 +1047,14 @@ AFRAME.registerComponent('enhanced-controls', {
       this.canvas.removeEventListener('mousedown', this.onMouseDown, { capture: true });
       this.canvas.removeEventListener('mousemove', this.onMouseMove, { capture: true });
       this.canvas.removeEventListener('mouseup', this.onMouseUp, { capture: true });
+    }
+    
+    // Remover event listeners de toque do canvas
+    if (this.data.enableTouchControls && this.canvas) {
+      this.canvas.removeEventListener('touchstart', this.onTouchStart, { capture: true });
+      this.canvas.removeEventListener('touchmove', this.onTouchMove, { capture: true });
+      this.canvas.removeEventListener('touchend', this.onTouchEnd, { capture: true });
+      this.canvas.removeEventListener('touchcancel', this.onTouchEnd, { capture: true });
     }
     
     console.log('✅ Enhanced Controls: Removido com sucesso');
