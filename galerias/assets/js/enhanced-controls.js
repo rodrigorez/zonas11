@@ -107,7 +107,7 @@ AFRAME.registerComponent('enhanced-controls', {
     },
     mouseDragSpeed: {
       type: 'number',
-      default: 0.005,
+      default: 0.01,
       description: 'Sensibilidade do movimento com mouse (multiplicador)'
     },
     
@@ -317,7 +317,12 @@ AFRAME.registerComponent('enhanced-controls', {
       this.state.isDragging = true;
       this.state.lastMouseX = event.clientX;
       this.state.lastMouseY = event.clientY;
-      console.log('🖘️ Drag iniciado');
+      
+      // Prevenir comportamento padrão do botão direito
+      event.preventDefault();
+      event.stopPropagation();
+      
+      console.log('🖘️ Drag iniciado em:', event.clientX, event.clientY);
     }
   },
   
@@ -336,8 +341,11 @@ AFRAME.registerComponent('enhanced-controls', {
     const deltaX = event.clientX - this.state.lastMouseX;
     const deltaY = event.clientY - this.state.lastMouseY;
     
+    console.log(`🖘️ Mouse delta: X=${deltaX}, Y=${deltaY}`);
+    
     // Obter posição atual
     const position = this.el.getAttribute('position');
+    console.log(`📍 Posição antes: x=${position.x.toFixed(2)}, z=${position.z.toFixed(2)}`);
     
     // Converter rotação Y para radianos (para movimento relativo)
     const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
@@ -356,12 +364,16 @@ AFRAME.registerComponent('enhanced-controls', {
     const moveX = (rightX * deltaX - forwardX * deltaY) * sensitivity;
     const moveZ = (rightZ * deltaX - forwardZ * deltaY) * sensitivity;
     
+    console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+    
     // Aplicar nova posição
     this.el.setAttribute('position', {
       x: position.x + moveX,
       y: position.y,                // Y inalterado
       z: position.z + moveZ
     });
+    
+    console.log(`📍 Posição depois: x=${(position.x + moveX).toFixed(2)}, z=${(position.z + moveZ).toFixed(2)}`);
     
     // Atualizar posição anterior do mouse
     this.state.lastMouseX = event.clientX;
