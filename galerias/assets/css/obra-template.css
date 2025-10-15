@@ -157,6 +157,28 @@ body {
 }
 
 /* ========================================================================
+   LINHA 3: IMAGEM DA OBRA (OBRA 18)
+   ======================================================================== */
+.linha.imagem {
+  padding: var(--padding);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card);
+}
+
+.linha.imagem img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  object-fit: contain;
+}
+
+/* ========================================================================
    LINHA 3/4: VÍDEO (CONTAINER PARA PLATFORMDETECTOR)
    ======================================================================== */
 .video {
@@ -167,6 +189,40 @@ body {
 .video iframe {
   width: 100%;
   aspect-ratio: 16/9;
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================================================
+   RESPONSIVIDADE UNIVERSAL PARA MÍDIAS EMBED
+   ======================================================================== */
+/* Garante que qualquer iframe, embed ou object seja responsivo */
+.linha iframe,
+.linha embed,
+.linha object,
+.linha video {
+  max-width: 100%;
+  border-radius: var(--border-radius);
+}
+
+/* Container responsivo para embeds genéricos */
+.embed-container {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.embed-container iframe,
+.embed-container embed,
+.embed-container object {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border: none;
   border-radius: var(--border-radius);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
