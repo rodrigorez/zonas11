@@ -332,6 +332,8 @@ AFRAME.registerComponent('enhanced-controls', {
    * 
    * Calcula e aplica rotação baseada no estado atual.
    * Usa deltaSeconds para movimento frame-independent.
+   * IMPORTANTE: Sempre aplica currentRotation para manter posição,
+   * não apenas quando teclas estão pressionadas.
    * 
    * @param {number} deltaSeconds - Tempo desde último frame (s)
    */
@@ -339,7 +341,7 @@ AFRAME.registerComponent('enhanced-controls', {
     // Calcular quanto rotacionar neste frame
     const rotationAmount = this.data.rotationSpeed * deltaSeconds;
     
-    // Aplicar rotação conforme teclas pressionadas
+    // Atualizar rotação acumulada conforme teclas pressionadas
     if (this.state.rotatingLeft) {
       this.state.currentRotation += rotationAmount;
     }
@@ -353,15 +355,14 @@ AFRAME.registerComponent('enhanced-controls', {
       this.state.currentRotation += 360;
     }
     
-    // Aplicar rotação à entidade (preservar X e Z)
-    if (this.state.rotatingLeft || this.state.rotatingRight) {
-      const rotation = this.el.getAttribute('rotation');
-      this.el.setAttribute('rotation', {
-        x: rotation.x,
-        y: this.state.currentRotation,
-        z: rotation.z
-      });
-    }
+    // SEMPRE aplicar rotação à entidade (não só quando teclas pressionadas)
+    // Isso mantém a rotação acumulada mesmo após soltar as teclas
+    const rotation = this.el.getAttribute('rotation');
+    this.el.setAttribute('rotation', {
+      x: rotation.x,                    // Pitch (look-controls)
+      y: this.state.currentRotation,    // Yaw (enhanced-controls) - SEMPRE APLICADO
+      z: rotation.z                     // Roll (não usado)
+    });
   },
 
   /**
