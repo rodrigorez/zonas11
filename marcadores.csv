@@ -1,6 +1,0 @@
-idGaleria,idMarcador,tipoMarcador,nomeMarcador,modelo3D,escalaModelo,animacaoRotacao,velocidadeRotacao,corTema,urlMundo
-1,1,hiro,Mundo Digital 1,assets/3d/01.glb,1.0,true,1.0,#FF3030,mundos/mundo1.html
-1,2,kanji,Mundo Digital 2,assets/3d/02.glb,0.8,true,0.5,#00FF00,mundos/mundo2.html
-1,3,barcode-5,Mundo Digital 3,assets/3d/03.glb,1.2,false,0,#0080FF,mundos/mundo3.html
-1,4,barcode-7,Mundo Digital 4,assets/3d/04.glb,1.1,true,1.5,#FF8000,mundos/mundo4.html
-1,5,barcode-9,Mundo Digital 5,assets/3d/05.glb,0.9,true,0.8,#FF00FF,mundos/mundo5.html
