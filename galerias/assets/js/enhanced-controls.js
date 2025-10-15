@@ -289,19 +289,31 @@ AFRAME.registerComponent('enhanced-controls', {
   setupMouseDrag: function () {
     console.log('🖘️ Enhanced Controls: Configurando movimento com mouse');
     
-    // Adicionar event listeners de mouse
-    window.addEventListener('mousedown', this.onMouseDown);
-    window.addEventListener('mousemove', this.onMouseMove);
-    window.addEventListener('mouseup', this.onMouseUp);
+    // Obter referência ao canvas da cena
+    this.canvas = this.el.sceneEl.canvas;
     
-    // Prevenir menu de contexto ao clicar com botão direito
-    window.addEventListener('contextmenu', (e) => {
+    if (!this.canvas) {
+      console.error('❌ Canvas não encontrado! Mouse drag não funcionará.');
+      return;
+    }
+    
+    console.log('✅ Canvas encontrado:', this.canvas);
+    
+    // Adicionar event listeners DIRETAMENTE no canvas (prioridade máxima)
+    this.canvas.addEventListener('mousedown', this.onMouseDown, { capture: true });
+    this.canvas.addEventListener('mousemove', this.onMouseMove, { capture: true });
+    this.canvas.addEventListener('mouseup', this.onMouseUp, { capture: true });
+    
+    // Prevenir menu de contexto DIRETAMENTE no canvas
+    this.canvas.addEventListener('contextmenu', (e) => {
       if (this.state.isDragging) {
         e.preventDefault();
+        e.stopPropagation();
       }
-    });
+    }, { capture: true });
     
     console.log('✅ Movimento com mouse configurado: Botão direito + arrastar');
+    console.log('⚠️ Listeners registrados com {capture: true} para prioridade máxima');
   },
   
   /**
@@ -312,6 +324,8 @@ AFRAME.registerComponent('enhanced-controls', {
    * Inicia drag quando botão direito é pressionado.
    */
   onMouseDown: function (event) {
+    console.log(`🖘️ onMouseDown chamado! Botão: ${event.button}`);
+    
     // Botão direito (2) = iniciar drag
     if (event.button === 2) {
       this.state.isDragging = true;
@@ -322,7 +336,8 @@ AFRAME.registerComponent('enhanced-controls', {
       event.preventDefault();
       event.stopPropagation();
       
-      console.log('🖘️ Drag iniciado em:', event.clientX, event.clientY);
+      console.log('✅ Drag INICIADO em:', event.clientX, event.clientY);
+      console.log('🎯 Estado isDragging:', this.state.isDragging);
     }
   },
   
@@ -336,6 +351,10 @@ AFRAME.registerComponent('enhanced-controls', {
    */
   onMouseMove: function (event) {
     if (!this.state.isDragging) return;
+    
+    // Prevenir look-controls de interferir
+    event.preventDefault();
+    event.stopPropagation();
     
     // Calcular delta do mouse
     const deltaX = event.clientX - this.state.lastMouseX;
@@ -388,9 +407,12 @@ AFRAME.registerComponent('enhanced-controls', {
    * Finaliza drag quando botão direito é solto.
    */
   onMouseUp: function (event) {
+    console.log(`🖘️ onMouseUp chamado! Botão: ${event.button}`);
+    
     if (event.button === 2) {
       this.state.isDragging = false;
-      console.log('🖘️ Drag finalizado');
+      console.log('✅ Drag FINALIZADO');
+      console.log('🎯 Estado isDragging:', this.state.isDragging);
     }
   },
 
@@ -654,11 +676,11 @@ AFRAME.registerComponent('enhanced-controls', {
       window.removeEventListener('keyup', this.onKeyUp);
     }
     
-    // Remover event listeners de mouse
-    if (this.data.enableMouseDrag) {
-      window.removeEventListener('mousedown', this.onMouseDown);
-      window.removeEventListener('mousemove', this.onMouseMove);
-      window.removeEventListener('mouseup', this.onMouseUp);
+    // Remover event listeners de mouse do canvas
+    if (this.data.enableMouseDrag && this.canvas) {
+      this.canvas.removeEventListener('mousedown', this.onMouseDown, { capture: true });
+      this.canvas.removeEventListener('mousemove', this.onMouseMove, { capture: true });
+      this.canvas.removeEventListener('mouseup', this.onMouseUp, { capture: true });
     }
     
     console.log('✅ Enhanced Controls: Removido com sucesso');
