@@ -87,6 +87,18 @@ AFRAME.registerComponent('enhanced-controls', {
       description: 'Velocidade de rotação em graus/segundo'
     },
     
+    // ===== MOVIMENTO (WASD) - IMPLEMENTADO =====
+    enableMovement: {
+      type: 'boolean',
+      default: true,
+      description: 'Ativa/desativa movimento WASD relativo à rotação'
+    },
+    moveSpeed: {
+      type: 'number',
+      default: 3,
+      description: 'Velocidade de movimento em m/s'
+    },
+    
     // ===== CORRIDA (SHIFT) - PREPARADO PARA FUTURO =====
     enableRun: { 
       type: 'boolean', 
@@ -150,6 +162,12 @@ AFRAME.registerComponent('enhanced-controls', {
       rotatingRight: false,     // Tecla E pressionada?
       currentRotation: 0,       // Rotação acumulada em Y
       
+      // Movimento (WASD)
+      movingForward: false,     // Tecla W pressionada?
+      movingBackward: false,    // Tecla S pressionada?
+      movingLeft: false,        // Tecla A pressionada?
+      movingRight: false,       // Tecla D pressionada?
+      
       // Corrida (SHIFT) - FUTURO
       isRunning: false,         // Shift pressionado?
       
@@ -169,6 +187,10 @@ AFRAME.registerComponent('enhanced-controls', {
     // Configurar módulos ativos
     if (this.data.enableRotation) {
       this.setupRotation();
+    }
+    
+    if (this.data.enableMovement) {
+      this.setupMovement();
     }
     
     // Módulos futuros (comentados até implementação)
@@ -213,6 +235,24 @@ AFRAME.registerComponent('enhanced-controls', {
     
     console.log('✅ Rotação configurada: Q (esquerda) | E (direita)');
   },
+  
+  /**
+   * =====================================================
+   * SETUP MOVEMENT - CONFIGURAÇÃO DO MÓDULO DE MOVIMENTO
+   * =====================================================
+   * 
+   * Desativa wasd-controls padrão e configura movimento custom.
+   * Movimento é relativo à rotação Y da câmera.
+   */
+  setupMovement: function () {
+    console.log('🎮 Enhanced Controls: Configurando movimento WASD relativo');
+    
+    // Desativar wasd-controls padrão (usa coordenadas globais)
+    this.el.removeAttribute('wasd-controls');
+    
+    console.log('✅ Movimento configurado: WASD relativo à rotação');
+    console.log('⚠️ wasd-controls padrão desativado (usando movimento custom)');
+  },
 
   /**
    * =====================================================
@@ -236,6 +276,19 @@ AFRAME.registerComponent('enhanced-controls', {
       } else if (key === 'e') {
         this.state.rotatingRight = true;
         console.log('➡️ Rotação direita ativada');
+      }
+    }
+    
+    // ===== MOVIMENTO (WASD) =====
+    if (this.data.enableMovement) {
+      if (key === 'w') {
+        this.state.movingForward = true;
+      } else if (key === 's') {
+        this.state.movingBackward = true;
+      } else if (key === 'a') {
+        this.state.movingLeft = true;
+      } else if (key === 'd') {
+        this.state.movingRight = true;
       }
     }
     
@@ -281,6 +334,19 @@ AFRAME.registerComponent('enhanced-controls', {
       }
     }
     
+    // ===== MOVIMENTO (WASD) =====
+    if (this.data.enableMovement) {
+      if (key === 'w') {
+        this.state.movingForward = false;
+      } else if (key === 's') {
+        this.state.movingBackward = false;
+      } else if (key === 'a') {
+        this.state.movingLeft = false;
+      } else if (key === 'd') {
+        this.state.movingRight = false;
+      }
+    }
+    
     // ===== CORRIDA (SHIFT) - FUTURO =====
     // if (this.data.enableRun && !event.shiftKey) {
     //   this.state.isRunning = false;
@@ -312,6 +378,11 @@ AFRAME.registerComponent('enhanced-controls', {
     // ===== ATUALIZAR ROTAÇÃO =====
     if (this.data.enableRotation) {
       this.updateRotation(deltaSeconds);
+    }
+    
+    // ===== ATUALIZAR MOVIMENTO =====
+    if (this.data.enableMovement) {
+      this.updateMovement(deltaSeconds);
     }
     
     // ===== ATUALIZAR PULO - FUTURO =====
@@ -364,6 +435,65 @@ AFRAME.registerComponent('enhanced-controls', {
       z: rotation.z                     // Roll (não usado)
     });
   },
+  
+  /**
+   * =====================================================
+   * UPDATE MOVEMENT - APLICAR MOVIMENTO RELATIVO
+   * =====================================================
+   * 
+   * Calcula e aplica movimento baseado na rotação Y atual.
+   * CORREÇÃO: W sempre move para frente RELATIVO ao olhar,
+   * não em coordenadas globais.
+   * 
+   * @param {number} deltaSeconds - Tempo desde último frame (s)
+   */
+  updateMovement: function (deltaSeconds) {
+    // Calcular distância a mover neste frame
+    const moveDistance = this.data.moveSpeed * deltaSeconds;
+    
+    // Obter posição atual
+    const position = this.el.getAttribute('position');
+    
+    // Converter rotação Y para radianos (necessário para Math.sin/cos)
+    const rotationRad = THREE.Math.degToRad(this.state.currentRotation);
+    
+    // Calcular vetores de direção baseados na rotação atual
+    // FRENTE/TRÁS: baseado na rotação Y
+    const forwardX = Math.sin(rotationRad);
+    const forwardZ = Math.cos(rotationRad);
+    
+    // ESQUERDA/DIREITA: perpendicular à direção frontal
+    const rightX = Math.cos(rotationRad);
+    const rightZ = -Math.sin(rotationRad);
+    
+    // Aplicar movimento baseado nas teclas pressionadas
+    let deltaX = 0;
+    let deltaZ = 0;
+    
+    if (this.state.movingForward) {
+      deltaX -= forwardX * moveDistance;  // W: sempre para frente
+      deltaZ -= forwardZ * moveDistance;
+    }
+    if (this.state.movingBackward) {
+      deltaX += forwardX * moveDistance;  // S: sempre para trás
+      deltaZ += forwardZ * moveDistance;
+    }
+    if (this.state.movingLeft) {
+      deltaX -= rightX * moveDistance;    // A: sempre para esquerda
+      deltaZ -= rightZ * moveDistance;
+    }
+    if (this.state.movingRight) {
+      deltaX += rightX * moveDistance;    // D: sempre para direita
+      deltaZ += rightZ * moveDistance;
+    }
+    
+    // Aplicar nova posição
+    this.el.setAttribute('position', {
+      x: position.x + deltaX,
+      y: position.y,                      // Y inalterado (sem voo)
+      z: position.z + deltaZ
+    });
+  },
 
   /**
    * =====================================================
@@ -376,8 +506,8 @@ AFRAME.registerComponent('enhanced-controls', {
   remove: function () {
     console.log('🗑️ Enhanced Controls: Removendo event listeners');
     
-    // Remover event listeners de rotação
-    if (this.data.enableRotation) {
+    // Remover event listeners (compartilhados por rotação e movimento)
+    if (this.data.enableRotation || this.data.enableMovement) {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('keyup', this.onKeyUp);
     }
