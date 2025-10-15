@@ -454,8 +454,8 @@ AFRAME.registerComponent('enhanced-controls', {
     // Obter posição atual
     const position = this.el.getAttribute('position');
     
-    // Converter rotação Y para radianos (necessário para Math.sin/cos)
-    const rotationRad = THREE.Math.degToRad(this.state.currentRotation);
+    // Converter rotação Y para radianos (Three.js R125+)
+    const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
     
     // Calcular vetores de direção baseados na rotação atual
     // FRENTE/TRÁS: baseado na rotação Y
