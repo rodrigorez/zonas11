@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonas 11 - VR Mundo 3 (V2.8)</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    </style>
+    <!--
+    =====================================================
+    ZONAS 11 - MUNDO VR 3 (OBRAS 15-21)
+    =====================================================
+    
+    DESCRIÇÃO:
+    - Terceiro mundo VR acessível via marcador barcode-2
+    - Contém 7 obras de arte dispostas em galeria circular
+    - Navegação: Clique para acessar obras individuais
+    - Botão voltar: Retorna para galeria AR principal
+    
+    ESTRUTURA:
+    - Fundo 360°: Ambiente imersivo
+    - 7 Obras: Obras 15-21 com posições circulares
+    - Esfera voltar: Cor padronizada #FF5722
+    - Animações: Flutuação e rotação sincronizadas
+    
+    INTERAÇÃO:
+    - Clique em obras 15-21: Redireciona para obra{i}.html
+    - Clique na esfera: Volta para galeria.html
+    - Tags padronizadas: Estrutura consistente
+    ====================================================
+    -->
+  </head>
+  <body>
+    <a-scene
+      cursor="rayOrigin: mouse"
+      vr-mode-ui="enabled: true"
+    >
+      <!-- 🖼️ FUNDO 360° MUNDO 3 -->
+      <a-sky src="https://rodrigorez.github.io/zonas11/galerias/assets/img/fundo_mundo03.jpg"></a-sky>
+
+      <!-- 🔴 ESFERA VOLTAR - Posição 1 (0°) -->
+      <a-sphere
+        class="clickable-back"
+        position="0 1.6 -4"
+        radius="0.4"
+        color="#FF5722"
+        animation__float="property: position; to: 0 2.2 -4; dur: 2000; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 8000; easing: linear; loop: true"
+      >
+        <a-entity
+          position="0 0.6 0"
+          text="value: ↩️\nVOLTAR; align: center; color: white; width: 3"
+          scale="1.2 1.2 1.2"
+        ></a-entity>
+      </a-sphere>
+
+      <!-- 🖼️ GALERIA CIRCULAR MUNDO 3 - 7 OBRAS (15-21) + 1 ESFERA -->
+      <!-- Obra 15 - 45° -->
+      <a-plane
+        class="clickable-image obra15"
+        position="2.83 1.6 -2.83"
+        width="1.2"
+        height="0.8"
+        rotation="0 45 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/15.jpg); side: double;"
+        animation__float="property: position; to: 2.83 2.4 -2.83; dur: 3000; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 0 65 5; dur: 4000; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 16 - 90° -->
+      <a-plane
+        class="clickable-image obra16"
+        position="4 1.6 0"
+        width="1.2"
+        height="0.8"
+        rotation="0 90 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/16.jpg); side: double;"
+        animation__float="property: position; to: 4 2.3 0; dur: 3200; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 5 110 0; dur: 4200; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 17 - 135° -->
+      <a-plane
+        class="clickable-image obra17"
+        position="2.83 1.6 2.83"
+        width="1.2"
+        height="0.8"
+        rotation="0 135 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/17.jpg); side: double;"
+        animation__float="property: position; to: 2.83 2.5 2.83; dur: 2800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: -5 155 -5; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 18 - 180° -->
+      <a-plane
+        class="clickable-image obra18"
+        position="0 1.6 4"
+        width="1.2"
+        height="0.8"
+        rotation="0 180 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/18.png); side: double;"
+        animation__float="property: position; to: 0 2.1 4; dur: 3400; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 0 200 5; dur: 4400; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 19 - 225° -->
+      <a-plane
+        class="clickable-image obra19"
+        position="-2.83 1.6 2.83"
+        width="1.2"
+        height="0.8"
+        rotation="0 225 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/19.jpg); side: double;"
+        animation__float="property: position; to: -2.83 2.6 2.83; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 5 245 0; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 20 - 270° -->
+      <a-plane
+        class="clickable-image obra20"
+        position="-4 1.6 0"
+        width="1.2"
+        height="0.8"
+        rotation="0 270 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/20.jpg); side: double;"
+        animation__float="property: position; to: -4 2.2 0; dur: 2600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: -5 290 -5; dur: 4600; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 21 - 315° -->
+      <a-plane
+        class="clickable-image obra21"
+        position="-2.83 1.6 -2.83"
+        width="1.2"
+        height="0.8"
+        rotation="0 315 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/21.jpg); side: double;"
+        animation__float="property: position; to: -2.83 2.4 -2.83; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 0 335 5; dur: 4800; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- 👁️ Câmera -->
+      <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
+    </a-scene>
+
+    <script>
+      AFRAME.registerComponent('redirect-on-click', {
+        schema: { url: { type: 'string', default: '#' } },
+        init: function () {
+          const el = this.el;
+          const url = this.data.url;
+
+          el.addEventListener('click', () => {
+            el.setAttribute('scale', '1.2 1.2 1.2');
+            setTimeout(() => {
+              window.location.href = url;
+            }, 300);
+          });
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Configurar esfera de voltar
+        const backSphere = document.querySelector('.clickable-back');
+        if (backSphere) {
+          backSphere.setAttribute('redirect-on-click', {
+            url: 'https://rodrigorez.github.io/zonas11/galerias/galeria.html'
+          });
+        }
+
+        // Configurar cliques para cada obra (15-21)
+        for (let i = 15; i <= 21; i++) {
+          const obra = document.querySelector(`.obra${i}`);
+          if (obra) {
+            obra.setAttribute('redirect-on-click', {
+              url: `https://rodrigorez.github.io/zonas11/galerias/obra${i}.html`
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
