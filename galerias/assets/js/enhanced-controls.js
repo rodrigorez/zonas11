@@ -347,7 +347,8 @@ AFRAME.registerComponent('enhanced-controls', {
    * =====================================================
    * 
    * Aplica movimento quando botão direito está pressionado.
-   * Move câmera nos eixos X e Z baseado no delta do mouse.
+   * - DeltaX (horizontal) = ROTAÇÃO (Q/E)
+   * - DeltaY (vertical) = MOVIMENTO frente/trás (W/S)
    */
   onMouseMove: function (event) {
     if (!this.state.isDragging) return;
@@ -360,39 +361,61 @@ AFRAME.registerComponent('enhanced-controls', {
     const deltaX = event.clientX - this.state.lastMouseX;
     const deltaY = event.clientY - this.state.lastMouseY;
     
-    console.log(`🖘️ Mouse delta: X=${deltaX}, Y=${deltaY}`);
+    console.log(`🖘️ Mouse delta: X=${deltaX} (rotação), Y=${deltaY} (movimento)`);
     
-    // Obter posição atual
-    const position = this.el.getAttribute('position');
-    console.log(`📍 Posição antes: x=${position.x.toFixed(2)}, z=${position.z.toFixed(2)}`);
+    // ===== DELTA X (HORIZONTAL) = ROTAÇÃO Y (Q/E) =====
+    if (Math.abs(deltaX) > 0) {
+      // Sensibilidade de rotação (graus por pixel)
+      const rotationSensitivity = 0.3; // Ajustável
+      const rotationDelta = -deltaX * rotationSensitivity; // Negativo para direção correta
+      
+      this.state.currentRotation += rotationDelta;
+      
+      // Normalizar rotação (0-360)
+      this.state.currentRotation = this.state.currentRotation % 360;
+      if (this.state.currentRotation < 0) {
+        this.state.currentRotation += 360;
+      }
+      
+      // Aplicar rotação
+      const rotation = this.el.getAttribute('rotation');
+      this.el.setAttribute('rotation', {
+        x: rotation.x,
+        y: this.state.currentRotation,
+        z: rotation.z
+      });
+      
+      console.log(`🔄 Rotação aplicada: ${this.state.currentRotation.toFixed(1)}°`);
+    }
     
-    // Converter rotação Y para radianos (para movimento relativo)
-    const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
-    
-    // Calcular vetores de direção baseados na rotação atual
-    const forwardX = Math.sin(rotationRad);
-    const forwardZ = Math.cos(rotationRad);
-    const rightX = Math.cos(rotationRad);
-    const rightZ = -Math.sin(rotationRad);
-    
-    // Aplicar movimento baseado no delta do mouse
-    const sensitivity = this.data.mouseDragSpeed;
-    
-    // DeltaX do mouse = movimento lateral (esquerda/direita)
-    // DeltaY do mouse = movimento frontal (frente/trás)
-    const moveX = (rightX * deltaX - forwardX * deltaY) * sensitivity;
-    const moveZ = (rightZ * deltaX - forwardZ * deltaY) * sensitivity;
-    
-    console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
-    
-    // Aplicar nova posição
-    this.el.setAttribute('position', {
-      x: position.x + moveX,
-      y: position.y,                // Y inalterado
-      z: position.z + moveZ
-    });
-    
-    console.log(`📍 Posição depois: x=${(position.x + moveX).toFixed(2)}, z=${(position.z + moveZ).toFixed(2)}`);
+    // ===== DELTA Y (VERTICAL) = MOVIMENTO Z (W/S) =====
+    if (Math.abs(deltaY) > 0) {
+      // Obter posição atual
+      const position = this.el.getAttribute('position');
+      
+      // Converter rotação Y para radianos
+      const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
+      
+      // Calcular vetor de direção frontal
+      const forwardX = Math.sin(rotationRad);
+      const forwardZ = Math.cos(rotationRad);
+      
+      // Sensibilidade de movimento
+      const movementSensitivity = this.data.mouseDragSpeed;
+      
+      // Aplicar movimento frontal (W/S)
+      const moveX = -forwardX * deltaY * movementSensitivity;
+      const moveZ = -forwardZ * deltaY * movementSensitivity;
+      
+      // Aplicar nova posição
+      this.el.setAttribute('position', {
+        x: position.x + moveX,
+        y: position.y,
+        z: position.z + moveZ
+      });
+      
+      console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+    }
     
     // Atualizar posição anterior do mouse
     this.state.lastMouseX = event.clientX;
