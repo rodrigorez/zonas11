@@ -7,6 +7,8 @@
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <!-- Enhanced Controls: Componente modular extensível -->
     <script src="assets/js/enhanced-controls.js"></script>
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
     <style>
       body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
     </style>
@@ -170,23 +172,28 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Configurar esfera de voltar
+        // Detectar origem da navegação (AR ou VR)
+        const source = getNavigationSource(); // Retorna 'ar' ou 'vr'
+        console.log(`🌍 Mundo 1: Origem detectada → ${source.toUpperCase()}`);
+        
+        // Configurar esfera de voltar DINAMICAMENTE
         const backSphere = document.querySelector('.clickable-back');
         if (backSphere) {
-          backSphere.setAttribute('redirect-on-click', {
-            url: 'https://rodrigorez.github.io/zonas11/galerias/galeria.html' // Volta para AR
-          });
+          const galleryURL = getGalleryURL(source);
+          backSphere.setAttribute('redirect-on-click', { url: galleryURL });
+          console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
         }
 
-        // Configurar cliques para cada obra
+        // Configurar cliques para cada obra COM parâmetro ?from=
         for (let i = 1; i <= 7; i++) {
           const obra = document.querySelector(`.obra${i}`);
           if (obra) {
-            obra.setAttribute('redirect-on-click', {
-              url: `https://rodrigorez.github.io/zonas11/galerias/obra${i}.html`
-            });
+            const obraURL = getObraURL(i, source);
+            obra.setAttribute('redirect-on-click', { url: obraURL });
           }
         }
+        
+        console.log(`✅ Mundo 1: Navegação contextual (${source.toUpperCase()}) configurada`);
       });
     </script>
   </body>

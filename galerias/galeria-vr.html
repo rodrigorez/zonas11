@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonas 11 - Galeria VR (V2.8)</title>
+    <style>
+      body { margin: 0; overflow: hidden; }
+    </style>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="assets/js/enhanced-controls.js"></script>
+    <script src="assets/js/navigation-helper.js"></script>
+    <!--
+    =====================================================
+    ZONAS 11 - GALERIA PRINCIPAL VR (V2.8)
+    =====================================================
+    
+    DESCRIÇÃO:
+    - Galeria de Realidade Virtual com navegação livre
+    - 6 objetos 3D flutuantes representando 6 mundos VR
+    - 42 obras de arte distribuídas em 6 mundos
+    - Objetos 3D clicáveis com redirecionamento
+    
+    ESTRUTURA DOS MUNDOS:
+    - Objeto 01.glb (0°)   → Mundo 1: Obras 1-7   (index2.html?from=vr)
+    - Objeto 02.glb (60°)  → Mundo 2: Obras 8-14  (index3.html?from=vr)
+    - Objeto 03.glb (120°) → Mundo 3: Obras 15-21 (index4.html?from=vr)
+    - Objeto 04.glb (180°) → Mundo 4: Obras 22-28 (index5.html?from=vr)
+    - Objeto 05.glb (240°) → Mundo 5: Obras 29-37 (index6.html?from=vr)
+    - Objeto 06.glb (300°) → Mundo 6: Obras 38-42 (index7.html?from=vr)
+    
+    FUNCIONALIDADES:
+    - Navegação livre: WASD + Mouse
+    - Rotação: Q/E (Enhanced Controls)
+    - Modelos 3D: .glb com animações orgânicas
+    - Cores: Material vermelho (#FF0000) padronizado
+    
+    INTERAÇÃO:
+    - Clique no objeto: Redireciona para mundo VR com ?from=vr
+    - Navegação preserva contexto VR em toda cadeia
+    
+    DISPOSIÇÃO CIRCULAR:
+    - Raio: 4 metros
+    - Altura: 1.6 metros (nível dos olhos)
+    - Ângulos: 0°, 60°, 120°, 180°, 240°, 300°
+    ====================================================
+    -->
+  </head>
+  <body>
+    <a-scene
+      cursor="rayOrigin: mouse"
+      vr-mode-ui="enabled: true"
+    >
+      <!-- 🖼️ FUNDO 360° -->
+      <a-sky color="#0a0a0a"></a-sky>
+
+      <!-- ===============================================
+           OBJETOS 3D - 6 MUNDOS (DISPOSIÇÃO CIRCULAR)
+           =============================================== -->
+
+      <!-- MUNDO 1 - Posição 0° (Norte) -->
+      <a-entity 
+        class="world-portal mundo1"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/01.glb" 
+        position="0 1.6 -4"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: 0 2.2 -4; dur: 3000; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 4200; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 2 - Posição 60° (Nordeste) -->
+      <a-entity 
+        class="world-portal mundo2"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/02.glb" 
+        position="3.46 1.6 -2"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: 3.46 2.2 -2; dur: 3200; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 3800; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 3 - Posição 120° (Sudeste) -->
+      <a-entity 
+        class="world-portal mundo3"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/03.glb" 
+        position="3.46 1.6 2"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: 3.46 2.2 2; dur: 2800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 4600; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 4 - Posição 180° (Sul) -->
+      <a-entity 
+        class="world-portal mundo4"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/04.glb" 
+        position="0 1.6 4"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: 0 2.2 4; dur: 3400; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 3600; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 5 - Posição 240° (Sudoeste) -->
+      <a-entity 
+        class="world-portal mundo5"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/05.glb" 
+        position="-3.46 1.6 2"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: -3.46 2.2 2; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 6 - Posição 300° (Noroeste) -->
+      <a-entity 
+        class="world-portal mundo6"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/06.glb" 
+        position="-3.46 1.6 -2"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: -3.46 2.2 -2; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 4200; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- 👁️ Câmera com Enhanced Controls -->
+      <a-entity 
+        camera 
+        look-controls 
+        wasd-controls 
+        enhanced-controls="rotationSpeed: 45; enableRotation: true"
+        position="0 1.6 0"
+      ></a-entity>
+    </a-scene>
+
+    <script>
+      // Componente de redirecionamento (reutilizado do sistema existente)
+      AFRAME.registerComponent('redirect-on-click', {
+        schema: { url: { type: 'string', default: '#' } },
+        init: function () {
+          const el = this.el;
+          const url = this.data.url;
+
+          el.addEventListener('click', () => {
+            el.setAttribute('scale', '1.2 1.2 1.2');
+            setTimeout(() => {
+              window.location.href = url;
+            }, 300);
+          });
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('🥽 Galeria VR: Inicializando...');
+        
+        // Configuração dos portais para os 6 mundos
+        // Cada portal redireciona para seu mundo com parâmetro ?from=vr
+        const portals = [
+          { class: 'mundo1', mundoNum: 2, nome: 'Mundo 1 (Obras 1-7)' },
+          { class: 'mundo2', mundoNum: 3, nome: 'Mundo 2 (Obras 8-14)' },
+          { class: 'mundo3', mundoNum: 4, nome: 'Mundo 3 (Obras 15-21)' },
+          { class: 'mundo4', mundoNum: 5, nome: 'Mundo 4 (Obras 22-28)' },
+          { class: 'mundo5', mundoNum: 6, nome: 'Mundo 5 (Obras 29-37)' },
+          { class: 'mundo6', mundoNum: 7, nome: 'Mundo 6 (Obras 38-42)' }
+        ];
+        
+        // Configurar cada portal
+        portals.forEach(portal => {
+          const entity = document.querySelector(`.${portal.class}`);
+          
+          if (entity) {
+            // Gerar URL do mundo com parâmetro ?from=vr
+            const mundoURL = getMundoURL(portal.mundoNum, 'vr');
+            
+            // Configurar redirecionamento
+            entity.setAttribute('redirect-on-click', { url: mundoURL });
+            console.log(`🌍 Portal configurado: ${portal.nome} → ${mundoURL}`);
+            
+            // Aplicar cor vermelha ao modelo 3D quando carregar
+            entity.addEventListener('model-loaded', () => {
+              console.log(`🔴 Aplicando cor vermelha ao ${portal.nome}`);
+              
+              // Aguardar um frame para garantir que o modelo esteja totalmente carregado
+              setTimeout(() => {
+                const mesh = entity.getObject3D('mesh');
+                
+                if (mesh) {
+                  let materialsCount = 0;
+                  
+                  // Percorrer todos os materiais do modelo
+                  mesh.traverse((child) => {
+                    if (child.isMesh && child.material) {
+                      materialsCount++;
+                      
+                      // Aplicar cor vermelha (#FF0000)
+                      if (Array.isArray(child.material)) {
+                        // Material é array
+                        child.material.forEach((mat, index) => {
+                          mat.color.setHex(0xFF0000);
+                          mat.emissive.setHex(0x220000);
+                          mat.needsUpdate = true;
+                        });
+                      } else {
+                        // Material único
+                        child.material.color.setHex(0xFF0000);
+                        child.material.emissive.setHex(0x220000);
+                        child.material.needsUpdate = true;
+                      }
+                    }
+                  });
+                  
+                  console.log(`✅ Cor vermelha aplicada em ${materialsCount} materiais de ${portal.nome}`);
+                } else {
+                  console.warn(`⚠️ Mesh não encontrada em ${portal.nome}`);
+                }
+              }, 100);
+            });
+          } else {
+            console.error(`❌ Portal não encontrado: ${portal.class}`);
+          }
+        });
+        
+        console.log('✅ Galeria VR: Inicialização completa');
+        console.log('📋 Controles disponíveis:');
+        console.log('   - W/A/S/D: Movimento');
+        console.log('   - Mouse: Olhar ao redor');
+        console.log('   - Q/E: Rotação');
+        console.log('   - Clique: Acessar mundo VR');
+      });
+    </script>
+  </body>
+</html>
