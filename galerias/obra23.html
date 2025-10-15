@@ -6,17 +6,44 @@
     <title>Ficha Técnica - PARANGOLÉS ELETRÔNICOS</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="linha exposicao">Zonas 11</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
       <div class="linha video" id="video-container" data-url="https://www.youtube.com/embed/yOMYknTfWSE?controls=1&autoplay=1"></div>
       <div class="linha titulo">PARANGOLÉS ELETRÔNICOS</div>
       <div class="linha autor">Sidney Tamai (coordenador), Fernanda Catelani Branquinho, Dennis Marcio de Oliveira Gomes, Lia Soares de Figueiredo, Inaê Soares de Figueiredo, Matheus Sinto Novaes.</div>
       <div class="linha sinopse">Os Parangolés Eletrônicos são obras vestíveis desenvolvidas pelo grupo de pesquisa Artes em Tecnologias Emergentes da FAAC-Unesp Bauru. Inspirados nos parangolés de Hélio Oiticica, eles são projetados para serem usados no corpo, incorporando uma estética e experiência interativa que explora as possibilidades da tecnologia vestível. Ao todo, são seis desses "parangolés", que são flexíveis e capazes de reagir aos movimentos do corpo. Essas peças eletrônicas são desenvolvidas com tecnologias sensíveis, como sensores e softwares de programação, para captar estímulos do corpo (movimentos, toques etc.) e transformar essas interações em respostas visuais, sonoras ou táteis.</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(5, source); // Obra 23 pertence ao Mundo 4 (index5.html)
+        
+        console.log(`🖼️ Obra 23: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
     <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>

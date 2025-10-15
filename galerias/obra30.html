@@ -6,17 +6,44 @@
     <title>Ficha Técnica - Ad infinitum</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="linha exposicao">Zonas 11</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index6.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
       <div class="linha video" id="video-container" data-url="https://editor.p5js.org/AUREA_munoz/full/UVSkYIrDf"></div>
       <div class="linha titulo">Ad infinitum</div>
       <div class="linha autor">Áurea Muñoz del Amo</div>
       <div class="linha sinopse">Esta peça generativa transforma o código em um portal para um novo espaço perceptivo. Linhas vetoriais atravessam o plano e abrem fissuras que nos convidam a adentrar outra dimensão. A repetição nebulosa em torno da esfera central cria imersão e loops visuais que expandem o visível. Oscilando entre o geométrico e o orgânico, a obra fragmenta o sólido e abre múltiplas trajetórias em direção a mundos imaginários.</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index6.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(6, source); // Obra 30 pertence ao Mundo 5 (index6.html)
+        
+        console.log(`🖼️ Obra 30: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
     <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>

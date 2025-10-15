@@ -6,17 +6,44 @@
     <title>Ficha Técnica - Donde los números pesan</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="linha exposicao">Zonas 11</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index6.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
       <div class="linha video" id="video-container" data-url="https://editor.p5js.org/davidmateos/full/9BHG35lfi"></div>
       <div class="linha titulo">Donde los números pesan</div>
       <div class="linha autor">Lucía García Arranz, David Mateos Piñero, Ariadna Bruna Bernabé</div>
       <div class="linha sinopse">A peça explora um mundo imaginário ao quebrar a lógica regular, desestabilizando os ponteiros do relógio. O tempo, nesta obra, já não é uma forma de controle: abre um universo paralelo e torna-se um portal onde o tempo se decompõe, sendo um espelho distorcido que questiona a nossa dependência da linearidade e revela a fragilidade das estruturas com as quais organizamos as experiências humanas.</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index6.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(6, source); // Obra 34 pertence ao Mundo 5 (index6.html)
+        
+        console.log(`🖼️ Obra 34: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
     <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>

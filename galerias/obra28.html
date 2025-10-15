@@ -6,17 +6,44 @@
     <title>Ficha Técnica - Visões do Xingu</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
   </head>
   <body>
     <div class="container">
       <div class="linha exposicao">Zonas 11</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
       <div class="linha video" id="video-container" data-url="https://www.youtube.com/embed/FnP5SxJ4YDY?controls=1&autoplay=1"></div>
       <div class="linha titulo">Visões do Xingu</div>
       <div class="linha autor">Mauro Luciano</div>
       <div class="linha sinopse">O vídeo reúne fragmentos do cotidiano no Xingu, atravessados pela força da memória e pelo silêncio que habita aqueles espaços. As imagens revelam o interior das casas, o fogo aceso no chão de terra, a sombra e a luz que recortam gestos de trabalho e partilha. Cada detalhe – da madeira esculpida ao alimento preparado – inscreve a cultura diante das transformações históricas. A presença evocada do cacique Pirakumã, líder fundamental cuja vida foi interrompida pela Covid-19 em 2020, confere ao registro uma dimensão de homenagem e luto, ao mesmo tempo íntima e coletiva. Entre o ordinário e o simbólico, o vídeo de fotografias projeta um modo de vida que resiste e se reinventa, convocando o espectador a refletir sobre a fragilidade das existências e a potência das tradições indígenas.</div>
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
+      <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(5, source); // Obra 28 pertence ao Mundo 4 (index5.html)
+        
+        console.log(`🖼️ Obra 28: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
     <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>

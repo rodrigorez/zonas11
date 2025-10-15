@@ -6,6 +6,8 @@
     <title>Ficha Técnica - Arvore parideira</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
   </head>
   <body>
     <div class="container">
@@ -13,7 +15,7 @@
       <div class="linha exposicao">Zonas 11</div>
 
       <!-- 2ª linha: Botão voltar -->
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index2.html'">
+      <button class="botao-voltar" id="btn-voltar-topo">
         ↩️ Voltar para a Realidade Virtual
       </button>
 
@@ -32,10 +34,31 @@
       </div>
 
       <!-- 7ª linha: Botão voltar -->
-      <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index2.html'">
+      <button class="botao-voltar" id="btn-voltar-rodape">
         ↩️ Voltar para a Realidade Virtual
       </button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(2, source); // Obra 4 pertence ao Mundo 1 (index2.html)
+        
+        console.log(`🖼️ Obra 4: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
     
     <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
     <script src="assets/js/platform-detector.js"></script>
