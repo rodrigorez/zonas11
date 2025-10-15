@@ -1,31 +1,22 @@
+<!DOCTYPE html>
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Técnica - Visões do Xingu</title>
-    <style>
-      :root { --padding: 4vw; --border-radius: 12px; }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: Arial, sans-serif; background: #000; color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; line-height: 1.6; }
-      .container { width: clamp(320px, 90vw, 800px); display: flex; flex-direction: column; gap: 2vw; padding: 4vw 2vw; }
-      .linha { padding: var(--padding); background: #1a1a1a; border-radius: var(--border-radius); text-align: center; }
-      .exposicao { font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: bold; }
-      .botao-voltar { background: #FF5722; border: none; border-radius: 50px; cursor: pointer; font-size: clamp(1rem, 3vw, 1.2rem); font-weight: bold; color: white; width: 100%; padding: 1.5em 1em; }
-      .video iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: var(--border-radius); }
-      .titulo { font-size: clamp(1.2rem, 3.5vw, 1.6rem); font-weight: bold; }
-      .autor { font-size: clamp(1rem, 3vw, 1.3rem); font-weight: 500; }
-      .sinopse { font-size: clamp(0.9rem, 2.5vw, 1.1rem); text-align: justify; line-height: 1.7; text-indent: 2em; }
-    </style>
+    <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
+    <link rel="stylesheet" href="assets/css/obra-template.css">
   </head>
   <body>
     <div class="container">
       <div class="linha exposicao">Zonas 11</div>
       <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
-      <div class="linha video"><iframe src="https://www.youtube.com/embed/FnP5SxJ4YDY?controls=1&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen title="Visões do Xingu"></iframe></div>
+      <div class="linha video" id="video-container" data-url="https://www.youtube.com/embed/FnP5SxJ4YDY?controls=1&autoplay=1"></div>
       <div class="linha titulo">Visões do Xingu</div>
       <div class="linha autor">Mauro Luciano</div>
       <div class="linha sinopse">O vídeo reúne fragmentos do cotidiano no Xingu, atravessados pela força da memória e pelo silêncio que habita aqueles espaços. As imagens revelam o interior das casas, o fogo aceso no chão de terra, a sombra e a luz que recortam gestos de trabalho e partilha. Cada detalhe – da madeira esculpida ao alimento preparado – inscreve a cultura diante das transformações históricas. A presença evocada do cacique Pirakumã, líder fundamental cuja vida foi interrompida pela Covid-19 em 2020, confere ao registro uma dimensão de homenagem e luto, ao mesmo tempo íntima e coletiva. Entre o ordinário e o simbólico, o vídeo de fotografias projeta um modo de vida que resiste e se reinventa, convocando o espectador a refletir sobre a fragilidade das existências e a potência das tradições indígenas.</div>
       <button class="botao-voltar" onclick="window.location.href='https://rodrigorez.github.io/zonas11/galerias/index5.html'">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>
