@@ -181,7 +181,8 @@ AFRAME.registerComponent('enhanced-controls', {
       movingRight: false,       // Tecla D pressionada?
       
       // Movimento com Mouse (Drag)
-      isDragging: false,        // Botão direito pressionado?
+      isDragging: false,        // Botão pressionado?
+      dragButton: null,         // Qual botão? (0=esquerdo, 2=direito)
       lastMouseX: 0,            // Posição X anterior do mouse
       lastMouseY: 0,            // Posição Y anterior do mouse
       
@@ -306,13 +307,13 @@ AFRAME.registerComponent('enhanced-controls', {
     
     // Prevenir menu de contexto DIRETAMENTE no canvas
     this.canvas.addEventListener('contextmenu', (e) => {
-      if (this.state.isDragging) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      e.preventDefault();
+      e.stopPropagation();
     }, { capture: true });
     
-    console.log('✅ Movimento com mouse configurado: Botão direito + arrastar');
+    console.log('✅ Movimento com mouse configurado:');
+    console.log('   - Botão ESQUERDO: Rotação Y (horizontal) + Pitch (vertical)');
+    console.log('   - Botão DIREITO: Movimento frente/trás (vertical)');
     console.log('⚠️ Listeners registrados com {capture: true} para prioridade máxima');
   },
   
@@ -321,22 +322,26 @@ AFRAME.registerComponent('enhanced-controls', {
    * ON MOUSE DOWN - DETECÇÃO DE CLIQUE DO MOUSE
    * =====================================================
    * 
-   * Inicia drag quando botão direito é pressionado.
+   * Inicia drag quando qualquer botão é pressionado.
    */
   onMouseDown: function (event) {
     console.log(`🖘️ onMouseDown chamado! Botão: ${event.button}`);
     
-    // Botão direito (2) = iniciar drag
-    if (event.button === 2) {
+    // Botão esquerdo (0) OU direito (2) = iniciar drag
+    if (event.button === 0 || event.button === 2) {
       this.state.isDragging = true;
+      this.state.dragButton = event.button; // Armazenar qual botão foi pressionado
       this.state.lastMouseX = event.clientX;
       this.state.lastMouseY = event.clientY;
       
-      // Prevenir comportamento padrão do botão direito
-      event.preventDefault();
-      event.stopPropagation();
+      // Prevenir comportamento padrão apenas para botão direito
+      if (event.button === 2) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       
-      console.log('✅ Drag INICIADO em:', event.clientX, event.clientY);
+      const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
+      console.log(`✅ Drag INICIADO (${buttonName}) em:`, event.clientX, event.clientY);
       console.log('🎯 Estado isDragging:', this.state.isDragging);
     }
   },
@@ -346,75 +351,76 @@ AFRAME.registerComponent('enhanced-controls', {
    * ON MOUSE MOVE - MOVIMENTO DO MOUSE
    * =====================================================
    * 
-   * Aplica movimento quando botão direito está pressionado.
-   * - DeltaX (horizontal) = ROTAÇÃO (Q/E)
-   * - DeltaY (vertical) = MOVIMENTO frente/trás (W/S)
+   * Aplica ações baseadas no botão pressionado:
+   * - Botão ESQUERDO: Rotação Y (horizontal) + Pitch via look-controls (vertical)
+   * - Botão DIREITO: Movimento frente/trás (vertical)
    */
   onMouseMove: function (event) {
     if (!this.state.isDragging) return;
-    
-    // Prevenir look-controls de interferir
-    event.preventDefault();
-    event.stopPropagation();
     
     // Calcular delta do mouse
     const deltaX = event.clientX - this.state.lastMouseX;
     const deltaY = event.clientY - this.state.lastMouseY;
     
-    console.log(`🖘️ Mouse delta: X=${deltaX} (rotação), Y=${deltaY} (movimento)`);
+    const buttonName = this.state.dragButton === 0 ? 'ESQUERDO' : 'DIREITO';
+    console.log(`🖘️ Mouse delta (${buttonName}): X=${deltaX}, Y=${deltaY}`);
     
-    // ===== DELTA X (HORIZONTAL) = ROTAÇÃO Y (Q/E) =====
-    if (Math.abs(deltaX) > 0) {
-      // Sensibilidade de rotação (graus por pixel)
-      const rotationSensitivity = 0.3; // Ajustável
-      const rotationDelta = -deltaX * rotationSensitivity; // Negativo para direção correta
-      
-      this.state.currentRotation += rotationDelta;
-      
-      // Normalizar rotação (0-360)
-      this.state.currentRotation = this.state.currentRotation % 360;
-      if (this.state.currentRotation < 0) {
-        this.state.currentRotation += 360;
+    // ===== BOTÃO ESQUERDO (0): ROTAÇÃO Y + PITCH =====
+    if (this.state.dragButton === 0) {
+      // HORIZONTAL = Rotação Y (substituindo yaw do look-controls)
+      if (Math.abs(deltaX) > 0) {
+        const rotationSensitivity = 0.3;
+        const rotationDelta = -deltaX * rotationSensitivity;
+        
+        this.state.currentRotation += rotationDelta;
+        
+        // Normalizar rotação (0-360)
+        this.state.currentRotation = this.state.currentRotation % 360;
+        if (this.state.currentRotation < 0) {
+          this.state.currentRotation += 360;
+        }
+        
+        // Aplicar rotação Y (yaw)
+        const rotation = this.el.getAttribute('rotation');
+        this.el.setAttribute('rotation', {
+          x: rotation.x,                    // Pitch (look-controls mantém)
+          y: this.state.currentRotation,    // Yaw (enhanced-controls)
+          z: rotation.z
+        });
+        
+        console.log(`🔄 Rotação Y: ${this.state.currentRotation.toFixed(1)}°`);
       }
       
-      // Aplicar rotação
-      const rotation = this.el.getAttribute('rotation');
-      this.el.setAttribute('rotation', {
-        x: rotation.x,
-        y: this.state.currentRotation,
-        z: rotation.z
-      });
-      
-      console.log(`🔄 Rotação aplicada: ${this.state.currentRotation.toFixed(1)}°`);
+      // VERTICAL: Deixar look-controls gerenciar pitch (não interferir)
+      // Look-controls já aplica pitch automaticamente
     }
     
-    // ===== DELTA Y (VERTICAL) = MOVIMENTO Z (W/S) =====
-    if (Math.abs(deltaY) > 0) {
-      // Obter posição atual
-      const position = this.el.getAttribute('position');
+    // ===== BOTÃO DIREITO (2): MOVIMENTO FRENTE/TRÁS =====
+    else if (this.state.dragButton === 2) {
+      // Prevenir look-controls de interferir
+      event.preventDefault();
+      event.stopPropagation();
       
-      // Converter rotação Y para radianos
-      const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
-      
-      // Calcular vetor de direção frontal
-      const forwardX = Math.sin(rotationRad);
-      const forwardZ = Math.cos(rotationRad);
-      
-      // Sensibilidade de movimento
-      const movementSensitivity = this.data.mouseDragSpeed;
-      
-      // Aplicar movimento frontal (W/S)
-      const moveX = -forwardX * deltaY * movementSensitivity;
-      const moveZ = -forwardZ * deltaY * movementSensitivity;
-      
-      // Aplicar nova posição
-      this.el.setAttribute('position', {
-        x: position.x + moveX,
-        y: position.y,
-        z: position.z + moveZ
-      });
-      
-      console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+      // VERTICAL = Movimento frontal (W/S)
+      if (Math.abs(deltaY) > 0) {
+        const position = this.el.getAttribute('position');
+        const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
+        
+        const forwardX = Math.sin(rotationRad);
+        const forwardZ = Math.cos(rotationRad);
+        
+        const movementSensitivity = this.data.mouseDragSpeed;
+        const moveX = -forwardX * deltaY * movementSensitivity;
+        const moveZ = -forwardZ * deltaY * movementSensitivity;
+        
+        this.el.setAttribute('position', {
+          x: position.x + moveX,
+          y: position.y,
+          z: position.z + moveZ
+        });
+        
+        console.log(`➡️ Movimento: X=${moveX.toFixed(3)}, Z=${moveZ.toFixed(3)}`);
+      }
     }
     
     // Atualizar posição anterior do mouse
@@ -427,14 +433,16 @@ AFRAME.registerComponent('enhanced-controls', {
    * ON MOUSE UP - SOLTAR BOTÃO DO MOUSE
    * =====================================================
    * 
-   * Finaliza drag quando botão direito é solto.
+   * Finaliza drag quando qualquer botão é solto.
    */
   onMouseUp: function (event) {
     console.log(`🖘️ onMouseUp chamado! Botão: ${event.button}`);
     
-    if (event.button === 2) {
+    // Qualquer botão (0 ou 2)
+    if (event.button === 0 || event.button === 2) {
       this.state.isDragging = false;
-      console.log('✅ Drag FINALIZADO');
+      const buttonName = event.button === 0 ? 'ESQUERDO' : 'DIREITO';
+      console.log(`✅ Drag FINALIZADO (${buttonName})`);
       console.log('🎯 Estado isDragging:', this.state.isDragging);
     }
   },
