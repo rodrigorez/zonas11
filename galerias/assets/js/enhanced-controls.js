@@ -99,6 +99,18 @@ AFRAME.registerComponent('enhanced-controls', {
       description: 'Velocidade de movimento em m/s'
     },
     
+    // ===== MOVIMENTO COM MOUSE (DRAG) - IMPLEMENTADO =====
+    enableMouseDrag: {
+      type: 'boolean',
+      default: true,
+      description: 'Ativa/desativa movimento com botão direito do mouse'
+    },
+    mouseDragSpeed: {
+      type: 'number',
+      default: 0.005,
+      description: 'Sensibilidade do movimento com mouse (multiplicador)'
+    },
+    
     // ===== CORRIDA (SHIFT) - PREPARADO PARA FUTURO =====
     enableRun: { 
       type: 'boolean', 
@@ -168,6 +180,11 @@ AFRAME.registerComponent('enhanced-controls', {
       movingLeft: false,        // Tecla A pressionada?
       movingRight: false,       // Tecla D pressionada?
       
+      // Movimento com Mouse (Drag)
+      isDragging: false,        // Botão direito pressionado?
+      lastMouseX: 0,            // Posição X anterior do mouse
+      lastMouseY: 0,            // Posição Y anterior do mouse
+      
       // Corrida (SHIFT) - FUTURO
       isRunning: false,         // Shift pressionado?
       
@@ -183,6 +200,9 @@ AFRAME.registerComponent('enhanced-controls', {
     // Bind de funções (necessário para removeEventListener)
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
     
     // Configurar módulos ativos
     if (this.data.enableRotation) {
@@ -191,6 +211,10 @@ AFRAME.registerComponent('enhanced-controls', {
     
     if (this.data.enableMovement) {
       this.setupMovement();
+    }
+    
+    if (this.data.enableMouseDrag) {
+      this.setupMouseDrag();
     }
     
     // Módulos futuros (comentados até implementação)
@@ -252,6 +276,110 @@ AFRAME.registerComponent('enhanced-controls', {
     
     console.log('✅ Movimento configurado: WASD relativo à rotação');
     console.log('⚠️ wasd-controls padrão desativado (usando movimento custom)');
+  },
+  
+  /**
+   * =====================================================
+   * SETUP MOUSE DRAG - CONFIGURAÇÃO DE MOVIMENTO COM MOUSE
+   * =====================================================
+   * 
+   * Configura event listeners para movimento com botão direito do mouse.
+   * Permite arrastar para mover a câmera no plano XZ.
+   */
+  setupMouseDrag: function () {
+    console.log('🖘️ Enhanced Controls: Configurando movimento com mouse');
+    
+    // Adicionar event listeners de mouse
+    window.addEventListener('mousedown', this.onMouseDown);
+    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('mouseup', this.onMouseUp);
+    
+    // Prevenir menu de contexto ao clicar com botão direito
+    window.addEventListener('contextmenu', (e) => {
+      if (this.state.isDragging) {
+        e.preventDefault();
+      }
+    });
+    
+    console.log('✅ Movimento com mouse configurado: Botão direito + arrastar');
+  },
+  
+  /**
+   * =====================================================
+   * ON MOUSE DOWN - DETECÇÃO DE CLIQUE DO MOUSE
+   * =====================================================
+   * 
+   * Inicia drag quando botão direito é pressionado.
+   */
+  onMouseDown: function (event) {
+    // Botão direito (2) = iniciar drag
+    if (event.button === 2) {
+      this.state.isDragging = true;
+      this.state.lastMouseX = event.clientX;
+      this.state.lastMouseY = event.clientY;
+      console.log('🖘️ Drag iniciado');
+    }
+  },
+  
+  /**
+   * =====================================================
+   * ON MOUSE MOVE - MOVIMENTO DO MOUSE
+   * =====================================================
+   * 
+   * Aplica movimento quando botão direito está pressionado.
+   * Move câmera nos eixos X e Z baseado no delta do mouse.
+   */
+  onMouseMove: function (event) {
+    if (!this.state.isDragging) return;
+    
+    // Calcular delta do mouse
+    const deltaX = event.clientX - this.state.lastMouseX;
+    const deltaY = event.clientY - this.state.lastMouseY;
+    
+    // Obter posição atual
+    const position = this.el.getAttribute('position');
+    
+    // Converter rotação Y para radianos (para movimento relativo)
+    const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
+    
+    // Calcular vetores de direção baseados na rotação atual
+    const forwardX = Math.sin(rotationRad);
+    const forwardZ = Math.cos(rotationRad);
+    const rightX = Math.cos(rotationRad);
+    const rightZ = -Math.sin(rotationRad);
+    
+    // Aplicar movimento baseado no delta do mouse
+    const sensitivity = this.data.mouseDragSpeed;
+    
+    // DeltaX do mouse = movimento lateral (esquerda/direita)
+    // DeltaY do mouse = movimento frontal (frente/trás)
+    const moveX = (rightX * deltaX - forwardX * deltaY) * sensitivity;
+    const moveZ = (rightZ * deltaX - forwardZ * deltaY) * sensitivity;
+    
+    // Aplicar nova posição
+    this.el.setAttribute('position', {
+      x: position.x + moveX,
+      y: position.y,                // Y inalterado
+      z: position.z + moveZ
+    });
+    
+    // Atualizar posição anterior do mouse
+    this.state.lastMouseX = event.clientX;
+    this.state.lastMouseY = event.clientY;
+  },
+  
+  /**
+   * =====================================================
+   * ON MOUSE UP - SOLTAR BOTÃO DO MOUSE
+   * =====================================================
+   * 
+   * Finaliza drag quando botão direito é solto.
+   */
+  onMouseUp: function (event) {
+    if (event.button === 2) {
+      this.state.isDragging = false;
+      console.log('🖘️ Drag finalizado');
+    }
   },
 
   /**
@@ -385,6 +513,8 @@ AFRAME.registerComponent('enhanced-controls', {
       this.updateMovement(deltaSeconds);
     }
     
+    // Mouse drag não precisa de update no tick (usa eventos)
+    
     // ===== ATUALIZAR PULO - FUTURO =====
     // if (this.data.enableJump && this.state.isJumping) {
     //   this.updateJump(time);
@@ -506,10 +636,17 @@ AFRAME.registerComponent('enhanced-controls', {
   remove: function () {
     console.log('🗑️ Enhanced Controls: Removendo event listeners');
     
-    // Remover event listeners (compartilhados por rotação e movimento)
+    // Remover event listeners de teclado
     if (this.data.enableRotation || this.data.enableMovement) {
       window.removeEventListener('keydown', this.onKeyDown);
       window.removeEventListener('keyup', this.onKeyUp);
+    }
+    
+    // Remover event listeners de mouse
+    if (this.data.enableMouseDrag) {
+      window.removeEventListener('mousedown', this.onMouseDown);
+      window.removeEventListener('mousemove', this.onMouseMove);
+      window.removeEventListener('mouseup', this.onMouseUp);
     }
     
     console.log('✅ Enhanced Controls: Removido com sucesso');
