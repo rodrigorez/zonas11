@@ -1,0 +1,220 @@
+/*
+ * ========================================================================
+ * ZONAS 11 - TEMPLATE DE OBRAS (CSS COMPARTILHADO)
+ * ========================================================================
+ * 
+ * Arquivo CSS compartilhado para todas as fichas técnicas das obras 1-42
+ * 
+ * VERSÃO: V2.8 Otimizado
+ * DATA: 2025-10-15
+ * 
+ * CARACTERÍSTICAS:
+ * - Design responsivo com clamp() para tipografia fluida
+ * - Variáveis CSS para fácil customização
+ * - Compatível com todos os navegadores modernos
+ * - Otimizado para performance (mobile-first)
+ * 
+ * IDENTIDADE VISUAL:
+ * - Cor principal: #FF5722 (botões - consistência com UI)
+ * - Fundo: #000000 (preto absoluto)
+ * - Cards: #1a1a1a (cinza escuro)
+ * - Texto: #FFFFFF (branco)
+ * 
+ * USADO POR: obra1.html até obra42.html
+ * ========================================================================
+ */
+
+/* ========================================================================
+   VARIÁVEIS CSS
+   ======================================================================== */
+:root {
+  /* Cores */
+  --color-bg: #000000;
+  --color-card: #1a1a1a;
+  --color-text: #ffffff;
+  --color-accent: #FF5722;
+  --color-accent-hover: #E64A19;
+  
+  /* Espaçamentos */
+  --padding: 4vw;
+  --gap: 2vw;
+  
+  /* Bordas */
+  --border-radius: 12px;
+  
+  /* Tipografia */
+  --font-family: 'Arial', sans-serif;
+  --line-height: 1.6;
+}
+
+/* ========================================================================
+   RESET E BASE
+   ======================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: var(--line-height);
+}
+
+/* ========================================================================
+   CONTAINER PRINCIPAL
+   ======================================================================== */
+.container {
+  width: clamp(320px, 90vw, 800px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: var(--padding) calc(var(--padding) / 2);
+}
+
+/* ========================================================================
+   ESTILO BASE PARA LINHAS (CARDS)
+   ======================================================================== */
+.linha {
+  padding: var(--padding);
+  background: var(--color-card);
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+
+/* ========================================================================
+   LINHA 1: NOME DA EXPOSIÇÃO
+   ======================================================================== */
+.exposicao {
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: bold;
+}
+
+/* ========================================================================
+   LINHAS 2 E 7: BOTÃO VOLTAR (COR PADRONIZADA #FF5722)
+   ======================================================================== */
+.botao-voltar {
+  background: var(--color-accent);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: bold;
+  color: var(--color-text);
+  width: 100%;
+  padding: 1.5em 1em;
+  box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+}
+
+.botao-voltar:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 87, 34, 0.6);
+}
+
+.botao-voltar:active {
+  transform: translateY(0);
+}
+
+/* ========================================================================
+   LINHA 3: LINK EXTERNO (OBRAS ESPECIAIS: 8, 15)
+   ======================================================================== */
+.obra-link {
+  background: #2196F3;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  font-weight: bold;
+  color: var(--color-text);
+  width: 100%;
+  padding: 1.5em 1em;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+  text-decoration: none;
+  display: block;
+}
+
+.obra-link:hover {
+  background: #1976D2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+}
+
+.obra-link:active {
+  transform: translateY(0);
+}
+
+/* ========================================================================
+   LINHA 3/4: VÍDEO (CONTAINER PARA PLATFORMDETECTOR)
+   ======================================================================== */
+.video {
+  padding: 0;
+  overflow: hidden;
+}
+
+.video iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================================================
+   LINHA 4/5: TÍTULO DA OBRA
+   ======================================================================== */
+.titulo {
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+  font-weight: bold;
+}
+
+/* ========================================================================
+   LINHA 5/6: AUTOR DA OBRA
+   ======================================================================== */
+.autor {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  font-weight: 500;
+}
+
+/* ========================================================================
+   LINHA 6/7: SINOPSE
+   ======================================================================== */
+.sinopse {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  text-align: justify;
+  hyphens: auto;
+  line-height: 1.7;
+  text-indent: 2em;
+}
+
+/* ========================================================================
+   MELHORIAS PARA MOBILE (< 480px)
+   ======================================================================== */
+@media (max-width: 480px) {
+  .sinopse {
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+  
+  .botao-voltar,
+  .obra-link {
+    padding: 1.8em 1.2em;
+    font-size: 1.1rem;
+  }
+}
+
+/* ========================================================================
+   FIM DO ARQUIVO
+   ======================================================================== */
