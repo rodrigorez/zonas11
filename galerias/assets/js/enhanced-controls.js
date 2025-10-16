@@ -328,6 +328,9 @@ AFRAME.registerComponent('enhanced-controls', {
       gyroTargetRotation: 0,    // Rotação alvo (suavizada)
       gyroTargetPitch: 0,       // Pitch alvo (suavizado)
       
+      // Sincronização Teclado ↔ Mouse
+      keyboardHasSynced: false, // Flag: teclado já sincronizou após mouse?
+      
       // Corrida (SHIFT) - FUTURO
       isRunning: false,         // Shift pressionado?
       
@@ -619,6 +622,9 @@ AFRAME.registerComponent('enhanced-controls', {
     
     // Registrar timestamp de interação (desabilita teclado temporariamente)
     this.state.lastMouseInteraction = performance.now();
+    
+    // RESETAR flag de sincronização do teclado (permitir nova sincronização futura)
+    this.state.keyboardHasSynced = false;
     
     // Calcular delta do mouse
     const deltaX = event.clientX - this.state.lastMouseX;
@@ -1251,18 +1257,6 @@ AFRAME.registerComponent('enhanced-controls', {
     // Apenas se não houver mouse recente E giroscópio inativo E TECLAS PRESSIONADAS
     else if (!mouseRecentlyUsed && !this.state.gyroActive) {
       
-      // 🔄 SINCRONIZAR currentRotation com a rotação atual ANTES de aplicar teclado
-      // Isso garante que o teclado continue de onde o mouse/look-controls parou
-      const rotation = this.el.getAttribute('rotation');
-      const rotationYDiff = Math.abs(rotation.y - this.state.currentRotation);
-      
-      if (rotationYDiff > 0.1) {
-        if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
-          console.log(`🔄 SINCRONIZANDO currentRotation: ${this.state.currentRotation.toFixed(2)}° → ${rotation.y.toFixed(2)}°`);
-        }
-        this.state.currentRotation = rotation.y;
-      }
-      
       // 🔍 VERIFICAR SE ALGUMA TECLA ESTÁ PRESSIONADA
       const anyKeyPressed = this.state.rotatingLeft || this.state.rotatingRight;
       
@@ -1272,6 +1266,23 @@ AFRAME.registerComponent('enhanced-controls', {
       
       // SÓ APLICAR se alguma tecla estiver pressionada
       if (anyKeyPressed) {
+        
+        // Obter rotação atual UMA VEZ (para usar em vários lugares)
+        const rotation = this.el.getAttribute('rotation');
+        
+        // 🔄 SINCRONIZAR currentRotation APENAS NA PRIMEIRA TECLA após mouse
+        // Usa flag para sincronizar UMA VEZ e não a cada frame
+        if (!this.state.keyboardHasSynced) {
+          const rotationYDiff = Math.abs(rotation.y - this.state.currentRotation);
+          
+          if (rotationYDiff > 0.1) {
+            if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+              console.log(`🔄 SINCRONIZANDO currentRotation (PRIMEIRA VEZ): ${this.state.currentRotation.toFixed(2)}° → ${rotation.y.toFixed(2)}°`);
+            }
+            this.state.currentRotation = rotation.y;
+          }
+          this.state.keyboardHasSynced = true; // Marca como sincronizado
+        }
       
       if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
         console.log('⌨️ TECLADO está controlando!');
