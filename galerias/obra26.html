@@ -17,9 +17,33 @@
       </button>
       <a href="https://devvand.itch.io/take-your-door-when-going-out" target="_blank" class="linha obra-link">🌍 Acessar Poema Interativo</a>
       <div class="linha titulo">Portas</div>
-      <div class="linha autor">Autor não informado</div>
+      <div class="linha autor">Dev Vand</div>
       <div class="linha sinopse">Um poema interativo sobre portas, lembranças e esquecimento.</div>
       <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(5, source); // Obra 26 pertence ao Mundo 4 (index5.html)
+        
+        console.log(`🖼️ Obra 26: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
+    <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>

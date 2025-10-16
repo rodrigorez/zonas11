@@ -21,5 +21,29 @@
       <div class="linha sinopse">Peças de tempo é uma escultura digital, trabalho que surge da experimentação de estudos de diferentes mecanismos na modelagem de um relógio de madeira artesanal. Esta obra estuda maneiras simples de marcação de tempo, desmontando a funcionalidade de um relógio.</div>
       <button class="botao-voltar" id="btn-voltar-rodape">↩️ Voltar para a Realidade Virtual</button>
     </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(5, source); // Obra 24 pertence ao Mundo 4 (index5.html)
+        
+        console.log(`🖼️ Obra 24: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
+    <script src="assets/js/platform-detector.js"></script>
   </body>
 </html>
