@@ -1248,8 +1248,18 @@ AFRAME.registerComponent('enhanced-controls', {
     // Apenas desabilita teclado se necessário
     
     // ===== PRIORIDADE 2 (DESKTOP): TECLADO (Q/E) =====
-    // Apenas se não houver mouse recente E giroscópio inativo
+    // Apenas se não houver mouse recente E giroscópio inativo E TECLAS PRESSIONADAS
     else if (!mouseRecentlyUsed && !this.state.gyroActive) {
+      
+      // 🔍 VERIFICAR SE ALGUMA TECLA ESTÁ PRESSIONADA
+      const anyKeyPressed = this.state.rotatingLeft || this.state.rotatingRight;
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log(`⌨️ Bloco teclado acessado - anyKeyPressed: ${anyKeyPressed}`);
+      }
+      
+      // SÓ APLICAR se alguma tecla estiver pressionada
+      if (anyKeyPressed) {
       
       if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
         console.log('⌨️ TECLADO está controlando!');
@@ -1298,7 +1308,13 @@ AFRAME.registerComponent('enhanced-controls', {
         y: this.state.currentRotation,    // Yaw (teclado)
         z: rotation.z
       });
-    }
+      } // FIM if (anyKeyPressed)
+      else {
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+          console.log('  ⚠️ Bloco teclado acessado MAS nenhuma tecla pressionada - IGNORANDO');
+        }
+      }
+    } // FIM else if (!mouseRecentlyUsed && !gyroActive)
     else {
       if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
         console.log('❌ NENHUM CONTROLE ativo (idle)');
