@@ -149,11 +149,12 @@ const ENHANCED_CONTROLS_CONFIG = {
   // Recomendado: 0 para máxima responsividade, 1-2 para evitar jitter
   
   // ===== DEBUG E LOGGING =====
-  ENABLE_MOUSE_DEBUG_LOGS: true,      // Mostrar logs de eventos do mouse (mousedown/move/up)
-  ENABLE_TOUCH_DEBUG_LOGS: true,      // Mostrar logs de eventos de toque (touchstart/move/end)
-  ENABLE_GYRO_DEBUG_LOGS: false,      // Mostrar logs de giroscópio (muito verboso)
-  ENABLE_ROTATION_DEBUG_LOGS: true,   // Mostrar logs de rotação Y em graus
-  ENABLE_MOVEMENT_DEBUG_LOGS: false   // Mostrar logs de movimento X/Z (verboso, pode afetar performance)
+  ENABLE_MOUSE_DEBUG_LOGS: false,      // Mostrar logs de eventos do mouse (mousedown/move/up)
+  ENABLE_TOUCH_DEBUG_LOGS: false,      // Mostrar logs de eventos de toque (touchstart/move/end)
+  ENABLE_GYRO_DEBUG_LOGS: false,       // Mostrar logs de giroscópio (muito verboso)
+  ENABLE_ROTATION_DEBUG_LOGS: false,   // Mostrar logs de rotação Y em graus
+  ENABLE_MOVEMENT_DEBUG_LOGS: false,   // Mostrar logs de movimento X/Z (verboso, pode afetar performance)
+  ENABLE_UPDATE_ROTATION_DEBUG: true   // DEBUG ESPECIAL: Logs detalhados de updateRotation
 };
 
 // =====================================================
@@ -1175,6 +1176,18 @@ AFRAME.registerComponent('enhanced-controls', {
     const touchRecentlyUsed = timeSinceTouchInteraction < disableDuration;
     const touchCurrentlyActive = this.state.isTouching;  // Verifica se está tocando AGORA
     
+    // ===== DEBUG: Log detalhado do estado =====
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+      const rotation = this.el.getAttribute('rotation');
+      console.log('=== updateRotation DEBUG ===');
+      console.log(`Rotação atual Y: ${rotation.y.toFixed(2)}°`);
+      console.log(`currentRotation (state): ${this.state.currentRotation.toFixed(2)}°`);
+      console.log(`gyroActive: ${this.state.gyroActive}`);
+      console.log(`mouseRecentlyUsed: ${mouseRecentlyUsed} (${timeSinceMouseInteraction.toFixed(0)}ms)`);
+      console.log(`touchRecentlyUsed: ${touchRecentlyUsed} (${timeSinceTouchInteraction.toFixed(0)}ms)`);
+      console.log(`rotatingLeft: ${this.state.rotatingLeft}, rotatingRight: ${this.state.rotatingRight}`);
+    }
+    
     // ===== PRIORIDADE 1 (MOBILE): TOQUE =====
     // Toque controla rotação diretamente via onTouchMove
     // Apenas desabilita giroscópio se necessário
@@ -1186,6 +1199,12 @@ AFRAME.registerComponent('enhanced-controls', {
         this.state.gyroInitialAlpha !== null &&
         !touchCurrentlyActive &&
         !touchRecentlyUsed) {
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log('🧭 GIROSCÓPIO está controlando!');
+        console.log(`  gyroTargetRotation: ${this.state.gyroTargetRotation.toFixed(2)}°`);
+        console.log(`  gyroTargetPitch: ${this.state.gyroTargetPitch.toFixed(2)}°`);
+      }
       
       const smoothing = this.data.gyroSmoothing;
       const rotation = this.el.getAttribute('rotation');
@@ -1217,6 +1236,10 @@ AFRAME.registerComponent('enhanced-controls', {
         z: rotation.z
       });
       
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log(`  Aplicado - newYaw: ${newYaw.toFixed(2)}°, newPitch: ${newPitch.toFixed(2)}°`);
+      }
+      
       // Atualizar currentRotation para manter sincronia
       this.state.currentRotation = newYaw;
     }
@@ -1227,30 +1250,63 @@ AFRAME.registerComponent('enhanced-controls', {
     // ===== PRIORIDADE 2 (DESKTOP): TECLADO (Q/E) =====
     // Apenas se não houver mouse recente E giroscópio inativo
     else if (!mouseRecentlyUsed && !this.state.gyroActive) {
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log('⌨️ TECLADO está controlando!');
+      }
       // Calcular quanto rotacionar neste frame
       const rotationAmount = this.data.rotationSpeed * deltaSeconds;
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log(`  rotationAmount: ${rotationAmount.toFixed(4)}°`);
+      }
       
       // Atualizar rotação acumulada conforme teclas pressionadas
       if (this.state.rotatingLeft) {
         this.state.currentRotation += rotationAmount;
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+          console.log(`  Q pressionado: ${this.state.currentRotation.toFixed(2)}°`);
+        }
       }
       if (this.state.rotatingRight) {
         this.state.currentRotation -= rotationAmount;
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+          console.log(`  E pressionado: ${this.state.currentRotation.toFixed(2)}°`);
+        }
       }
       
       // Normalizar rotação (manter entre 0-360)
+      const beforeNormalization = this.state.currentRotation;
       this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
       if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
         this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
       }
       
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG && beforeNormalization !== this.state.currentRotation) {
+        console.log(`  ⚠️ NORMALIZAÇÃO: ${beforeNormalization.toFixed(2)}° → ${this.state.currentRotation.toFixed(2)}°`);
+      }
+      
       // ===== APLICAR ROTAÇÃO DO TECLADO =====
       const rotation = this.el.getAttribute('rotation');
+      
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log(`  Aplicando - Y antes: ${rotation.y.toFixed(2)}°, Y depois: ${this.state.currentRotation.toFixed(2)}°`);
+      }
+      
       this.el.setAttribute('rotation', {
         x: rotation.x,                    // Pitch (look-controls)
         y: this.state.currentRotation,    // Yaw (teclado)
         z: rotation.z
       });
+    }
+    else {
+      if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+        console.log('❌ NENHUM CONTROLE ativo (idle)');
+      }
+    }
+    
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+      console.log('=== FIM updateRotation ===\n');
     }
   },
   
