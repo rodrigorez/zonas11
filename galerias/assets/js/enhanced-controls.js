@@ -9,7 +9,7 @@
  * 
  * VERSÃO: 1.0.0
  * DATA: 2025-10-15
- * AUTOR: Zonas 11 Project
+ * AUTOR: rodrigoRez.art
  * 
  * =====================================================
  * FUNCIONALIDADES IMPLEMENTADAS
@@ -34,7 +34,12 @@
  * ✅ CONTROLES DE TOQUE (MOBILE):
  *    - 1 DEDO (horizontal): Rotação Y (yaw)
  *    - 2 DEDOS (vertical): Movimento frente/trás
- *    - Look-controls (giroscópio): Pitch automático
+ * 
+ * ✅ GIROSCÓPIO (DEVICE ORIENTATION):
+ *    - Rotação Y (yaw) via sensor do celular
+ *    - Calibração automática na primeira leitura
+ *    - Suavização configurável (anti-tremor)
+ *    - Pitch mantido pelo look-controls
  * 
  * 🔮 PREPARADO PARA FUTURO:
  *    - Correr (Shift + WASD)
@@ -114,6 +119,17 @@ const ENHANCED_CONTROLS_CONFIG = {
   // Similar ao mouseDragSpeed, mas para toque
   // Padrão: 0.015 (50% mais sensível que mouse)
   
+  // ===== SENSIBILIDADE DE GIROSCÓPIO (DEVICE ORIENTATION) =====
+  GYRO_ROTATION_ENABLED: true,        // Ativar rotação Y via giroscópio
+  // true = giroscópio controla yaw (rotação horizontal)
+  // false = apenas look-controls (pitch manual)
+  
+  GYRO_ROTATION_SMOOTHING: 0.1,       // Suavização da rotação do giroscópio
+  // Valores menores = mais suave, mais atraso
+  // Valores maiores = mais responsivo, mais tremia
+  // Recomendado: 0.05 a 0.15
+  // Padrão: 0.1 (balanço entre suavidade e responsividade)
+  
   // ===== NORMALIZAÇÃO DE ROTAÇÃO =====
   ROTATION_FULL_CIRCLE: 360,          // Graus em círculo completo (NÃO ALTERAR)
   ROTATION_MIN: 0,                    // Rotação mínima para normalização (NÃO ALTERAR)
@@ -127,6 +143,7 @@ const ENHANCED_CONTROLS_CONFIG = {
   // ===== DEBUG E LOGGING =====
   ENABLE_MOUSE_DEBUG_LOGS: true,      // Mostrar logs de eventos do mouse (mousedown/move/up)
   ENABLE_TOUCH_DEBUG_LOGS: true,      // Mostrar logs de eventos de toque (touchstart/move/end)
+  ENABLE_GYRO_DEBUG_LOGS: false,      // Mostrar logs de giroscópio (muito verboso)
   ENABLE_ROTATION_DEBUG_LOGS: true,   // Mostrar logs de rotação Y em graus
   ENABLE_MOVEMENT_DEBUG_LOGS: false   // Mostrar logs de movimento X/Z (verboso, pode afetar performance)
 };
@@ -194,6 +211,18 @@ AFRAME.registerComponent('enhanced-controls', {
       type: 'number',
       default: 0.015,
       description: 'Sensibilidade de movimento com toque (2 dedos)'
+    },
+    
+    // ===== GIROSCÓPIO (DEVICE ORIENTATION) - IMPLEMENTADO =====
+    enableGyroRotation: {
+      type: 'boolean',
+      default: true,
+      description: 'Ativa/desativa rotação Y via giroscópio (mobile)'
+    },
+    gyroSmoothing: {
+      type: 'number',
+      default: 0.1,
+      description: 'Suavização da rotação do giroscópio (0.05-0.15)'
     },
     
     // ===== CORRIDA (SHIFT) - PREPARADO PARA FUTURO =====
@@ -279,6 +308,12 @@ AFRAME.registerComponent('enhanced-controls', {
       touch2X: 0,               // Posição X do segundo toque
       touch2Y: 0,               // Posição Y do segundo toque
       
+      // Giroscópio (Device Orientation)
+      gyroActive: false,        // Giroscópio ativo?
+      gyroAlpha: 0,             // Ângulo alpha (yaw) do giroscópio
+      gyroInitialAlpha: null,   // Alpha inicial (calibração)
+      gyroTargetRotation: 0,    // Rotação alvo (suavizada)
+      
       // Corrida (SHIFT) - FUTURO
       isRunning: false,         // Shift pressionado?
       
@@ -300,6 +335,7 @@ AFRAME.registerComponent('enhanced-controls', {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onDeviceOrientation = this.onDeviceOrientation.bind(this);
     
     // Configurar módulos ativos
     if (this.data.enableRotation) {
@@ -316,6 +352,10 @@ AFRAME.registerComponent('enhanced-controls', {
     
     if (this.data.enableTouchControls) {
       this.setupTouchControls();
+    }
+    
+    if (this.data.enableGyroRotation) {
+      this.setupGyroRotation();
     }
     
     // Módulos futuros (comentados até implementação)
@@ -454,6 +494,68 @@ AFRAME.registerComponent('enhanced-controls', {
     console.log('   - 2 DEDOS (vertical): Movimento frente/trás');
     console.log('   - Look-controls (giroscópio): Pitch automático');
     console.log('⚠️ Touch listeners com {capture: true, passive: false}');
+  },
+  
+  /**
+   * =====================================================
+   * SETUP GYRO ROTATION - CONFIGURAÇÃO DE ROTAÇÃO VIA GIROSCÓPIO
+   * =====================================================
+   * 
+   * Configura DeviceOrientationEvent para capturar rotação Y (yaw).
+   * Funciona em paralelo com look-controls (pitch).
+   * 
+   * IMPORTANTE:
+   * - iOS 13+ requer permissão explícita (DeviceOrientationEvent.requestPermission)
+   * - Android funciona automaticamente
+   * - Alpha (yaw) é calibrado na primeira leitura
+   */
+  setupGyroRotation: function () {
+    console.log('🧭 Enhanced Controls: Configurando rotação via giroscópio');
+    
+    // Verificar se DeviceOrientationEvent existe
+    if (!window.DeviceOrientationEvent) {
+      console.warn('⚠️ DeviceOrientationEvent não suportado neste dispositivo');
+      return;
+    }
+    
+    // iOS 13+ requer permissão explícita
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      console.log('📱 iOS detectado - solicitar permissão ao usuário');
+      
+      // Criar botão temporário para solicitar permissão (iOS exige interação do usuário)
+      const requestPermission = () => {
+        DeviceOrientationEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('deviceorientation', this.onDeviceOrientation, true);
+              console.log('✅ Permissão de giroscópio concedida (iOS)');
+              this.state.gyroActive = true;
+            } else {
+              console.warn('❌ Permissão de giroscópio negada');
+            }
+          })
+          .catch(error => {
+            console.error('❌ Erro ao solicitar permissão de giroscópio:', error);
+          });
+      };
+      
+      // Adicionar listener de clique em qualquer lugar da tela
+      this.canvas = this.canvas || this.el.sceneEl.canvas;
+      if (this.canvas) {
+        this.canvas.addEventListener('click', requestPermission, { once: true });
+        console.log('👆 Toque na tela para ativar giroscópio (iOS)');
+      }
+    } else {
+      // Android e navegadores modernos
+      window.addEventListener('deviceorientation', this.onDeviceOrientation, true);
+      console.log('✅ Giroscópio configurado (Android/Desktop)');
+      this.state.gyroActive = true;
+    }
+    
+    console.log('✅ Rotação via giroscópio configurada:');
+    console.log('   - Alpha (yaw): Rotação Y horizontal');
+    console.log('   - Look-controls: Pitch (cima/baixo)');
+    console.log(`   - Suavização: ${this.data.gyroSmoothing}`);
   },
   
   /**
@@ -781,6 +883,51 @@ AFRAME.registerComponent('enhanced-controls', {
       }
     }
   },
+  
+  /**
+   * =====================================================
+   * ON DEVICE ORIENTATION - CAPTURA DE ORIENTAÇÃO DO DISPOSITIVO
+   * =====================================================
+   * 
+   * Captura eventos de giroscópio para controlar rotação Y (yaw).
+   * 
+   * Parâmetros do evento:
+   * - alpha: Rotação em torno do eixo Z (yaw) - 0 a 360 graus
+   * - beta: Rotação em torno do eixo X (pitch) - -180 a 180 graus
+   * - gamma: Rotação em torno do eixo Y (roll) - -90 a 90 graus
+   * 
+   * Usamos ALPHA para controlar rotação Y (yaw).
+   * Look-controls continua gerenciando pitch.
+   */
+  onDeviceOrientation: function (event) {
+    // Verificar se dados do giroscópio estão disponíveis
+    if (event.alpha === null || event.alpha === undefined) {
+      return;
+    }
+    
+    // CALIBRAÇÃO: Armazenar alpha inicial na primeira leitura
+    if (this.state.gyroInitialAlpha === null) {
+      this.state.gyroInitialAlpha = event.alpha;
+      console.log(`🧭 Giroscópio calibrado - Alpha inicial: ${event.alpha.toFixed(1)}°`);
+    }
+    
+    // Calcular rotação relativa ao ponto inicial
+    let relativeAlpha = event.alpha - this.state.gyroInitialAlpha;
+    
+    // Normalizar para -180 a 180
+    if (relativeAlpha > 180) {
+      relativeAlpha -= 360;
+    } else if (relativeAlpha < -180) {
+      relativeAlpha += 360;
+    }
+    
+    // Inverter direção (alpha aumenta no sentido horário, queremos anti-horário)
+    this.state.gyroTargetRotation = -relativeAlpha;
+    
+    if (ENHANCED_CONTROLS_CONFIG.ENABLE_GYRO_DEBUG_LOGS) {
+      console.log(`🧭 Gyro - Alpha: ${event.alpha.toFixed(1)}°, Relativo: ${relativeAlpha.toFixed(1)}°, Target: ${this.state.gyroTargetRotation.toFixed(1)}°`);
+    }
+  },
 
   /**
    * =====================================================
@@ -933,31 +1080,65 @@ AFRAME.registerComponent('enhanced-controls', {
    * 
    * Calcula e aplica rotação baseada no estado atual.
    * Usa deltaSeconds para movimento frame-independent.
-   * IMPORTANTE: Sempre aplica currentRotation para manter posição,
-   * não apenas quando teclas estão pressionadas.
+   * 
+   * INTEGRAÇÃO DE MÚLTIPLAS FONTES:
+   * 1. Teclado (Q/E): Rotação incremental
+   * 2. Mouse (botão esquerdo): Rotação instantânea
+   * 3. Toque (1 dedo): Rotação instantânea
+   * 4. Giroscópio (alpha): Rotação suavizada (interpolada)
+   * 
+   * Prioridade: Giroscópio > Teclado/Mouse/Toque
    * 
    * @param {number} deltaSeconds - Tempo desde último frame (s)
    */
   updateRotation: function (deltaSeconds) {
-    // Calcular quanto rotacionar neste frame
-    const rotationAmount = this.data.rotationSpeed * deltaSeconds;
-    
-    // Atualizar rotação acumulada conforme teclas pressionadas
-    if (this.state.rotatingLeft) {
-      this.state.currentRotation += rotationAmount;
+    // ===== PRIORIDADE 1: GIROSCÓPIO (se ativo) =====
+    if (this.data.enableGyroRotation && this.state.gyroActive && this.state.gyroInitialAlpha !== null) {
+      // Suavização (interpolação linear - LERP)
+      // currentRotation se aproxima de gyroTargetRotation gradualmente
+      const smoothing = this.data.gyroSmoothing;
+      const rotationDiff = this.state.gyroTargetRotation - this.state.currentRotation;
+      
+      // Normalizar diferença para -180 a 180 (caminho mais curto)
+      let normalizedDiff = rotationDiff;
+      if (normalizedDiff > 180) {
+        normalizedDiff -= 360;
+      } else if (normalizedDiff < -180) {
+        normalizedDiff += 360;
+      }
+      
+      // Aplicar suavização
+      this.state.currentRotation += normalizedDiff * smoothing;
+      
+      // Normalizar rotação (0-360)
+      this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+      if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
+        this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+      }
     }
-    if (this.state.rotatingRight) {
-      this.state.currentRotation -= rotationAmount;
+    // ===== PRIORIDADE 2: TECLADO (Q/E) - apenas se giroscópio inativo =====
+    else {
+      // Calcular quanto rotacionar neste frame
+      const rotationAmount = this.data.rotationSpeed * deltaSeconds;
+      
+      // Atualizar rotação acumulada conforme teclas pressionadas
+      if (this.state.rotatingLeft) {
+        this.state.currentRotation += rotationAmount;
+      }
+      if (this.state.rotatingRight) {
+        this.state.currentRotation -= rotationAmount;
+      }
+      
+      // Normalizar rotação (manter entre 0-360)
+      this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+      if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
+        this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
+      }
     }
     
-    // Normalizar rotação (manter entre 0-360)
-    this.state.currentRotation = this.state.currentRotation % 360;
-    if (this.state.currentRotation < 0) {
-      this.state.currentRotation += 360;
-    }
-    
+    // ===== APLICAR ROTAÇÃO FINAL =====
     // SEMPRE aplicar rotação à entidade (não só quando teclas pressionadas)
-    // Isso mantém a rotação acumulada mesmo após soltar as teclas
+    // Isso mantém a rotação acumulada de todas as fontes
     const rotation = this.el.getAttribute('rotation');
     this.el.setAttribute('rotation', {
       x: rotation.x,                    // Pitch (look-controls)
@@ -1055,6 +1236,11 @@ AFRAME.registerComponent('enhanced-controls', {
       this.canvas.removeEventListener('touchmove', this.onTouchMove, { capture: true });
       this.canvas.removeEventListener('touchend', this.onTouchEnd, { capture: true });
       this.canvas.removeEventListener('touchcancel', this.onTouchEnd, { capture: true });
+    }
+    
+    // Remover event listener de giroscópio
+    if (this.data.enableGyroRotation) {
+      window.removeEventListener('deviceorientation', this.onDeviceOrientation, true);
     }
     
     console.log('✅ Enhanced Controls: Removido com sucesso');
