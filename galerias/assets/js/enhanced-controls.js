@@ -1212,8 +1212,6 @@ AFRAME.registerComponent('enhanced-controls', {
       
       // Atualizar currentRotation para manter sincronia
       this.state.currentRotation = newYaw;
-      
-      return; // Giroscópio está no controle, sair
     }
     // ===== PRIORIDADE 1 (DESKTOP): MOUSE =====
     // Mouse controla rotação diretamente via onMouseMove
@@ -1238,17 +1236,15 @@ AFRAME.registerComponent('enhanced-controls', {
       if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
         this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
       }
+      
+      // ===== APLICAR ROTAÇÃO DO TECLADO =====
+      const rotation = this.el.getAttribute('rotation');
+      this.el.setAttribute('rotation', {
+        x: rotation.x,                    // Pitch (look-controls)
+        y: this.state.currentRotation,    // Yaw (teclado)
+        z: rotation.z
+      });
     }
-    
-    // ===== APLICAR ROTAÇÃO FINAL =====
-    // SEMPRE aplicar rotação à entidade
-    // Mantém a rotação acumulada de todas as fontes
-    const rotation = this.el.getAttribute('rotation');
-    this.el.setAttribute('rotation', {
-      x: rotation.x,                    // Pitch (look-controls)
-      y: this.state.currentRotation,    // Yaw (enhanced-controls) - SEMPRE APLICADO
-      z: rotation.z                     // Roll (não usado)
-    });
   },
   
   /**
