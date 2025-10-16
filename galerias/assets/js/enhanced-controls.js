@@ -960,28 +960,26 @@ AFRAME.registerComponent('enhanced-controls', {
       console.log(`🧭 Giroscópio calibrado - Alpha: ${event.alpha.toFixed(1)}°, Beta: ${event.beta.toFixed(1)}°`);
     }
     
-    // ===== CALCULAR YAW (ALPHA) =====
-    // Calcular rotação relativa ao ponto inicial
+    // ===== CALCULAR YAW (ALPHA) - MESMA LÓGICA DO PITCH =====
     let relativeAlpha = event.alpha - this.state.gyroInitialAlpha;
     
-    // Normalizar para -180 a 180
+    // Normalizar para -180 a 180 (igual ao pitch)
     if (relativeAlpha > 180) {
       relativeAlpha -= 360;
     } else if (relativeAlpha < -180) {
       relativeAlpha += 360;
     }
     
-    // CORRIGIDO: NÃO inverter (alpha já está na direção correta)
+    // Usar valor direto (mesma abordagem do pitch)
     this.state.gyroTargetRotation = relativeAlpha;
     
-    // ===== CALCULAR PITCH (BETA) =====
-    // Beta: 0 = horizontal, 90 = virado para frente, -90 = virado para trás
+    // ===== CALCULAR PITCH (BETA) - IGUAL AO ANTERIOR =====
     let relativeBeta = event.beta - this.state.gyroInitialBeta;
     
     // Limitar pitch a -90 a 90 graus
     relativeBeta = Math.max(-90, Math.min(90, relativeBeta));
     
-    // CORRIGIDO: NÃO inverter (beta já está na direção correta)
+    // Usar valor direto
     this.state.gyroTargetPitch = relativeBeta;
     
     if (ENHANCED_CONTROLS_CONFIG.ENABLE_GYRO_DEBUG_LOGS) {
@@ -1182,40 +1180,38 @@ AFRAME.registerComponent('enhanced-controls', {
         !touchCurrentlyActive &&
         !touchRecentlyUsed) {
       
-      // Suavização YAW (interpolação linear - LERP)
       const smoothing = this.data.gyroSmoothing;
-      const rotationDiff = this.state.gyroTargetRotation - this.state.currentRotation;
-      
-      // Normalizar diferença para -180 a 180 (caminho mais curto)
-      let normalizedDiff = rotationDiff;
-      if (normalizedDiff > 180) {
-        normalizedDiff -= 360;
-      } else if (normalizedDiff < -180) {
-        normalizedDiff += 360;
-      }
-      
-      // Aplicar suavização YAW
-      this.state.currentRotation += normalizedDiff * smoothing;
-      
-      // Normalizar rotação (0-360)
-      this.state.currentRotation = this.state.currentRotation % ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
-      if (this.state.currentRotation < ENHANCED_CONTROLS_CONFIG.ROTATION_MIN) {
-        this.state.currentRotation += ENHANCED_CONTROLS_CONFIG.ROTATION_FULL_CIRCLE;
-      }
-      
-      // Aplicar YAW + PITCH do giroscópio
       const rotation = this.el.getAttribute('rotation');
       
-      // Suavizar PITCH também
+      // ===== YAW (HORIZONTAL) - MESMA LÓGICA DO PITCH =====
+      const currentYaw = rotation.y;
+      const yawDiff = this.state.gyroTargetRotation - currentYaw;
+      
+      // Normalizar diferença para -180 a 180 (caminho mais curto)
+      let normalizedYawDiff = yawDiff;
+      if (normalizedYawDiff > 180) {
+        normalizedYawDiff -= 360;
+      } else if (normalizedYawDiff < -180) {
+        normalizedYawDiff += 360;
+      }
+      
+      // Aplicar suavização YAW (igual ao pitch)
+      const newYaw = currentYaw + (normalizedYawDiff * smoothing);
+      
+      // ===== PITCH (VERTICAL) - MESMA LÓGICA =====
       const currentPitch = rotation.x;
       const pitchDiff = this.state.gyroTargetPitch - currentPitch;
       const newPitch = currentPitch + (pitchDiff * smoothing);
       
+      // Aplicar ambos YAW + PITCH
       this.el.setAttribute('rotation', {
-        x: newPitch,                      // Pitch (giroscópio suavizado)
-        y: this.state.currentRotation,    // Yaw (giroscópio suavizado)
+        x: newPitch,    // Pitch (giroscópio suavizado)
+        y: newYaw,      // Yaw (giroscópio suavizado)
         z: rotation.z
       });
+      
+      // Atualizar currentRotation para manter sincronia
+      this.state.currentRotation = newYaw;
       
       return; // Giroscópio está no controle, sair
     }
