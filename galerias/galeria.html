@@ -27,6 +27,7 @@
     - Barcode 3 → Mundo 4: Obras 22-28 (index5.html)
     - Barcode 4 → Mundo 5: Obras 29-37 (index6.html)
     - Barcode 5 → Mundo 6: Obras 38-42 (index7.html)
+    - Barcode 6 → Mundo 7: Obras 43-48 (index8.html)
     
     FUNCIONALIDADES:
     - Detecção de marcadores: AR.js barcode
@@ -50,7 +51,7 @@
       cursor="rayOrigin: mouse"
       raycaster="objects: .can-click; far: 10000; interval: 100"
     >
-      <!-- MARCADORES BARCODE 0-5: 6 MUNDOS VR -->
+      <!-- MARCADORES BARCODE 0-6: 7 MUNDOS VR -->
       <a-marker type="barcode" value="0" id="barcode-0-marker">
         <a-entity id="interactive-barcode-0" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/01.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 4200; easing: easeInOutSine">
           <a-box id="collision-box-barcode-0" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
@@ -93,6 +94,13 @@
         </a-entity>
       </a-marker>
 
+      <a-marker type="barcode" value="6" id="barcode-6-marker">
+        <a-entity id="interactive-barcode-6" gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/07.glb" position="0 0 0" scale="0.8 0.8 0.8" animation="property: rotation; to: 0 360 0; loop: true; dur: 3900; easing: easeInOutSine">
+          <a-box id="collision-box-barcode-6" position="0 0 0" width="2" height="2" depth="2" opacity="0" material="transparent: true"></a-box>
+          <a-ring id="click-indicator-barcode-6" position="0 -0.2 0" radius-inner="0.4" radius-outer="0.5" color="#FF0000" opacity="0.8" animation="property: scale; to: 1.3 1.3 1.3; dur: 1200; easing: easeInOutSine; loop: true; dir: alternate" visible="false"></a-ring>
+        </a-entity>
+      </a-marker>
+
       <a-entity camera></a-entity>
     </a-scene>
 
@@ -112,17 +120,19 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Configuração: 6 marcadores barcode (0-5) → 6 mundos VR (total: 42 obras)
+        // Configuração: 7 marcadores barcode (0-6) → 7 mundos VR (total: 48 obras)
         // Mundo 1 (barcode-0): obras 1-7   | Mundo 2 (barcode-1): obras 8-14
         // Mundo 3 (barcode-2): obras 15-21 | Mundo 4 (barcode-3): obras 22-28
         // Mundo 5 (barcode-4): obras 29-37 | Mundo 6 (barcode-5): obras 38-42
+        // Mundo 7 (barcode-6): obras 43-48
         const worldsConfig = {
           'barcode-0-marker': { objId: 'interactive-barcode-0', indicatorId: 'click-indicator-barcode-0', collisionId: 'collision-box-barcode-0', url: 'https://rodrigorez.github.io/zonas11/galerias/index2.html?from=ar', color: 0xFF0000 },
           'barcode-1-marker': { objId: 'interactive-barcode-1', indicatorId: 'click-indicator-barcode-1', collisionId: 'collision-box-barcode-1', url: 'https://rodrigorez.github.io/zonas11/galerias/index3.html?from=ar', color: 0xFF0000 },
           'barcode-2-marker': { objId: 'interactive-barcode-2', indicatorId: 'click-indicator-barcode-2', collisionId: 'collision-box-barcode-2', url: 'https://rodrigorez.github.io/zonas11/galerias/index4.html?from=ar', color: 0xFF0000 },
           'barcode-3-marker': { objId: 'interactive-barcode-3', indicatorId: 'click-indicator-barcode-3', collisionId: 'collision-box-barcode-3', url: 'https://rodrigorez.github.io/zonas11/galerias/index5.html?from=ar', color: 0xFF0000 },
           'barcode-4-marker': { objId: 'interactive-barcode-4', indicatorId: 'click-indicator-barcode-4', collisionId: 'collision-box-barcode-4', url: 'https://rodrigorez.github.io/zonas11/galerias/index6.html?from=ar', color: 0xFF0000 },
-          'barcode-5-marker': { objId: 'interactive-barcode-5', indicatorId: 'click-indicator-barcode-5', collisionId: 'collision-box-barcode-5', url: 'https://rodrigorez.github.io/zonas11/galerias/index7.html?from=ar', color: 0xFF0000 }
+          'barcode-5-marker': { objId: 'interactive-barcode-5', indicatorId: 'click-indicator-barcode-5', collisionId: 'collision-box-barcode-5', url: 'https://rodrigorez.github.io/zonas11/galerias/index7.html?from=ar', color: 0xFF0000 },
+          'barcode-6-marker': { objId: 'interactive-barcode-6', indicatorId: 'click-indicator-barcode-6', collisionId: 'collision-box-barcode-6', url: 'https://rodrigorez.github.io/zonas11/galerias/index8.html?from=ar', color: 0xFF0000 }
         };
 
         // Aguardar inicialização do AR.js

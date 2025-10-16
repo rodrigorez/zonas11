@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zonas 11 - VR Mundo 7 (V2.8)</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <!-- Enhanced Controls: Componente modular extensível -->
+    <script src="assets/js/enhanced-controls.js"></script>
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="assets/js/navigation-helper.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    </style>
+    <!--
+    =====================================================
+    ZONAS 11 - MUNDO VR 7 (OBRAS 43-48)
+    =====================================================
+    
+    DESCRIÇÃO:
+    - Sétimo mundo VR acessível via marcador barcode-6
+    - Contém 6 obras de arte + 1 esfera de saída
+    - Tema: TRANSPORTE (liminalidade, metamorfose, travessias)
+    - Navegação: Clique para acessar obras individuais
+    - Botão voltar: Retorna para galeria AR/VR principal
+    
+    ESTRUTURA:
+    - Fundo 360°: fundo_mundo07.jpg (ambiente imersivo)
+    - 6 Obras: Dispostas em círculo (51.43° entre cada)
+    - Esfera voltar: Posição central (0°)
+    - Animações: Flutuação e oscilação orgânicas
+    - Total: 7 elementos igualmente distribuídos
+    
+    INTERAÇÃO:
+    - Clique em obras: Redireciona para página da obra
+    - Clique na esfera: Volta para galeria.html ou galeria-vr.html
+    - Navegação VR: look-controls + wasd-controls
+    ====================================================
+    -->
+  </head>
+  <body>
+    <a-scene
+      cursor="rayOrigin: mouse"
+      vr-mode-ui="enabled: true"
+    >
+      <!-- 🖼️ FUNDO 360° -->
+      <a-sky src="https://rodrigorez.github.io/zonas11/galerias/assets/img/fundo_mundo07.jpg"></a-sky>
+
+      <!-- 🔴 ESFERA VOLTAR - Posição 1 (0°) -->
+      <a-sphere
+        class="clickable-back"
+        position="0 1.6 -4"
+        radius="0.4"
+        color="#FF5722"
+        animation__float="property: position; to: 0 2.2 -4; dur: 2000; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 8000; easing: linear; loop: true"
+      >
+        <a-entity
+          position="0 0.6 0"
+          text="value: ↩️\nVOLTAR; align: center; color: white; width: 3"
+          scale="1.2 1.2 1.2"
+        ></a-entity>
+      </a-sphere>
+
+      <!-- 🖼️ GALERIA CIRCULAR - 6 OBRAS (51.43° entre cada) -->
+      
+      <!-- Obra 43 - 51.43° (Tumba de Gigantes) -->
+      <a-plane
+        class="clickable-image obra43"
+        position="3.13 1.6 -2.49"
+        width="1.2"
+        height="0.8"
+        rotation="0 51.43 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/43.jpg); side: double;"
+        animation__float="property: position; to: 3.13 2.4 -2.49; dur: 3000; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 0 71.43 5; dur: 4000; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 44 - 102.86° (Postales desde un planeta desconocido) -->
+      <a-plane
+        class="clickable-image obra44"
+        position="3.81 1.6 0.89"
+        width="1.2"
+        height="0.8"
+        rotation="0 102.86 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/44.jpg); side: double;"
+        animation__float="property: position; to: 3.81 2.3 0.89; dur: 3200; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 5 122.86 0; dur: 4200; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 45 - 154.29° (CRISÁLIDA) -->
+      <a-plane
+        class="clickable-image obra45"
+        position="1.72 1.6 3.62"
+        width="1.2"
+        height="0.8"
+        rotation="0 154.29 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/45.jpg); side: double;"
+        animation__float="property: position; to: 1.72 2.5 3.62; dur: 2800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: -5 174.29 -5; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 46 - 205.71° (La Hora de la Luz) -->
+      <a-plane
+        class="clickable-image obra46"
+        position="-1.72 1.6 3.62"
+        width="1.2"
+        height="0.8"
+        rotation="0 205.71 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/46.jpg); side: double;"
+        animation__float="property: position; to: -1.72 2.1 3.62; dur: 3400; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 0 225.71 5; dur: 4400; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 47 - 257.14° (Just a Bad Dream) -->
+      <a-plane
+        class="clickable-image obra47"
+        position="-3.81 1.6 0.89"
+        width="1.2"
+        height="0.8"
+        rotation="0 257.14 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/47.jpg); side: double;"
+        animation__float="property: position; to: -3.81 2.6 0.89; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: 5 277.14 0; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- Obra 48 - 308.57° (Lo Que No Quise Llorar) -->
+      <a-plane
+        class="clickable-image obra48"
+        position="-3.13 1.6 -2.49"
+        width="1.2"
+        height="0.8"
+        rotation="0 308.57 0"
+        material="src: url(https://rodrigorez.github.io/zonas11/galerias/assets/img/48.jpg); side: double;"
+        animation__float="property: position; to: -3.13 2.2 -2.49; dur: 2600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__swing="property: rotation; to: -5 328.57 -5; dur: 4600; easing: easeInOutSine; loop: true; dir: alternate"
+      ></a-plane>
+
+      <!-- 👁️ Câmera com Enhanced Controls -->
+      <a-entity 
+        camera 
+        look-controls 
+        enhanced-controls="rotationSpeed: 45; enableRotation: false; enableMovement: true; moveSpeed: 3; enableMouseDrag: true; mouseDragSpeed: 0.01"
+        position="0 1.6 0"
+      ></a-entity>
+    </a-scene>
+
+    <script>
+      AFRAME.registerComponent('redirect-on-click', {
+        schema: { url: { type: 'string', default: '#' } },
+        init: function () {
+          const el = this.el;
+          const url = this.data.url;
+
+          el.addEventListener('click', () => {
+            el.setAttribute('scale', '1.2 1.2 1.2');
+            setTimeout(() => {
+              window.location.href = url;
+            }, 300);
+          });
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Detectar origem da navegação (AR ou VR)
+        const source = getNavigationSource(); // Retorna 'ar' ou 'vr'
+        console.log(`🌍 Mundo 7: Origem detectada → ${source.toUpperCase()}`);
+        
+        // Configurar esfera de voltar DINAMICAMENTE
+        const backSphere = document.querySelector('.clickable-back');
+        if (backSphere) {
+          const galleryURL = getGalleryURL(source);
+          backSphere.setAttribute('redirect-on-click', { url: galleryURL });
+          console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
+        }
+
+        // Configurar cliques para cada obra COM parâmetro ?from=
+        for (let i = 43; i <= 48; i++) {
+          const obra = document.querySelector(`.obra${i}`);
+          if (obra) {
+            const obraURL = getObraURL(i, source);
+            obra.setAttribute('redirect-on-click', { url: obraURL });
+          }
+        }
+        
+        console.log(`✅ Mundo 7: Navegação contextual (${source.toUpperCase()}) configurada`);
+        console.log(`📊 6 obras + 1 esfera = 7 elementos (distribuição igual)`);
+      });
+    </script>
+  </body>
+</html>

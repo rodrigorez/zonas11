@@ -17,8 +17,8 @@
     
     DESCRIÇÃO:
     - Galeria de Realidade Virtual com navegação livre
-    - 6 objetos 3D flutuantes representando 6 mundos VR
-    - 42 obras de arte distribuídas em 6 mundos
+    - 7 objetos 3D flutuantes representando 7 mundos VR
+    - 48 obras de arte distribuídas em 7 mundos
     - Objetos 3D clicáveis com redirecionamento
     
     ESTRUTURA DOS MUNDOS:
@@ -28,6 +28,7 @@
     - Objeto 04.glb (180°) → Mundo 4: Obras 22-28 (index5.html?from=vr)
     - Objeto 05.glb (240°) → Mundo 5: Obras 29-37 (index6.html?from=vr)
     - Objeto 06.glb (300°) → Mundo 6: Obras 38-42 (index7.html?from=vr)
+    - Objeto 07.glb (330°) → Mundo 7: Obras 43-48 (index8.html?from=vr)
     
     FUNCIONALIDADES:
     - Navegação livre: WASD + Mouse (rotação horizontal + vertical)
@@ -41,7 +42,7 @@
     DISPOSIÇÃO CIRCULAR:
     - Raio: 4 metros
     - Altura: 1.6 metros (nível dos olhos)
-    - Ângulos: 0°, 60°, 120°, 180°, 240°, 300°
+    - Ângulos: 0°, 51.43°, 102.86°, 154.29°, 205.71°, 257.14°, 308.57°
     ====================================================
     -->
   </head>
@@ -54,7 +55,7 @@
       <a-sky color="#0a0a0a"></a-sky>
 
       <!-- ===============================================
-           OBJETOS 3D - 6 MUNDOS (DISPOSIÇÃO CIRCULAR)
+           OBJETOS 3D - 7 MUNDOS (DISPOSIÇÃO CIRCULAR)
            =============================================== -->
 
       <!-- MUNDO 1 - Posição 0° (Norte) -->
@@ -67,54 +68,64 @@
         animation__rotate="property: rotation; to: 0 360 0; dur: 4200; easing: linear; loop: true"
       ></a-entity>
 
-      <!-- MUNDO 2 - Posição 60° (Nordeste) -->
+      <!-- MUNDO 2 - Posição 51.43° -->
       <a-entity 
         class="world-portal mundo2"
         gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/02.glb" 
-        position="3.46 1.6 -2"
+        position="3.13 1.6 -2.49"
         scale="0.8 0.8 0.8"
-        animation__float="property: position; to: 3.46 2.2 -2; dur: 3200; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__float="property: position; to: 3.13 2.2 -2.49; dur: 3200; easing: easeInOutSine; loop: true; dir: alternate"
         animation__rotate="property: rotation; to: 0 360 0; dur: 3800; easing: linear; loop: true"
       ></a-entity>
 
-      <!-- MUNDO 3 - Posição 120° (Sudeste) -->
+      <!-- MUNDO 3 - Posição 102.86° -->
       <a-entity 
         class="world-portal mundo3"
         gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/03.glb" 
-        position="3.46 1.6 2"
+        position="3.81 1.6 0.89"
         scale="0.8 0.8 0.8"
-        animation__float="property: position; to: 3.46 2.2 2; dur: 2800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__float="property: position; to: 3.81 2.2 0.89; dur: 2800; easing: easeInOutSine; loop: true; dir: alternate"
         animation__rotate="property: rotation; to: 0 360 0; dur: 4600; easing: linear; loop: true"
       ></a-entity>
 
-      <!-- MUNDO 4 - Posição 180° (Sul) -->
+      <!-- MUNDO 4 - Posição 154.29° -->
       <a-entity 
         class="world-portal mundo4"
         gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/04.glb" 
-        position="0 1.6 4"
+        position="1.72 1.6 3.62"
         scale="0.8 0.8 0.8"
-        animation__float="property: position; to: 0 2.2 4; dur: 3400; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__float="property: position; to: 1.72 2.2 3.62; dur: 3400; easing: easeInOutSine; loop: true; dir: alternate"
         animation__rotate="property: rotation; to: 0 360 0; dur: 3600; easing: linear; loop: true"
       ></a-entity>
 
-      <!-- MUNDO 5 - Posição 240° (Sudoeste) -->
+      <!-- MUNDO 5 - Posição 205.71° -->
       <a-entity 
         class="world-portal mundo5"
         gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/05.glb" 
-        position="-3.46 1.6 2"
+        position="-1.72 1.6 3.62"
         scale="0.8 0.8 0.8"
-        animation__float="property: position; to: -3.46 2.2 2; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__float="property: position; to: -1.72 2.2 3.62; dur: 3600; easing: easeInOutSine; loop: true; dir: alternate"
         animation__rotate="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true"
       ></a-entity>
 
-      <!-- MUNDO 6 - Posição 300° (Noroeste) -->
+      <!-- MUNDO 6 - Posição 257.14° -->
       <a-entity 
         class="world-portal mundo6"
         gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/06.glb" 
-        position="-3.46 1.6 -2"
+        position="-3.81 1.6 0.89"
         scale="0.8 0.8 0.8"
-        animation__float="property: position; to: -3.46 2.2 -2; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__float="property: position; to: -3.81 2.2 0.89; dur: 3800; easing: easeInOutSine; loop: true; dir: alternate"
         animation__rotate="property: rotation; to: 0 360 0; dur: 4200; easing: linear; loop: true"
+      ></a-entity>
+
+      <!-- MUNDO 7 - Posição 308.57° (NOVO) -->
+      <a-entity 
+        class="world-portal mundo7"
+        gltf-model="https://rodrigorez.github.io/zonas11/galerias/assets/3d/07.glb" 
+        position="-3.13 1.6 -2.49"
+        scale="0.8 0.8 0.8"
+        animation__float="property: position; to: -3.13 2.2 -2.49; dur: 3300; easing: easeInOutSine; loop: true; dir: alternate"
+        animation__rotate="property: rotation; to: 0 360 0; dur: 3900; easing: linear; loop: true"
       ></a-entity>
 
       <!-- 👁️ Câmera com Enhanced Controls -->
@@ -146,7 +157,7 @@
       document.addEventListener('DOMContentLoaded', () => {
         console.log('🥽 Galeria VR: Inicializando...');
         
-        // Configuração dos portais para os 6 mundos
+        // Configuração dos portais para os 7 mundos
         // Cada portal redireciona para seu mundo com parâmetro ?from=vr
         const portals = [
           { class: 'mundo1', mundoNum: 2, nome: 'Mundo 1 (Obras 1-7)' },
@@ -154,7 +165,8 @@
           { class: 'mundo3', mundoNum: 4, nome: 'Mundo 3 (Obras 15-21)' },
           { class: 'mundo4', mundoNum: 5, nome: 'Mundo 4 (Obras 22-28)' },
           { class: 'mundo5', mundoNum: 6, nome: 'Mundo 5 (Obras 29-37)' },
-          { class: 'mundo6', mundoNum: 7, nome: 'Mundo 6 (Obras 38-42)' }
+          { class: 'mundo6', mundoNum: 7, nome: 'Mundo 6 (Obras 38-42)' },
+          { class: 'mundo7', mundoNum: 8, nome: 'Mundo 7 (Obras 43-48)' }
         ];
         
         // Configurar cada portal
