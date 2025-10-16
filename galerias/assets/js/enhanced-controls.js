@@ -561,8 +561,8 @@ AFRAME.registerComponent('enhanced-controls', {
     } else {
       // Android e navegadores modernos
       window.addEventListener('deviceorientation', this.onDeviceOrientation, true);
-      console.log('✅ Giroscópio configurado (Android/Desktop)');
-      this.state.gyroActive = true;
+      console.log('✅ Giroscópio listener configurado (aguardando dados)');
+      // NÃO marcar gyroActive aqui - só após receber primeiro evento
     }
     
     console.log('✅ Rotação via giroscópio configurada:');
@@ -950,7 +950,14 @@ AFRAME.registerComponent('enhanced-controls', {
     // Verificar se dados do giroscópio estão disponíveis
     if (event.alpha === null || event.alpha === undefined ||
         event.beta === null || event.beta === undefined) {
+      // Desktop sem giroscópio - não marcar como ativo
       return;
+    }
+    
+    // MARCAR GIROSCÓPIO COMO ATIVO apenas quando receber dados reais
+    if (!this.state.gyroActive) {
+      this.state.gyroActive = true;
+      console.log('✅ Giroscópio ATIVADO - dados recebidos do sensor');
     }
     
     // CALIBRAÇÃO: Armazenar valores iniciais na primeira leitura
