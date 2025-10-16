@@ -8,20 +8,20 @@
       body { margin: 0; overflow: hidden; }
       
       /* =====================================================
-         🖼️ LOGO ZONAS - Overlay Fixo no Topo Centro
+         🖼️ LOGO ZONAS - Overlay Fixo no Fundo Centro
          =====================================================
          Logo PNG transparente que acompanha a câmera
-         - Posição: Topo centro (verticalmente acima, horizontalmente centralizado)
-         - Tamanho: 1/6 da largura da tela (16.666% vw)
+         - Posição: Fundo centro (verticalmente embaixo, horizontalmente centralizado)
+         - Tamanho: 1/3 da largura da tela (33.333% vw)
          - Comportamento: Fixo na viewport, não rola
          ===================================================== */
       
       #zonas-logo {
         position: fixed;              /* Fixo na tela (acompanha câmera) */
-        top: 2%;                      /* 2% do topo (margem pequena) */
+        bottom: 2%;                   /* 2% do fundo (margem pequena) */
         left: 50%;                    /* Centro horizontal */
         transform: translateX(-50%); /* Ajuste fino para centralizar */
-        width: 16.666vw;              /* 1/6 da largura da tela (100/6 = 16.666) */
+        width: 33,333vw;              /* 1/3 da largura da tela (100/3 = 33.333) */
         height: auto;                 /* Mantém proporção original */
         z-index: 9999;                /* Sempre acima de tudo */
         pointer-events: none;         /* Não bloqueia cliques (passa-through) */
@@ -37,14 +37,15 @@
       
       @media (max-width: 768px) {
         #zonas-logo {
-          width: 20vw;  /* 1/5 da tela em mobile (mais visível) */
-          top: 3%;      /* Margem ligeiramente maior */
+          width: 33,333vw;  /* 1/3 da largura da tela (100/3 = 33.333) */
+          bottom: 3%;       /* Margem ligeiramente maior */
         }
       }
       
       @media (max-width: 480px) {
         #zonas-logo {
-          width: 25vw;  /* 1/4 da tela em telas muito pequenas */
+          width: 33,333vw;  /* 1/3 da largura da tela (100/3 = 33.333) */
+          bottom: 3%;       /* Margem ligeiramente maior */
         }
       }
     </style>
