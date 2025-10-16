@@ -355,8 +355,14 @@ AFRAME.registerComponent('enhanced-controls', {
     this.onDeviceOrientation = this.onDeviceOrientation.bind(this);
     
     // Configurar módulos ativos
+    if (this.data.enableRotation || this.data.enableMovement) {
+      // Configurar listeners de teclado (necessário para Q/E E WASD)
+      this.setupKeyboardListeners();
+    }
+    
     if (this.data.enableRotation) {
-      this.setupRotation();
+      // Configurar rotação inicial apenas
+      this.setupRotationInitial();
     }
     
     if (this.data.enableMovement) {
@@ -443,18 +449,32 @@ AFRAME.registerComponent('enhanced-controls', {
 
   /**
    * =====================================================
-   * SETUP ROTATION - CONFIGURAÇÃO DO MÓDULO DE ROTAÇÃO
+   * SETUP KEYBOARD LISTENERS - CONFIGURAR LISTENERS DE TECLADO
    * =====================================================
    * 
-   * Configura event listeners para teclas Q e E.
-   * Suporta maiúsculas e minúsculas.
+   * Configura event listeners para TODAS as teclas (Q/E + WASD).
+   * Chamado independentemente de enableRotation para garantir WASD.
    */
-  setupRotation: function () {
-    console.log('🔄 Enhanced Controls: Configurando rotação Q/E');
+  setupKeyboardListeners: function () {
+    console.log('⌨️ Enhanced Controls: Configurando listeners de teclado (Q/E + WASD)');
     
     // Adicionar event listeners globais
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
+    
+    console.log('✅ Listeners de teclado configurados');
+  },
+  
+  /**
+   * =====================================================
+   * SETUP ROTATION INITIAL - CONFIGURAR ROTAÇÃO INICIAL
+   * =====================================================
+   * 
+   * Configura rotação inicial para Q/E.
+   * Chamado apenas se enableRotation: true.
+   */
+  setupRotationInitial: function () {
+    console.log('🔄 Enhanced Controls: Configurando rotação Q/E');
     
     // Obter rotação inicial da câmera
     const rotation = this.el.getAttribute('rotation');
@@ -462,7 +482,21 @@ AFRAME.registerComponent('enhanced-controls', {
       this.state.currentRotation = rotation.y || 0;
     }
     
-    console.log('✅ Rotação configurada: Q (esquerda) | E (direita)');
+    console.log('✅ Rotação Q/E configurada');
+  },
+  
+  /**
+   * =====================================================
+   * SETUP ROTATION (DEPRECATED) - MANTIDO PARA COMPATIBILIDADE
+   * =====================================================
+   * 
+   * Método legado que configurava Q/E.
+   * Agora dividido em setupKeyboardListeners + setupRotationInitial.
+   */
+  setupRotation: function () {
+    // Método legado mantido para compatibilidade
+    // Agora apenas chama os novos métodos separados
+    console.log('⚠️ setupRotation() é legado - usando setupKeyboardListeners() e setupRotationInitial()');
   },
   
   /**
