@@ -171,6 +171,83 @@
     </a-scene>
 
     <script>
+      // =====================================================
+      // 🎨 SISTEMA DE CORES - CONFIGURAÇÃO GLOBAL
+      // =====================================================
+      // 
+      // Este sistema permite controlar as cores dos objetos 3D
+      // da galeria de forma simples e flexível.
+      //
+      // COMO FUNCIONA:
+      // 1. MODE define o comportamento padrão de TODOS os objetos
+      // 2. Cada objeto pode ter uma cor local que SEMPRE prevalece
+      //
+      // =====================================================
+      
+      // -----------------------------------------------------
+      // 🟢 MODE - Comportamento Padrão Global
+      // -----------------------------------------------------
+      // Define como os objetos SEM cor local se comportam
+      //
+      // Opções disponíveis:
+      //   'original' → Mantém as cores originais do arquivo GLB
+      //   'global'   → Todos usam a cor definida em GLOBAL_COLOR
+      //
+      // EXEMPLOS:
+      //   const MODE = 'original';  // Cores nativas dos arquivos GLB
+      //   const MODE = 'global';    // Todos com a mesma cor
+      // -----------------------------------------------------
+      
+      const MODE = 'original';
+      
+      // -----------------------------------------------------
+      // 🎨 GLOBAL_COLOR - Cor Global Unificada
+      // -----------------------------------------------------
+      // Cor aplicada quando MODE = 'global'
+      // Formato: Hexadecimal 0xRRGGBB
+      //
+      // EXEMPLOS DE CORES:
+      //   0xFF0000  → Vermelho
+      //   0x00FF00  → Verde
+      //   0x0000FF  → Azul
+      //   0xFFFF00  → Amarelo
+      //   0xFF00FF  → Magenta
+      //   0x00FFFF  → Ciano
+      //   0xFFFFFF  → Branco
+      //   0x000000  → Preto
+      //   0xFF8800  → Laranja
+      //   0x8800FF  → Roxo
+      // -----------------------------------------------------
+      
+      const GLOBAL_COLOR = 0xFF0000;
+      
+      // =====================================================
+      // 📝 GUIA RÁPIDO DE USO:
+      // =====================================================
+      //
+      // ✔️ CENAÁRIO 1: Manter cores originais dos arquivos GLB
+      //    const MODE = 'original';
+      //    (Não precisa mexer em GLOBAL_COLOR)
+      //
+      // ✔️ CENAÁRIO 2: Todos os objetos vermelhos
+      //    const MODE = 'global';
+      //    const GLOBAL_COLOR = 0xFF0000;
+      //
+      // ✔️ CENAÁRIO 3: Todos azuis
+      //    const MODE = 'global';
+      //    const GLOBAL_COLOR = 0x0000FF;
+      //
+      // ✔️ CENAÁRIO 4: Cores originais MAS Mundo 3 sempre verde
+      //    const MODE = 'original';
+      //    (No array portals, definir: color: 0x00FF00 no mundo3)
+      //
+      // ✔️ CENAÁRIO 5: Todos vermelhos MAS Mundo 5 azul
+      //    const MODE = 'global';
+      //    const GLOBAL_COLOR = 0xFF0000;
+      //    (No array portals, definir: color: 0x0000FF no mundo5)
+      //
+      // =====================================================
+
       // Componente de redirecionamento (reutilizado do sistema existente)
       AFRAME.registerComponent('redirect-on-click', {
         schema: { url: { type: 'string', default: '#' } },
@@ -190,19 +267,129 @@
       document.addEventListener('DOMContentLoaded', () => {
         console.log('🥽 Galeria VR: Inicializando...');
         
-        // Configuração dos portais para os 10 mundos
-        // Cada portal redireciona para seu mundo com parâmetro ?from=vr
+        // =====================================================
+        // 🎯 ARRAY DE PORTAIS - Configuração dos 10 Mundos
+        // =====================================================
+        //
+        // Cada objeto representa um mundo da galeria VR.
+        // Você pode definir cores individuais aqui.
+        //
+        // PROPRIEDADES:
+        //   - class: Classe CSS do objeto (NÃO ALTERAR)
+        //   - mundoNum: Número do mundo para navegação (NÃO ALTERAR)
+        //   - nome: Descrição do mundo (opcional, para documentação)
+        //   - color: Cor ESPECÍFICA deste objeto (formato: 0xRRGGBB)
+        //
+        // =====================================================
+        // 🔴 ATENÇÃO: PROPRIEDADE 'color'
+        // =====================================================
+        //
+        // Se color = null:
+        //   → Objeto segue o MODE (original ou global)
+        //
+        // Se color = 0xRRGGBB (ex: 0xFF0000):
+        //   → Objeto SEMPRE usa essa cor (IGNORA MODE)
+        //
+        // EXEMPLOS DE COR INDIVIDUAL:
+        //   color: null       → Segue MODE
+        //   color: 0xFF0000   → Sempre vermelho
+        //   color: 0x00FF00   → Sempre verde
+        //   color: 0x0000FF   → Sempre azul
+        //   color: 0xFFFF00   → Sempre amarelo
+        //   color: 0xFF00FF   → Sempre magenta
+        //
+        // =====================================================
+        // 📝 CASOS DE USO COMUNS:
+        // =====================================================
+        //
+        // ✔️ Todos seguem MODE:
+        //    Deixe todos com color: null
+        //
+        // ✔️ Destacar apenas o Mundo 5:
+        //    MODE = 'original' (todos com cores GLB)
+        //    mundo5: color: 0xFF0000 (só ele vermelho)
+        //
+        // ✔️ Arco-íris (cada mundo uma cor):
+        //    MODE = 'original' (não importa)
+        //    mundo1: color: 0xFF0000  (vermelho)
+        //    mundo2: color: 0xFF8800  (laranja)
+        //    mundo3: color: 0xFFDD00  (amarelo)
+        //    mundo4: color: 0x00FF00  (verde)
+        //    mundo5: color: 0x00DDDD  (ciano)
+        //    mundo6: color: 0x0000FF  (azul)
+        //    mundo7: color: 0x8800FF  (roxo)
+        //    mundo8: color: 0xFF00FF  (magenta)
+        //    mundo9: color: 0xFF0088  (rosa)
+        //    mundo10: color: 0xFFFFFF (branco)
+        //
+        // ✔️ Todos vermelhos EXCETO Mundo 3 (azul):
+        //    MODE = 'global'
+        //    GLOBAL_COLOR = 0xFF0000
+        //    mundo3: color: 0x0000FF
+        //
+        // =====================================================
+        
         const portals = [
-          { class: 'mundo1', mundoNum: 2, nome: 'Mundo 1 (Obras 1-7)' },
-          { class: 'mundo2', mundoNum: 3, nome: 'Mundo 2 (Obras 8-14)' },
-          { class: 'mundo3', mundoNum: 4, nome: 'Mundo 3 (Obras 15-21)' },
-          { class: 'mundo4', mundoNum: 5, nome: 'Mundo 4 (Obras 22-28)' },
-          { class: 'mundo5', mundoNum: 6, nome: 'Mundo 5 (Obras 29-37)' },
-          { class: 'mundo6', mundoNum: 7, nome: 'Mundo 6 (Obras 38-42)' },
-          { class: 'mundo7', mundoNum: 8, nome: 'Mundo 7 (Obras 43-48)' },
-          { class: 'mundo8', mundoNum: 9, nome: 'Mundo 8 (Obras 49-55)' },
-          { class: 'mundo9', mundoNum: 10, nome: 'Mundo 9 (Obras 57-63)' },
-          { class: 'mundo10', mundoNum: 11, nome: 'Mundo 10 (Obras 65-70)' }
+          { 
+            class: 'mundo1', 
+            mundoNum: 2, 
+            nome: 'Mundo 1 (Obras 1-7)',
+            color: null  // null = segue MODE | 0xRRGGBB = cor fixa
+          },
+          { 
+            class: 'mundo2', 
+            mundoNum: 3, 
+            nome: 'Mundo 2 (Obras 8-14)',
+            color: null  // Altere aqui para cor específica (ex: 0xFF8800)
+          },
+          { 
+            class: 'mundo3', 
+            mundoNum: 4, 
+            nome: 'Mundo 3 (Obras 15-21)',
+            color: null  // Exemplo: color: 0xFFDD00 (amarelo ouro)
+          },
+          { 
+            class: 'mundo4', 
+            mundoNum: 5, 
+            nome: 'Mundo 4 (Obras 22-28)',
+            color: null  // Exemplo: color: 0x00FF00 (verde)
+          },
+          { 
+            class: 'mundo5', 
+            mundoNum: 6, 
+            nome: 'Mundo 5 (Obras 29-37)',
+            color: null  // Exemplo: color: 0x00DDDD (ciano)
+          },
+          { 
+            class: 'mundo6', 
+            mundoNum: 7, 
+            nome: 'Mundo 6 (Obras 38-42)',
+            color: null  // Exemplo: color: 0x0088FF (azul)
+          },
+          { 
+            class: 'mundo7', 
+            mundoNum: 8, 
+            nome: 'Mundo 7 (Obras 43-48)',
+            color: null  // Exemplo: color: 0x8800FF (roxo)
+          },
+          { 
+            class: 'mundo8', 
+            mundoNum: 9, 
+            nome: 'Mundo 8 (Obras 49-55)',
+            color: null  // Exemplo: color: 0xFF00FF (magenta)
+          },
+          { 
+            class: 'mundo9', 
+            mundoNum: 10, 
+            nome: 'Mundo 9 (Obras 57-63)',
+            color: null  // Exemplo: color: 0xFF0088 (rosa)
+          },
+          { 
+            class: 'mundo10', 
+            mundoNum: 11, 
+            nome: 'Mundo 10 (Obras 65-70)',
+            color: null  // Exemplo: color: 0xFFFFFF (branco)
+          }
         ];
         
         // Configurar cada portal
@@ -217,42 +404,68 @@
             entity.setAttribute('redirect-on-click', { url: mundoURL });
             console.log(`🌍 Portal configurado: ${portal.nome} → ${mundoURL}`);
             
-            // Aplicar cor vermelha ao modelo 3D quando carregar
+            // Aplicar cor ao modelo 3D quando carregar
             entity.addEventListener('model-loaded', () => {
-              console.log(`🔴 Aplicando cor vermelha ao ${portal.nome}`);
-              
-              // Aguardar um frame para garantir que o modelo esteja totalmente carregado
               setTimeout(() => {
                 const mesh = entity.getObject3D('mesh');
                 
                 if (mesh) {
-                  let materialsCount = 0;
+                  let finalColor = null;
+                  let colorSource = '';
                   
-                  // Percorrer todos os materiais do modelo
-                  mesh.traverse((child) => {
-                    if (child.isMesh && child.material) {
-                      materialsCount++;
-                      
-                      // Aplicar cor vermelha (#FF0000)
-                      if (Array.isArray(child.material)) {
-                        // Material é array
-                        child.material.forEach((mat, index) => {
-                          mat.color.setHex(0xFF0000);
-                          mat.emissive.setHex(0x220000);
-                          mat.needsUpdate = true;
-                        });
-                      } else {
-                        // Material único
-                        child.material.color.setHex(0xFF0000);
-                        child.material.emissive.setHex(0x220000);
-                        child.material.needsUpdate = true;
-                      }
+                  // =====================================================
+                  // SISTEMA SIMPLIFICADO (2 NÍVEIS)
+                  // =====================================================
+                  
+                  // NÍVEL 1: Cor definida no objeto (SEMPRE prevalece)
+                  if (portal.color !== null && portal.color !== undefined) {
+                    finalColor = portal.color;
+                    colorSource = `COR LOCAL (#${portal.color.toString(16).toUpperCase().padStart(6, '0')})`;
+                  }
+                  // NÍVEL 2: Seguir MODE
+                  else {
+                    switch (MODE) {
+                      case 'global':
+                        finalColor = GLOBAL_COLOR;
+                        colorSource = `COR GLOBAL (#${GLOBAL_COLOR.toString(16).toUpperCase().padStart(6, '0')})`;
+                        break;
+                        
+                      case 'original':
+                      default:
+                        finalColor = null;
+                        colorSource = 'COR ORIGINAL DO GLB';
+                        break;
                     }
-                  });
+                  }
                   
-                  console.log(`✅ Cor vermelha aplicada em ${materialsCount} materiais de ${portal.nome}`);
+                  // =====================================================
+                  // APLICAR COR (se definida)
+                  // =====================================================
+                  if (finalColor !== null) {
+                    let materialsCount = 0;
+                    
+                    mesh.traverse((child) => {
+                      if (child.isMesh && child.material) {
+                        materialsCount++;
+                        
+                        if (Array.isArray(child.material)) {
+                          child.material.forEach((mat) => {
+                            mat.color.setHex(finalColor);
+                            mat.needsUpdate = true;
+                          });
+                        } else {
+                          child.material.color.setHex(finalColor);
+                          child.material.needsUpdate = true;
+                        }
+                      }
+                    });
+                    
+                    console.log(`✅ ${portal.nome}: ${colorSource} (${materialsCount} materiais)`);
+                  } else {
+                    console.log(`🎨 ${portal.nome}: ${colorSource}`);
+                  }
                 } else {
-                  console.warn(`⚠️ Mesh não encontrada em ${portal.nome}`);
+                  console.warn(`⚠️ ${portal.nome}: Mesh não encontrada`);
                 }
               }, 100);
             });
