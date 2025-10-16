@@ -161,7 +161,7 @@ function addSourceParam(url, source = null) {
  * Helper específico para retornar URL de mundos VR
  * com parâmetro de origem.
  * 
- * @param {number} mundoNum - Número do mundo (2-7)
+ * @param {number} mundoNum - Número do mundo (2-8)
  * @param {string|null} source - Origem manual ('ar'|'vr'), ou null para detectar
  * @returns {string} URL completa do mundo com parâmetro
  * 
@@ -173,12 +173,12 @@ function addSourceParam(url, source = null) {
  *   → Retorna: 'https://.../index5.html?from=vr'
  * 
  * VALIDAÇÃO:
- * Se mundoNum inválido (< 2 ou > 7), retorna null e loga erro.
+ * Se mundoNum inválido (< 2 ou > 8), retorna null e loga erro.
  */
 function getMundoURL(mundoNum, source = null) {
   // Validar número do mundo
-  if (mundoNum < 2 || mundoNum > 7) {
-    console.error(`❌ Navigation Helper: Número de mundo inválido: ${mundoNum} (deve ser 2-7)`);
+  if (mundoNum < 2 || mundoNum > 8) {
+    console.error(`❌ Navigation Helper: Número de mundo inválido: ${mundoNum} (deve ser 2-8)`);
     return null;
   }
   
@@ -203,7 +203,7 @@ function getMundoURL(mundoNum, source = null) {
  * Helper específico para retornar URL de obras
  * com parâmetro de origem.
  * 
- * @param {number} obraNum - Número da obra (1-42)
+ * @param {number} obraNum - Número da obra (1-48)
  * @param {string|null} source - Origem manual ('ar'|'vr'), ou null para detectar
  * @returns {string} URL completa da obra com parâmetro
  * 
@@ -215,12 +215,12 @@ function getMundoURL(mundoNum, source = null) {
  *   → Retorna: 'https://.../obra25.html?from=vr'
  * 
  * VALIDAÇÃO:
- * Se obraNum inválido (< 1 ou > 42), retorna null e loga erro.
+ * Se obraNum inválido (< 1 ou > 48), retorna null e loga erro.
  */
 function getObraURL(obraNum, source = null) {
   // Validar número da obra
-  if (obraNum < 1 || obraNum > 42) {
-    console.error(`❌ Navigation Helper: Número de obra inválido: ${obraNum} (deve ser 1-42)`);
+  if (obraNum < 1 || obraNum > 48) {
+    console.error(`❌ Navigation Helper: Número de obra inválido: ${obraNum} (deve ser 1-48)`);
     return null;
   }
   
