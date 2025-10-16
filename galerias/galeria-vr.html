@@ -26,6 +26,7 @@
         z-index: 9999;                /* Sempre acima de tudo */
         pointer-events: none;         /* Não bloqueia cliques (passa-through) */
         opacity: 0.95;                /* Levemente transparente (opcional) */
+        transition: transform 0.3s ease; /* Animação suave de rotação */
       }
       
       /* =====================================================
@@ -539,6 +540,128 @@
         console.log('   - W/A/S/D: Movimento');
         console.log('   - Mouse: Olhar ao redor + Rotação');
         console.log('   - Clique: Acessar mundo VR');
+        
+        // =====================================================
+        // 🔄 ROTAÇÃO INTELIGENTE DO LOGO (Ângulos de 90°)
+        // =====================================================
+        // O logo rotaciona em passos de 90° conforme a orientação
+        // da tela para sempre permanecer legível e centralizado
+        // =====================================================
+        
+        const logo = document.getElementById('zonas-logo');
+        
+        if (logo) {
+          // Função para atualizar rotação do logo baseado na orientação da tela
+          function updateLogoRotation() {
+            let rotation = 0;
+            
+            // Screen Orientation API (moderno)
+            if (screen.orientation) {
+              const type = screen.orientation.type;
+              
+              switch(type) {
+                case 'portrait-primary':
+                  // Celular normal (vertical) - Logo horizontal no fundo
+                  rotation = 0;
+                  logo.style.bottom = '2%';
+                  logo.style.top = 'auto';
+                  logo.style.left = '50%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateX(-50%) rotate(0deg)';
+                  break;
+                  
+                case 'landscape-primary':
+                  // Celular horizontal (lado direito) - Logo vertical no fundo VISUAL (direita)
+                  rotation = -90;  // Rotação invertida para ficar legível
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '50%';
+                  logo.style.left = 'auto';
+                  logo.style.right = '2%';
+                  logo.style.transform = 'translateY(-50%) rotate(-90deg)';
+                  break;
+                  
+                case 'portrait-secondary':
+                  // Celular de cabeça para baixo - Logo horizontal no fundo VISUAL (topo da tela)
+                  rotation = 180;
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '2%';
+                  logo.style.left = '50%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateX(-50%) rotate(180deg)';
+                  break;
+                  
+                case 'landscape-secondary':
+                  // Celular horizontal (lado esquerdo) - Logo vertical no fundo VISUAL (esquerda)
+                  rotation = 90;  // Rotação invertida para ficar legível
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '50%';
+                  logo.style.left = '2%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateY(-50%) rotate(90deg)';
+                  break;
+              }
+              
+              console.log(`🔄 Orientação: ${type} → Logo: ${rotation}° (posição ajustada)`);
+            }
+            // Fallback: window.orientation (iOS antigo)
+            else if (typeof window.orientation !== 'undefined') {
+              const angle = window.orientation;
+              
+              switch(angle) {
+                case 0:   // Portrait normal
+                  logo.style.bottom = '2%';
+                  logo.style.top = 'auto';
+                  logo.style.left = '50%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateX(-50%) rotate(0deg)';
+                  break;
+                  
+                case 90:  // Landscape direita
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '50%';
+                  logo.style.left = 'auto';
+                  logo.style.right = '2%';
+                  logo.style.transform = 'translateY(-50%) rotate(-90deg)';
+                  break;
+                  
+                case -90: // Landscape esquerda
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '50%';
+                  logo.style.left = '2%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateY(-50%) rotate(90deg)';
+                  break;
+                  
+                case 180: // Portrait invertido
+                  logo.style.bottom = 'auto';
+                  logo.style.top = '2%';
+                  logo.style.left = '50%';
+                  logo.style.right = 'auto';
+                  logo.style.transform = 'translateX(-50%) rotate(180deg)';
+                  break;
+              }
+              
+              console.log(`🔄 Orientação: ${angle}° (posição ajustada)`);
+            }
+          }
+          
+          // Atualizar ao carregar
+          updateLogoRotation();
+          
+          // Atualizar ao mudar orientação (Screen Orientation API)
+          if (screen.orientation) {
+            screen.orientation.addEventListener('change', updateLogoRotation);
+            console.log('📱 Detecção de orientação (Screen Orientation API) ativada');
+          }
+          // Fallback: orientationchange event
+          else {
+            window.addEventListener('orientationchange', () => {
+              // Aguardar 100ms para orientação estabilizar
+              setTimeout(updateLogoRotation, 100);
+            });
+            console.log('📱 Detecção de orientação (orientationchange) ativada');
+          }
+        }
       });
     </script>
   </body>
