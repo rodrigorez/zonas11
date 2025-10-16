@@ -30,8 +30,7 @@
     - Objeto 06.glb (300°) → Mundo 6: Obras 38-42 (index7.html?from=vr)
     
     FUNCIONALIDADES:
-    - Navegação livre: WASD + Mouse
-    - Rotação: Q/E (Enhanced Controls)
+    - Navegação livre: WASD + Mouse (rotação horizontal + vertical)
     - Modelos 3D: .glb com animações orgânicas
     - Cores: Material vermelho (#FF0000) padronizado
     
@@ -121,8 +120,8 @@
       <!-- 👁️ Câmera com Enhanced Controls -->
       <a-entity 
         camera 
-        look-controls 
-        enhanced-controls="rotationSpeed: 45; enableRotation: true; enableMovement: true; moveSpeed: 3; enableMouseDrag: true; mouseDragSpeed: 0.005"
+        look-controls
+        enhanced-controls="rotationSpeed: 45; enableRotation: false; enableMovement: true; moveSpeed: 3; enableMouseDrag: true; mouseDragSpeed: 0.01"
         position="0 1.6 0"
       ></a-entity>
     </a-scene>
@@ -217,8 +216,7 @@
         console.log('✅ Galeria VR: Inicialização completa');
         console.log('📋 Controles disponíveis:');
         console.log('   - W/A/S/D: Movimento');
-        console.log('   - Mouse: Olhar ao redor');
-        console.log('   - Q/E: Rotação');
+        console.log('   - Mouse: Olhar ao redor + Rotação');
         console.log('   - Clique: Acessar mundo VR');
       });
     </script>
