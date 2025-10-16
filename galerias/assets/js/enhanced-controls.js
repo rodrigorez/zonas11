@@ -386,12 +386,59 @@ AFRAME.registerComponent('enhanced-controls', {
     //   this.setupCrouch();
     // }
     
+    // ===== DESABILITAR YAW DO LOOK-CONTROLS =====
+    // Enhanced-controls assume controle total da rotação Y (yaw)
+    // Look-controls continua gerenciando pitch (olhar cima/baixo)
+    this.disableLookControlsYaw();
+    
     console.log('✅ Enhanced Controls: Inicializado com sucesso');
     console.log('📋 Configuração:', {
       rotação: this.data.enableRotation ? `${this.data.rotationSpeed}°/s` : 'desativada',
       corrida: this.data.enableRun ? 'ativada (FUTURO)' : 'desativada',
       pulo: this.data.enableJump ? 'ativado (FUTURO)' : 'desativado'
     });
+  },
+  
+  /**
+   * =====================================================
+   * DISABLE LOOK-CONTROLS YAW - DESABILITAR ROTAÇÃO Y
+   * =====================================================
+   * 
+   * Desabilita o controle de yaw (rotação horizontal) do look-controls,
+   * mantendo apenas o pitch (olhar cima/baixo).
+   * 
+   * Isso evita conflito entre look-controls e enhanced-controls.
+   */
+  disableLookControlsYaw: function () {
+    console.log('🔒 Enhanced Controls: Desabilitando yaw do look-controls...');
+    
+    // Aguardar próximo tick para garantir que look-controls foi inicializado
+    setTimeout(() => {
+      const lookControls = this.el.components['look-controls'];
+      
+      if (lookControls) {
+        // Desabilitar yaw (rotação horizontal)
+        if (lookControls.pitchObject && lookControls.yawObject) {
+          // Congelar rotação Y do yawObject
+          lookControls.yawObject.rotation.y = 0;
+          
+          // Interceptar método updateOrientation para bloquear yaw
+          const originalUpdate = lookControls.updateOrientation.bind(lookControls);
+          lookControls.updateOrientation = function() {
+            const currentYaw = this.yawObject.rotation.y;
+            originalUpdate();
+            this.yawObject.rotation.y = currentYaw; // Forçar yaw a permanecer inalterado
+          };
+          
+          console.log('✅ Look-controls yaw DESABILITADO (enhanced-controls assume controle)');
+          console.log('✅ Look-controls pitch MANTIDO (olhar cima/baixo funcional)');
+        } else {
+          console.warn('⚠️ pitchObject/yawObject não encontrados em look-controls');
+        }
+      } else {
+        console.log('🚨 look-controls não encontrado (OK se não estiver sendo usado)');
+      }
+    }, 100);
   },
 
   /**
