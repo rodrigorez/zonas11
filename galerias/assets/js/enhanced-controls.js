@@ -1439,17 +1439,25 @@ AFRAME.registerComponent('enhanced-controls', {
    * CORREÇÃO: W sempre move para frente RELATIVO ao olhar,
    * não em coordenadas globais.
    * 
+   * USA ROTAÇÃO REAL da câmera (look-controls ou enhanced-controls).
+   * 
    * @param {number} deltaSeconds - Tempo desde último frame (s)
    */
   updateMovement: function (deltaSeconds) {
     // Calcular distância a mover neste frame
     const moveDistance = this.data.moveSpeed * deltaSeconds;
     
-    // Obter posição atual
+    // Obter posição E ROTAÇÃO atuais da câmera
     const position = this.el.getAttribute('position');
+    const rotation = this.el.getAttribute('rotation');
+    
+    // 🎯 USAR ROTAÇÃO REAL (look-controls ou enhanced-controls)
+    // Se enableRotation: false, usa rotation.y do look-controls
+    // Se enableRotation: true, usa this.state.currentRotation
+    const currentYaw = this.data.enableRotation ? this.state.currentRotation : rotation.y;
     
     // Converter rotação Y para radianos (Three.js R125+)
-    const rotationRad = THREE.MathUtils.degToRad(this.state.currentRotation);
+    const rotationRad = THREE.MathUtils.degToRad(currentYaw);
     
     // Calcular vetores de direção baseados na rotação atual
     // FRENTE/TRÁS: baseado na rotação Y
