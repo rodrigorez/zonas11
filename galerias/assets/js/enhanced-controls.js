@@ -128,15 +128,15 @@ const ENHANCED_CONTROLS_CONFIG = {
   // true = giroscópio controla yaw (rotação horizontal)
   // false = apenas look-controls (pitch manual)
   
-  GYRO_ROTATION_SMOOTHING: 0.1,       // Suavização da rotação do giroscópio
+  GYRO_ROTATION_SMOOTHING: 0.15,      // Suavização da rotação do giroscópio
   // Valores menores = mais suave, mais atraso
   // Valores maiores = mais responsivo, mais tremia
-  // Recomendado: 0.05 a 0.15
-  // Padrão: 0.1 (balanço entre suavidade e responsividade)
+  // Recomendado: 0.05 a 0.2
+  // Padrão: 0.15 (mais responsivo para mobile)
   
-  GYRO_DISABLE_DURATION: 500,         // Tempo (ms) que giroscópio fica desabilitado após toque
+  GYRO_DISABLE_DURATION: 1000,        // Tempo (ms) que giroscópio fica desabilitado após toque
   // Evita conflito entre toque manual e giroscópio
-  // Padrão: 500ms (meio segundo)
+  // Padrão: 1000ms (1 segundo) - aumentado para evitar instabilidade
   
   // ===== NORMALIZAÇÃO DE ROTAÇÃO =====
   ROTATION_FULL_CIRCLE: 360,          // Graus em círculo completo (NÃO ALTERAR)
@@ -307,7 +307,7 @@ AFRAME.registerComponent('enhanced-controls', {
       dragButton: null,         // Qual botão? (0=esquerdo, 2=direito)
       lastMouseX: 0,            // Posição X anterior do mouse
       lastMouseY: 0,            // Posição Y anterior do mouse
-      lastMouseInteraction: 0,  // Timestamp última interação com mouse
+      lastMouseInteraction: -10000,  // Timestamp última interação com mouse (iniciar no passado)
       
       // Controles de Toque (Mobile)
       isTouching: false,        // Tela está sendo tocada?
@@ -316,7 +316,7 @@ AFRAME.registerComponent('enhanced-controls', {
       lastTouchY: 0,            // Posição Y do primeiro toque
       touch2X: 0,               // Posição X do segundo toque
       touch2Y: 0,               // Posição Y do segundo toque
-      lastTouchInteraction: 0,  // Timestamp última interação com toque
+      lastTouchInteraction: -10000,  // Timestamp última interação com toque (iniciar no passado)
       
       // Giroscópio (Device Orientation)
       gyroActive: false,        // Giroscópio ativo?
@@ -732,6 +732,9 @@ AFRAME.registerComponent('enhanced-controls', {
       console.log(`👆 onTouchStart! Toques: ${event.touches.length}`);
     }
     
+    // Registrar timestamp IMEDIATAMENTE ao tocar
+    this.state.lastTouchInteraction = performance.now();
+    
     this.state.isTouching = true;
     this.state.touchCount = event.touches.length;
     
@@ -788,7 +791,7 @@ AFRAME.registerComponent('enhanced-controls', {
       
       // HORIZONTAL = Rotação Y (YAW)
       if (Math.abs(deltaX) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
-        const rotationDelta = -deltaX * ENHANCED_CONTROLS_CONFIG.TOUCH_ROTATION_SENSITIVITY;
+        const rotationDelta = deltaX * ENHANCED_CONTROLS_CONFIG.TOUCH_ROTATION_SENSITIVITY;  // CORRIGIDO: remover sinal negativo
         
         this.state.currentRotation += rotationDelta;
         
@@ -809,7 +812,7 @@ AFRAME.registerComponent('enhanced-controls', {
       let newPitch = rotation.x;
       if (Math.abs(deltaY) > ENHANCED_CONTROLS_CONFIG.MOVEMENT_THRESHOLD) {
         const pitchSensitivity = ENHANCED_CONTROLS_CONFIG.TOUCH_ROTATION_SENSITIVITY;
-        const pitchDelta = -deltaY * pitchSensitivity;
+        const pitchDelta = deltaY * pitchSensitivity;  // CORRIGIDO: remover sinal negativo
         
         newPitch = rotation.x + pitchDelta;
         
@@ -968,8 +971,8 @@ AFRAME.registerComponent('enhanced-controls', {
       relativeAlpha += 360;
     }
     
-    // Inverter direção (alpha aumenta no sentido horário, queremos anti-horário)
-    this.state.gyroTargetRotation = -relativeAlpha;
+    // CORRIGIDO: NÃO inverter (alpha já está na direção correta)
+    this.state.gyroTargetRotation = relativeAlpha;
     
     // ===== CALCULAR PITCH (BETA) =====
     // Beta: 0 = horizontal, 90 = virado para frente, -90 = virado para trás
@@ -978,8 +981,8 @@ AFRAME.registerComponent('enhanced-controls', {
     // Limitar pitch a -90 a 90 graus
     relativeBeta = Math.max(-90, Math.min(90, relativeBeta));
     
-    // Inverter para match com comportamento esperado
-    this.state.gyroTargetPitch = -relativeBeta;
+    // CORRIGIDO: NÃO inverter (beta já está na direção correta)
+    this.state.gyroTargetPitch = relativeBeta;
     
     if (ENHANCED_CONTROLS_CONFIG.ENABLE_GYRO_DEBUG_LOGS) {
       console.log(`🧭 Gyro - Alpha: ${event.alpha.toFixed(1)}°, Beta: ${event.beta.toFixed(1)}°`);
@@ -1165,16 +1168,18 @@ AFRAME.registerComponent('enhanced-controls', {
     // Flags de controle
     const mouseRecentlyUsed = timeSinceMouseInteraction < disableDuration;
     const touchRecentlyUsed = timeSinceTouchInteraction < disableDuration;
+    const touchCurrentlyActive = this.state.isTouching;  // Verifica se está tocando AGORA
     
     // ===== PRIORIDADE 1 (MOBILE): TOQUE =====
     // Toque controla rotação diretamente via onTouchMove
     // Apenas desabilita giroscópio se necessário
     
     // ===== PRIORIDADE 2 (MOBILE): GIROSCÓPIO =====
-    // Apenas se não houver toque recente
+    // Apenas se NÃO houver toque ativo E nem toque recente
     if (this.data.enableGyroRotation && 
         this.state.gyroActive && 
         this.state.gyroInitialAlpha !== null &&
+        !touchCurrentlyActive &&
         !touchRecentlyUsed) {
       
       // Suavização YAW (interpolação linear - LERP)
