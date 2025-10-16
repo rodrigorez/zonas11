@@ -6,9 +6,9 @@
     <title>Zonas 11 - VR Mundo 7 (V2.8)</title>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <!-- Enhanced Controls: Componente modular extensível -->
-    <script src="assets/js/enhanced-controls.js"></script>
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/enhanced-controls.js"></script>
     <!-- Navigation Helper: Sistema dual AR/VR -->
-    <script src="assets/js/navigation-helper.js"></script>
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/navigation-helper.js"></script>
     <style>
       body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
     </style>
@@ -162,6 +162,14 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 Mundo 7: Iniciando configuração de navegação...');
+        
+        // Verificar se funções do navigation-helper estão disponíveis
+        if (typeof getNavigationSource === 'undefined') {
+          console.error('❌ navigation-helper.js NÃO foi carregado!');
+          return;
+        }
+        
         // Detectar origem da navegação (AR ou VR)
         const source = getNavigationSource(); // Retorna 'ar' ou 'vr'
         console.log(`🌍 Mundo 7: Origem detectada → ${source.toUpperCase()}`);
@@ -172,19 +180,35 @@
           const galleryURL = getGalleryURL(source);
           backSphere.setAttribute('redirect-on-click', { url: galleryURL });
           console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
+        } else {
+          console.warn('⚠️ Esfera de voltar NÃO encontrada!');
         }
 
         // Configurar cliques para cada obra COM parâmetro ?from=
+        let obrasConfiguradas = 0;
         for (let i = 43; i <= 48; i++) {
           const obra = document.querySelector(`.obra${i}`);
           if (obra) {
             const obraURL = getObraURL(i, source);
+            console.log(`🖼️ Configurando obra ${i}: ${obraURL}`);
+            
+            // MÉTODO 1: Via componente A-Frame (padrão)
             obra.setAttribute('redirect-on-click', { url: obraURL });
+            
+            // MÉTODO 2: Via evento JavaScript direto (fallback)
+            obra.addEventListener('click', () => {
+              console.log(`🖱️ Clique direto detectado na obra ${i}!`);
+              window.location.href = obraURL;
+            });
+            
+            obrasConfiguradas++;
+          } else {
+            console.warn(`⚠️ Obra ${i} NÃO encontrada no DOM!`);
           }
         }
         
         console.log(`✅ Mundo 7: Navegação contextual (${source.toUpperCase()}) configurada`);
-        console.log(`📊 6 obras + 1 esfera = 7 elementos (distribuição igual)`);
+        console.log(`📊 ${obrasConfiguradas} obras + 1 esfera = ${obrasConfiguradas + 1} elementos configurados`);
       });
     </script>
   </body>

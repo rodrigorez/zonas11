@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha Técnica - La Hora de la Luz</title>
+    <title>Ficha Técnica - A nuestro paso</title>
     <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
     <link rel="stylesheet" href="https://rodrigorez.github.io/zonas11/galerias/assets/css/obra-template.css">
     <!-- Navigation Helper: Sistema dual AR/VR -->
@@ -20,17 +20,21 @@
       </button>
 
       <!-- 3ª linha: Vídeo (PlatformDetector automático) -->
-      <div class="linha video" id="video-container" data-url="https://youtu.be/YalWMUJd_Kk"></div>
+      <div class="linha video" id="video-container" data-url="https://drive.google.com/file/d/1NhEF0Y6GpEb8l1_2WKs7JUSDA21Vdah5/preview"></div>
 
       <!-- 4ª linha: Título da obra -->
-      <div class="linha titulo">La Hora de la Luz</div>
+      <div class="linha titulo">A nuestro paso</div>
 
       <!-- 5ª linha: Autor da obra -->
-      <div class="linha autor">Sheila Lledó</div>
+      <div class="linha autor">Alicia F.</div>
 
       <!-- 6ª linha: Sinopse -->
       <div class="linha sinopse">
-        Uma série que transforma a cidade em um sonho. Figuras hipnotizadas avançam entre rotinas e consumo rumo ao desconhecido. Essas ficções não são escapismo, mas ferramentas para analisar e subverter a realidade, oferecendo novas perspectivas sobre a condição humana.
+        A lama tem memória. Caminhamos sobre ela e deixamos o nosso rasto. Por um momento, ela lembra-se de nós.
+
+O asfalto não se altera. Não aceita intervenções, nada cresce nele. Passamos por cima dele e nada fica no nosso rasto.
+
+"A nosso passo" é uma ação que explora o impacto humano no ambiente através da pegada e da marca.
       </div>
 
       <!-- 7ª linha: Botão voltar -->
@@ -44,9 +48,9 @@
       // Detectar origem e configurar botões de voltar dinamicamente
       document.addEventListener('DOMContentLoaded', () => {
         const source = getNavigationSource();
-        const mundoURL = getMundoURL(8, source); // Obra 46 pertence ao Mundo 7 (index8.html)
+        const mundoURL = getMundoURL(9, source); // Obra 54 pertence ao Mundo 8 (index9.html)
         
-        console.log(`🖼️ Obra 46: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        console.log(`🖼️ Obra 54: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
         
         // Configurar botão do topo
         document.getElementById('btn-voltar-topo').onclick = () => {
