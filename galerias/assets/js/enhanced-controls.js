@@ -1251,6 +1251,18 @@ AFRAME.registerComponent('enhanced-controls', {
     // Apenas se não houver mouse recente E giroscópio inativo E TECLAS PRESSIONADAS
     else if (!mouseRecentlyUsed && !this.state.gyroActive) {
       
+      // 🔄 SINCRONIZAR currentRotation com a rotação atual ANTES de aplicar teclado
+      // Isso garante que o teclado continue de onde o mouse/look-controls parou
+      const rotation = this.el.getAttribute('rotation');
+      const rotationYDiff = Math.abs(rotation.y - this.state.currentRotation);
+      
+      if (rotationYDiff > 0.1) {
+        if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
+          console.log(`🔄 SINCRONIZANDO currentRotation: ${this.state.currentRotation.toFixed(2)}° → ${rotation.y.toFixed(2)}°`);
+        }
+        this.state.currentRotation = rotation.y;
+      }
+      
       // 🔍 VERIFICAR SE ALGUMA TECLA ESTÁ PRESSIONADA
       const anyKeyPressed = this.state.rotatingLeft || this.state.rotatingRight;
       
@@ -1297,7 +1309,7 @@ AFRAME.registerComponent('enhanced-controls', {
       }
       
       // ===== APLICAR ROTAÇÃO DO TECLADO =====
-      const rotation = this.el.getAttribute('rotation');
+      // Reutilizar a variável 'rotation' já obtida antes
       
       if (ENHANCED_CONTROLS_CONFIG.ENABLE_UPDATE_ROTATION_DEBUG) {
         console.log(`  Aplicando - Y antes: ${rotation.y.toFixed(2)}°, Y depois: ${this.state.currentRotation.toFixed(2)}°`);
