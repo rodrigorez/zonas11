@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica - Corpo Translúcido</title>
+    <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
+    <link rel="stylesheet" href="https://rodrigorez.github.io/zonas11/galerias/assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/navigation-helper.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 1ª linha: Nome da exposição -->
+      <div class="linha exposicao">Zonas 11</div>
+
+      <!-- 2ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+
+      <!-- 3ª linha: Vídeo (PlatformDetector automático) -->
+      <div class="linha video" id="video-container" data-url="https://drive.google.com/file/d/1FJk1ChTDFJGAj0Kr8CuhOIbCGNoR8Z13/preview"></div>
+
+      <!-- 4ª linha: Título da obra -->
+      <div class="linha titulo">Corpo Translúcido</div>
+
+      <!-- 5ª linha: Autor da obra -->
+      <div class="linha autor">Luana AMS</div>
+
+      <!-- 6ª linha: Sinopse -->
+      <div class="linha sinopse">
+        Corpo Translúcido é um zine fotográfico que explora o encontro entre corpo e natureza por meio das sombras do capim-gordura projetadas sobre a pele. As ramificações da planta evocam veias e nervos, revelando uma dimensão sensível e vulnerável do humano. Nesse jogo de transparências, corpo e planta se fundem, sugerindo um fluxo de trocas e reconhecimentos mútuos, onde a delicadeza da vida se manifesta como pulsar compartilhado entre pele e natureza.
+      </div>
+
+      <!-- 7ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-rodape">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+    </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(11, source); // Obra 66 pertence ao Mundo 10 (index11.html)
+        
+        console.log(`🖼️ Obra 66: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/platform-detector.js"></script>
+  </body>
+</html>

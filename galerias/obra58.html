@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica - Fuera de lugar</title>
+    <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
+    <link rel="stylesheet" href="https://rodrigorez.github.io/zonas11/galerias/assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/navigation-helper.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 1ª linha: Nome da exposição -->
+      <div class="linha exposicao">Zonas 11</div>
+
+      <!-- 2ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+
+      <!-- 3ª linha: Vídeo (PlatformDetector automático) -->
+      <div class="linha video" id="video-container" data-url="https://josepsanmartin.com/venecia/"></div>
+
+      <!-- 4ª linha: Título da obra -->
+      <div class="linha titulo">Fuera de lugar</div>
+
+      <!-- 5ª linha: Autor da obra -->
+      <div class="linha autor">Josep Sanmartín</div>
+
+      <!-- 6ª linha: Sinopse -->
+      <div class="linha sinopse">
+        Numa zona afastada de Veneza, vi num canal um grande cardume de peixes —algo que depois soube não ser comum—. Tudo parecia fora de lugar, num mundo imaginário entre o reflexo do céu e da água. Fotografei e editei a imagem, sem acrescentar nem retirar nada. Um ano depois compreendi o caráter extraordinário da fotografia.
+      </div>
+
+      <!-- 7ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-rodape">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+    </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(10, source); // Obra 58 pertence ao Mundo 9 (index10.html)
+        
+        console.log(`🖼️ Obra 58: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/platform-detector.js"></script>
+  </body>
+</html>

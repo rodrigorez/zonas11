@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Técnica - Veladura 1 / veladura 2 / veladura 3</title>
+    <!-- CSS Externo Compartilhado (V2.8 Otimizado) -->
+    <link rel="stylesheet" href="https://rodrigorez.github.io/zonas11/galerias/assets/css/obra-template.css">
+    <!-- Navigation Helper: Sistema dual AR/VR -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/navigation-helper.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 1ª linha: Nome da exposição -->
+      <div class="linha exposicao">Zonas 11</div>
+
+      <!-- 2ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-topo">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+
+      <!-- 3ª linha: Vídeo (PlatformDetector automático) -->
+      <div class="linha video" id="video-container" data-url="https://drive.google.com/file/d/1n40t3C7VtC-J3l1umFB5PxnFv45GKADy/preview"></div>
+
+      <!-- 4ª linha: Título da obra -->
+      <div class="linha titulo">Veladura 1 / veladura 2 / veladura 3</div>
+
+      <!-- 5ª linha: Autor da obra -->
+      <div class="linha autor">Helio Herbst</div>
+
+      <!-- 6ª linha: Sinopse -->
+      <div class="linha sinopse">
+        A produção do espaço urbano pode ser vista como um processo de acumulação e descarte, necessariamente constituído por embates em defesa de ideais culturais, religiosos, políticos e econômicos. No emaranhado de tramas que compõe a cidade, é preciso reconhecer, para além dos marcos icônicos, quase sempre identificados com a memória dos vencedores, vestígios que testemunham a resistência das individualidades subjugadas. Apresento aqui 3 fotomontagens produzidas a partir de registros elaborados na região central do Rio de Janeiro em 25 de julho de 2025, buscando reconhecer a dimensão simbólica/intangível dos testemunhos identificados com as lutas em defesa dos direitos humanos. Tal ação pretende revisitá-los como fragmentos, ou como feridas não cicatrizadas da ditadura civil-militar brasileira vigente entre 1964 e 1985.
+      </div>
+
+      <!-- 7ª linha: Botão voltar -->
+      <button class="botao-voltar" id="btn-voltar-rodape">
+        ↩️ Voltar para a Realidade Virtual
+      </button>
+    </div>
+    
+    <!-- JavaScript: Configuração de navegação contextual -->
+    <script>
+      // Detectar origem e configurar botões de voltar dinamicamente
+      document.addEventListener('DOMContentLoaded', () => {
+        const source = getNavigationSource();
+        const mundoURL = getMundoURL(11, source); // Obra 70 pertence ao Mundo 10 (index11.html)
+        
+        console.log(`🖼️ Obra 70: Origem ${source.toUpperCase()} → Voltar para ${mundoURL}`);
+        
+        // Configurar botão do topo
+        document.getElementById('btn-voltar-topo').onclick = () => {
+          window.location.href = mundoURL;
+        };
+        
+        // Configurar botão do rodapé
+        document.getElementById('btn-voltar-rodape').onclick = () => {
+          window.location.href = mundoURL;
+        };
+      });
+    </script>
+    
+    <!-- JavaScript: PlatformDetector para detecção automática de plataformas -->
+    <script src="https://rodrigorez.github.io/zonas11/galerias/assets/js/platform-detector.js"></script>
+  </body>
+</html>
