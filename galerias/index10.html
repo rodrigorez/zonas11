@@ -17,6 +17,22 @@
 
     </script>
 
+    <script>
+      // Rastrear origem de acesso (AR/VR/Direto) - Dimensão Personalizada GA4
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const origem = urlParams.get('from') || 'direto';
+        
+        gtag('config', 'G-HSBGM1MH5N', {
+          'custom_map': {'dimension1': 'origem_acesso'}
+        });
+        
+        gtag('event', 'page_view', {
+          'origem_acesso': origem
+        });
+      })();
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - VR Mundo 9 (V2.8)</title>

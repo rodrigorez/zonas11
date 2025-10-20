@@ -17,6 +17,22 @@
 
     </script>
 
+    <script>
+      // Rastrear origem de acesso (AR/VR/Direto) - Dimensão Personalizada GA4
+      (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const origem = urlParams.get('from') || 'direto';
+        
+        gtag('config', 'G-HSBGM1MH5N', {
+          'custom_map': {'dimension1': 'origem_acesso'}
+        });
+        
+        gtag('event', 'page_view', {
+          'origem_acesso': origem
+        });
+      })();
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - Galeria VR (V2.8)</title>
@@ -153,10 +169,10 @@
          Remove automaticamente após 10 segundos se tudo OK
          ===================================================== -->
     
-    <!-- <div id="mundo-counter">
+    <div id="mundo-counter">
       🌍 Mundos VR
       <span class="status" id="counter-status">Carregando... 0/10</span>
-    </div> -->
+    </div>
     
     <!-- =====================================================
          🖼️ LOGO ZONAS - Overlay HTML Fixo
@@ -396,34 +412,34 @@
         
         let loadedCount = 0;
         let errorCount = 0;
-        // const counterStatus = document.getElementById('counter-status');
-        // const counterDiv = document.getElementById('mundo-counter');
+        const counterStatus = document.getElementById('counter-status');
+        const counterDiv = document.getElementById('mundo-counter');
         
-        // Função para atualizar contador visual (DESABILITADA)
-        // function updateCounter() {
-        //   const pending = 10 - loadedCount - errorCount;
-        //   let statusText = '';
-        //   let statusClass = '';
-        //   
-        //   if (loadedCount === 10) {
-        //     statusText = `✅ Completo! ${loadedCount}/10`;
-        //     statusClass = 'complete';
-        //     // Remover contador após 10 segundos se tudo OK
-        //     setTimeout(() => {
-        //       counterDiv.style.opacity = '0';
-        //       setTimeout(() => counterDiv.remove(), 500);
-        //     }, 10000);
-        //   } else if (errorCount > 0) {
-        //     statusText = `❌ Erros: ${errorCount} | OK: ${loadedCount}/10`;
-        //     statusClass = 'error';
-        //   } else {
-        //     statusText = `⏳ Carregando... ${loadedCount}/10`;
-        //     statusClass = 'status';
-        //   }
-        //   
-        //   counterStatus.textContent = statusText;
-        //   counterStatus.className = statusClass;
-        // }
+        // Função para atualizar contador visual
+        function updateCounter() {
+          const pending = 10 - loadedCount - errorCount;
+          let statusText = '';
+          let statusClass = '';
+          
+          if (loadedCount === 10) {
+            statusText = `✅ Completo! ${loadedCount}/10`;
+            statusClass = 'complete';
+            // Remover contador após 10 segundos se tudo OK
+            setTimeout(() => {
+              counterDiv.style.opacity = '0';
+              setTimeout(() => counterDiv.remove(), 500);
+            }, 10000);
+          } else if (errorCount > 0) {
+            statusText = `❌ Erros: ${errorCount} | OK: ${loadedCount}/10`;
+            statusClass = 'error';
+          } else {
+            statusText = `⏳ Carregando... ${loadedCount}/10`;
+            statusClass = 'status';
+          }
+          
+          counterStatus.textContent = statusText;
+          counterStatus.className = statusClass;
+        }
         
         // =====================================================
         // 🎯 ARRAY DE PORTAIS - Configuração dos 10 Mundos
@@ -569,7 +585,7 @@
             entity.addEventListener('model-loaded', () => {
               loadedCount++;
               // console.log(`✅ [${loadedCount}/10] Modelo carregado: ${portal.nome}`);
-              // updateCounter(); // Atualizar contador visual (DESABILITADO)
+              updateCounter(); // Atualizar contador visual
               setTimeout(() => {
                 const mesh = entity.getObject3D('mesh');
                 
@@ -638,7 +654,7 @@
             entity.addEventListener('model-error', (e) => {
               errorCount++;
               // console.error(`❌ [ERRO ${errorCount}] Falha ao carregar ${portal.nome}:`, e.detail);
-              // updateCounter(); // Atualizar contador visual (DESABILITADO)
+              updateCounter(); // Atualizar contador visual
             });
           } else {
             // console.error(`❌ Portal não encontrado: ${portal.class}`);
@@ -647,7 +663,7 @@
         
         // Relatório final após 5 segundos
         setTimeout(() => {
-          // updateCounter(); // Atualizar uma última vez (DESABILITADO)
+          updateCounter(); // Atualizar uma última vez
           
           // console.log('\n📊 ========== RELATÓRIO FINAL ==========');
           // console.log(`✅ Mundos carregados: ${loadedCount}/10`);
