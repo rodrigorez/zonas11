@@ -1,19 +1,65 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
-      <!-- Google tag (gtag.js) -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-HSBGM1MH5N');
-      </script>
+    <!-- Google tag (gtag.js) -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
+
+    <script>
+
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag(){dataLayer.push(arguments);}
+
+      gtag('js', new Date());
+
+      gtag('config', 'G-HSBGM1MH5N');
+
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - Galeria VR (V2.8)</title>
     <style>
       body { margin: 0; overflow: hidden; }
+      
+      /* =====================================================
+         📊 CONTADOR DE MUNDOS - Debugging Visual
+         =====================================================
+         Indicador no canto superior esquerdo mostrando
+         quantos dos 10 mundos foram carregados com sucesso
+         ===================================================== */
+      
+      #mundo-counter {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 10000;
+        border: 2px solid #FF5722;
+        min-width: 200px;
+      }
+      
+      #mundo-counter .status {
+        display: block;
+        margin-top: 5px;
+        font-size: 14px;
+        color: #FFD700;
+      }
+      
+      #mundo-counter .complete {
+        color: #00FF00;
+      }
+      
+      #mundo-counter .error {
+        color: #FF0000;
+      }
       
       /* =====================================================
          🖼️ LOGO ZONAS - Overlay Fixo no Fundo Centro
@@ -100,6 +146,18 @@
     -->
   </head>
   <body>
+    <!-- =====================================================
+         📊 CONTADOR DE MUNDOS - Debugging Visual
+         =====================================================
+         Mostra em tempo real quantos mundos foram carregados
+         Remove automaticamente após 10 segundos se tudo OK
+         ===================================================== -->
+    
+    <div id="mundo-counter">
+      🌍 Mundos VR
+      <span class="status" id="counter-status">Carregando... 0/10</span>
+    </div>
+    
     <!-- =====================================================
          🖼️ LOGO ZONAS - Overlay HTML Fixo
          =====================================================
@@ -333,7 +391,39 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        console.log('🥽 Galeria VR: Inicializando...');
+        // console.log('🥽 Galeria VR: Inicializando...');
+        // console.log('📊 Total de mundos esperados: 10');
+        
+        let loadedCount = 0;
+        let errorCount = 0;
+        const counterStatus = document.getElementById('counter-status');
+        const counterDiv = document.getElementById('mundo-counter');
+        
+        // Função para atualizar contador visual
+        function updateCounter() {
+          const pending = 10 - loadedCount - errorCount;
+          let statusText = '';
+          let statusClass = '';
+          
+          if (loadedCount === 10) {
+            statusText = `✅ Completo! ${loadedCount}/10`;
+            statusClass = 'complete';
+            // Remover contador após 10 segundos se tudo OK
+            setTimeout(() => {
+              counterDiv.style.opacity = '0';
+              setTimeout(() => counterDiv.remove(), 500);
+            }, 10000);
+          } else if (errorCount > 0) {
+            statusText = `❌ Erros: ${errorCount} | OK: ${loadedCount}/10`;
+            statusClass = 'error';
+          } else {
+            statusText = `⏳ Carregando... ${loadedCount}/10`;
+            statusClass = 'status';
+          }
+          
+          counterStatus.textContent = statusText;
+          counterStatus.className = statusClass;
+        }
         
         // =====================================================
         // 🎯 ARRAY DE PORTAIS - Configuração dos 10 Mundos
@@ -470,10 +560,16 @@
             
             // Configurar redirecionamento
             entity.setAttribute('redirect-on-click', { url: mundoURL });
-            console.log(`🌍 Portal configurado: ${portal.nome} → ${mundoURL}`);
+            // console.log(`🌍 Portal configurado: ${portal.nome} → ${mundoURL}`);
+            
+            // Log quando modelo começa a carregar
+            // console.log(`🔄 [${portals.indexOf(portal) + 1}/10] Carregando: ${portal.nome}`);
             
             // Aplicar cor ao modelo 3D quando carregar
             entity.addEventListener('model-loaded', () => {
+              loadedCount++;
+              // console.log(`✅ [${loadedCount}/10] Modelo carregado: ${portal.nome}`);
+              updateCounter(); // Atualizar contador visual
               setTimeout(() => {
                 const mesh = entity.getObject3D('mesh');
                 
@@ -528,27 +624,60 @@
                       }
                     });
                     
-                    console.log(`✅ ${portal.nome}: ${colorSource} (${materialsCount} materiais)`);
+                    // console.log(`✅ ${portal.nome}: ${colorSource} (${materialsCount} materiais)`);
                   } else {
-                    console.log(`🎨 ${portal.nome}: ${colorSource}`);
+                    // console.log(`🎨 ${portal.nome}: ${colorSource}`);
                   }
                 } else {
-                  console.warn(`⚠️ ${portal.nome}: Mesh não encontrada`);
+                  // console.warn(`⚠️ ${portal.nome}: Mesh não encontrada`);
                 }
               }, 100);
             });
+            
+            // Log de erro se o modelo falhar ao carregar
+            entity.addEventListener('model-error', (e) => {
+              errorCount++;
+              // console.error(`❌ [ERRO ${errorCount}] Falha ao carregar ${portal.nome}:`, e.detail);
+              updateCounter(); // Atualizar contador visual
+            });
           } else {
-            console.error(`❌ Portal não encontrado: ${portal.class}`);
+            // console.error(`❌ Portal não encontrado: ${portal.class}`);
           }
         });
         
-        console.log('✅ Galeria VR: Inicialização completa');
-        console.log('📋 Controles disponíveis:');
-        console.log('   - W/A/S/D: Movimento');
-        console.log('   - Mouse: Olhar ao redor + Rotação');
-        console.log('   - Clique: Acessar mundo VR');
+        // Relatório final após 5 segundos
+        setTimeout(() => {
+          updateCounter(); // Atualizar uma última vez
+          
+          // console.log('\n📊 ========== RELATÓRIO FINAL ==========');
+          // console.log(`✅ Mundos carregados: ${loadedCount}/10`);
+          // console.log(`❌ Mundos com erro: ${errorCount}/10`);
+          // console.log(`⏳ Mundos pendentes: ${10 - loadedCount - errorCount}/10`);
+          
+          // if (loadedCount === 10) {
+          //   console.log('✅ SUCESSO: Todos os 10 mundos carregados!');
+          // } else if (loadedCount < 10) {
+          //   console.warn(`⚠️ ATENÇÃO: Apenas ${loadedCount} de 10 mundos visíveis!`);
+          //   console.log('\n🔍 Possíveis causas:');
+          //   console.log('1. Arquivos GLB corrompidos ou muito pequenos (03.glb, 09.glb, 10.glb têm apenas 0.4KB)');
+          //   console.log('2. Erros de rede ao carregar modelos remotos');
+          //   console.log('3. Objetos com geometria inválida ou sem mesh');
+          //   console.log('4. Modelos ainda carregando (aguarde mais alguns segundos)');
+          //   console.log('\n🔧 Soluções sugeridas:');
+          //   console.log('1. Verificar se os arquivos GLB são válidos (abrir no Blender ou visualizador online)');
+          //   console.log('2. Substituir GLBs pequenos (0.4KB) por modelos válidos');
+          //   console.log('3. Verificar console para erros específicos de carregamento');
+          //   console.log('\nAbra o Console do navegador (F12) para mais detalhes.');
+          // }
+          // console.log('========================================\n');
+        }, 5000);
+        
+        // console.log('✅ Galeria VR: Inicialização completa');
+        // console.log('📋 Controles disponíveis:');
+        // console.log('   - W/A/S/D: Movimento');
+        // console.log('   - Mouse: Olhar ao redor + Rotação');
+        // console.log('   - Clique: Acessar mundo VR');
       });
     </script>
   </body>
 </html>
-

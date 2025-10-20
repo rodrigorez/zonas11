@@ -1,15 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src=\"https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N\"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
+
     <script>
+
       window.dataLayer = window.dataLayer || [];
+
       function gtag(){dataLayer.push(arguments);}
+
       gtag('js', new Date());
 
       gtag('config', 'G-HSBGM1MH5N');
+
     </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - VR Mundo 5 (V2.8)</title>
@@ -202,13 +209,13 @@
 
       document.addEventListener('DOMContentLoaded', () => {
         const source = getNavigationSource();
-        console.log(`🌍 Mundo 5: Origem detectada → ${source.toUpperCase()}`);
+        // console.log(`🌍 Mundo 5: Origem detectada → ${source.toUpperCase()}`);
         
         const backSphere = document.querySelector('.clickable-back');
         if (backSphere) {
           const galleryURL = getGalleryURL(source);
           backSphere.setAttribute('redirect-on-click', { url: galleryURL });
-          console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
+          // console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
         }
 
         for (let i = 29; i <= 37; i++) {
@@ -219,7 +226,7 @@
           }
         }
         
-        console.log(`✅ Mundo 5: Navegação contextual (${source.toUpperCase()}) configurada`);
+        // console.log(`✅ Mundo 5: Navegação contextual (${source.toUpperCase()}) configurada`);
       });
     </script>
   </body>

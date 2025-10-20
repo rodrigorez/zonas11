@@ -1,14 +1,22 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html>
   <head>
-          <!-- Google tag (gtag.js) -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-HSBGM1MH5N');
-      </script>
+    <!-- Google tag (gtag.js) -->
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
+
+    <script>
+
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag(){dataLayer.push(arguments);}
+
+      gtag('js', new Date());
+
+      gtag('config', 'G-HSBGM1MH5N');
+
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Zonas 11 - AR (V2.8)</title>
@@ -145,7 +153,7 @@
           const url = this.data.url;
 
           el.addEventListener('click', () => {
-            console.log('Clique detectado! Redirecionando para:', url);
+            // console.log('Clique detectado! Redirecionando para:', url);
             window.location.href = url;
           });
         }
@@ -173,58 +181,58 @@
 
         // Aguardar inicialização do AR.js
         setTimeout(() => {
-          console.log('🚀 Iniciando configuração dos marcadores barcode...');
+          // console.log('🚀 Iniciando configuração dos marcadores barcode...');
           
           // Configurar todos os marcadores dinamicamente
           Object.entries(worldsConfig).forEach(([markerId, config]) => {
-          console.log(`🔧 Configurando marcador: ${markerId}`);
+          // console.log(`🔧 Configurando marcador: ${markerId}`);
           const marker = document.getElementById(markerId);
           const obj = document.getElementById(config.objId);
           const indicator = document.getElementById(config.indicatorId);
           const collision = document.getElementById(config.collisionId);
 
-          console.log(`📋 Estado dos elementos:`);
-          console.log(`  - Marcador: ${marker ? '✅' : '❌'}`);
-          console.log(`  - Objeto 3D: ${obj ? '✅' : '❌'}`);
-          console.log(`  - Indicador: ${indicator ? '✅' : '❌'}`);
-          console.log(`  - Colisão: ${collision ? '✅' : '❌'}`);
+          // console.log(`📋 Estado dos elementos:`);
+          // console.log(`  - Marcador: ${marker ? '✅' : '❌'}`);
+          // console.log(`  - Objeto 3D: ${obj ? '✅' : '❌'}`);
+          // console.log(`  - Indicador: ${indicator ? '✅' : '❌'}`);
+          // console.log(`  - Colisão: ${collision ? '✅' : '❌'}`);
 
           if (marker && obj) {
             // Aplicar cor vermelha após carregamento do modelo
             obj.addEventListener('model-loaded', () => {
-              console.log(`🔴 Aplicando cor VERMELHA ao modelo ${config.objId}`);
+              // console.log(`🔴 Aplicando cor VERMELHA ao modelo ${config.objId}`);
               
               // Aguardar um frame para garantir que o modelo esteja totalmente carregado
               setTimeout(() => {
                 const mesh = obj.getObject3D('mesh');
-                console.log(`🧩 Procurando mesh no objeto ${config.objId}:`, mesh ? 'ENCONTRADA' : 'NÃO ENCONTRADA');
+                // console.log(`🧩 Procurando mesh no objeto ${config.objId}:`, mesh ? 'ENCONTRADA' : 'NÃO ENCONTRADA');
                 
                 if (mesh) {
                   let materialsCount = 0;
                   mesh.traverse((child) => {
                     if (child.isMesh && child.material) {
                       materialsCount++;
-                      console.log(`🎨 Aplicando cor ao material ${materialsCount} de ${config.objId}`);
+                      // console.log(`🎨 Aplicando cor ao material ${materialsCount} de ${config.objId}`);
                       
                       // Aplicar cor vermelha diretamente
                       if (Array.isArray(child.material)) {
                         child.material.forEach((mat, index) => {
-                          console.log(`  📦 Material array [${index}]: aplicando vermelho`);
+                          // console.log(`  📦 Material array [${index}]: aplicando vermelho`);
                           mat.color.setHex(0xFF0000);
                           mat.emissive.setHex(0x220000);
                           mat.needsUpdate = true;
                         });
                       } else {
-                        console.log(`  📦 Material único: aplicando vermelho`);
+                        // console.log(`  📦 Material único: aplicando vermelho`);
                         child.material.color.setHex(0xFF0000);
                         child.material.emissive.setHex(0x220000);
                         child.material.needsUpdate = true;
                       }
                     }
                   });
-                  console.log(`✅ Cor vermelha aplicada em ${materialsCount} materiais de ${config.objId}`);
+                  // console.log(`✅ Cor vermelha aplicada em ${materialsCount} materiais de ${config.objId}`);
                 } else {
-                  console.log(`⚠️ Mesh não encontrada em ${config.objId} - tentando abordagem alternativa`);
+                  // console.log(`⚠️ Mesh não encontrada em ${config.objId} - tentando abordagem alternativa`);
                   // Tentar aplicar cor diretamente no objeto
                   obj.setAttribute('material', 'color: #FF0000');
                 }
@@ -233,7 +241,7 @@
 
             // Configurar eventos de marcador
             marker.addEventListener('markerFound', () => {
-              console.log(`✅ BARCODE ${markerId.split('-')[1]} DETECTADO!`);
+              // console.log(`✅ BARCODE ${markerId.split('-')[1]} DETECTADO!`);
               obj.classList.add('can-click');
               obj.setAttribute('simple-redirect', { url: config.url });
               
@@ -248,7 +256,7 @@
             });
 
             marker.addEventListener('markerLost', () => {
-              console.log(`❌ BARCODE ${markerId.split('-')[1]} perdido`);
+              // console.log(`❌ BARCODE ${markerId.split('-')[1]} perdido`);
               obj.classList.remove('can-click');
               obj.removeAttribute('simple-redirect');
               
@@ -267,5 +275,4 @@
       });
     </script>
   </body>
-
 </html>

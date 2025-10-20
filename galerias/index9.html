@@ -1,15 +1,22 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿﻿<!DOCTYPE html>
 <html>
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src=\"https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N\"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HSBGM1MH5N"></script>
+
     <script>
+
       window.dataLayer = window.dataLayer || [];
+
       function gtag(){dataLayer.push(arguments);}
+
       gtag('js', new Date());
 
       gtag('config', 'G-HSBGM1MH5N');
+
     </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zonas 11 - VR Mundo 8 (V2.8)</title>
@@ -183,26 +190,26 @@
       });
 
       document.addEventListener('DOMContentLoaded', () => {
-        console.log('🚀 Mundo 8: Iniciando configuração de navegação...');
+        // console.log('🚀 Mundo 8: Iniciando configuração de navegação...');
         
         // Verificar se funções do navigation-helper estão disponíveis
         if (typeof getNavigationSource === 'undefined') {
-          console.error('❌ navigation-helper.js NÃO foi carregado!');
+          // console.error('❌ navigation-helper.js NÃO foi carregado!');
           return;
         }
         
         // Detectar origem da navegação (AR ou VR)
         const source = getNavigationSource(); // Retorna 'ar' ou 'vr'
-        console.log(`🌍 Mundo 8: Origem detectada → ${source.toUpperCase()}`);
+        // console.log(`🌍 Mundo 8: Origem detectada → ${source.toUpperCase()}`);
         
         // Configurar esfera de voltar DINAMICAMENTE
         const backSphere = document.querySelector('.clickable-back');
         if (backSphere) {
           const galleryURL = getGalleryURL(source);
           backSphere.setAttribute('redirect-on-click', { url: galleryURL });
-          console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
+          // console.log(`🔙 Botão voltar configurado para: ${galleryURL}`);
         } else {
-          console.warn('⚠️ Esfera de voltar NÃO encontrada!');
+          // console.warn('⚠️ Esfera de voltar NÃO encontrada!');
         }
 
         // Configurar cliques para cada obra COM parâmetro ?from=
@@ -211,25 +218,25 @@
           const obra = document.querySelector(`.obra${i}`);
           if (obra) {
             const obraURL = getObraURL(i, source);
-            console.log(`🖼️ Configurando obra ${i}: ${obraURL}`);
+            // console.log(`🖼️ Configurando obra ${i}: ${obraURL}`);
             
             // MÉTODO 1: Via componente A-Frame (padrão)
             obra.setAttribute('redirect-on-click', { url: obraURL });
             
             // MÉTODO 2: Via evento JavaScript direto (fallback)
             obra.addEventListener('click', () => {
-              console.log(`🖱️ Clique direto detectado na obra ${i}!`);
+              // console.log(`🖱️ Clique direto detectado na obra ${i}!`);
               window.location.href = obraURL;
             });
             
             obrasConfiguradas++;
           } else {
-            console.warn(`⚠️ Obra ${i} NÃO encontrada no DOM!`);
+            // console.warn(`⚠️ Obra ${i} NÃO encontrada no DOM!`);
           }
         }
         
-        console.log(`✅ Mundo 8: Navegação contextual (${source.toUpperCase()}) configurada`);
-        console.log(`📊 ${obrasConfiguradas} obras + 1 esfera = ${obrasConfiguradas + 1} elementos configurados`);
+        // console.log(`✅ Mundo 8: Navegação contextual (${source.toUpperCase()}) configurada`);
+        // console.log(`📊 ${obrasConfiguradas} obras + 1 esfera = ${obrasConfiguradas + 1} elementos configurados`);
       });
     </script>
   </body>
